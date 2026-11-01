@@ -7,6 +7,54 @@
 @media(max-width:480px){body{font-size:14px}main{padding:16px 12px 30px}.chapter{padding:22px 17px;border-radius:8px}.sidebar nav{grid-template-columns:1fr}h1{font-size:28px}h2{font-size:22px}h3{font-size:17px}.lead{font-size:15px}.chapter-bottom{gap:12px}.lab-status{grid-template-columns:1fr 1fr}.diagram-heading{font-size:13px}.diagram-tools span{font-size:10px}.learning{padding:14px}.state-lab{padding:13px}pre{padding:14px;font-size:11px}}
 @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 @media print{@page{margin:14mm}html{scroll-behavior:auto}body{background:#fff;font-size:10pt}.shell{display:block}.sidebar,.skip,.chapter-bottom,.diagram-tools,.lab-toolbar,.search-input,.search-label,#glossary-count{display:none!important}main{padding:0;max-width:none}.chapter{border:0;border-radius:0;padding:0;margin:0 0 20pt;break-before:page}.chapter:first-child{break-before:auto}.learning,.lab-status{display:block}.learning>div{margin:6pt 0}.diagram,.exercise,.note{break-inside:avoid}.diagram-canvas,.table-scroll{overflow:visible}.diagram svg{width:100%;min-width:0}.table-scroll table{min-width:0;font-size:8pt}th,td{padding:5pt;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow:visible;font-size:8pt;background:#f4f6f7;color:#172b37}pre code{white-space:pre-wrap;overflow-wrap:anywhere}.code-example{background:white;color:#172b37}.code-label{background:#e8edef;color:#172b37}.source-links a{overflow-wrap:anywhere}.page-footer{font-size:8pt}}
+</style><style id="automatic-dark-mode">
+/* Follow the browser/OS appearance on screen; keep the existing light print palette. */
+:root{color-scheme:light}
+@media screen and (prefers-color-scheme: dark){
+  :root{color-scheme:dark;--ink:#e1e9ef;--muted:#b1c3cf;--nav:#102432;--line:#48606f;--blue:#8bd0f0;--teal:#8bdfc3;--paper:#18242f;--bg:#101820;--gold:#e4c489;--link:#8bd0f0}
+  body{background:var(--bg);color:var(--ink)}
+  a{color:var(--link)}a:hover{color:#b8e6fa}
+  h2{color:#d1e6f4}h3{color:#a4dcd1}
+  button,select,input[type="search"],.search-input,.glossary-search input{background:#233b4a;color:var(--ink);border-color:#7693a4}
+  button:hover{background:#2c4c5c}input::placeholder{color:#b1c3cf;opacity:1}
+  .skip{background:#233b4a;color:#e1e9ef}
+  .chapter{background:var(--paper);border-color:var(--line)}
+  .hero{background:linear-gradient(115deg,#19352f,#1c2a36)}
+  .hero .subtitle,.lead,.learning,.learning span{color:var(--muted)}
+  .chips span,.hero .chips span{background:#203c35;border-color:#628d7d;color:#b8edda}
+  .learning,.quiz,.chapter-bottom,.chapter-supplement,.source-links{border-color:var(--line)}
+  .source-links{color:var(--muted)}
+  th,td{border-color:#3f5564}thead th{background:#223745;color:#d4e6f0}
+  tbody tr:nth-child(even){background:#1d2d39}tbody th{background:#1c2c38}
+  .note,.exercise{background:#1c342d;border-color:#7ebba5;color:var(--ink)}
+  .example{background:#3a3021;border-color:#a98c58;color:var(--ink)}.example>b{color:#f0d6a5}
+  .advanced,.answer{background:#20323f;border-color:#577383}
+  .advanced summary,.answer summary{color:#b3d9e9}
+  .pill{background:#203e54;color:#b9e0fa}.pill.car{background:#372e4c;color:#ddcaf5}
+  .pill.design{background:#203e31;color:#bce8c8}.pill.internal{background:#423421;color:#f0d3a6}
+  .complete,.supplement-label,.diagram-number{color:var(--teal)}
+  .node{background:#223541;border-color:#81b9bd;color:var(--ink)}.arrow{color:#aad3e1}
+  .trace-step{background:#22333f;border-color:#6d8797;color:#c8d9e3}
+  .trace-step.active{background:#204237;border-color:#8cdbb9;color:#c3f4df}
+  .trace-description{background:#1c342d;color:var(--ink);border-color:var(--teal)}
+  code{background:#263d4b;color:#e1edf4}.code-example{background:#101e29;border-color:#567180;color:#e3edf4}
+  .code-label{background:#223b4b;color:#e3edf4}.code-example pre{color:#e3edf4}
+  .code-example code{background:transparent;color:inherit}
+  figure,.android-diagram,.diagram{background:#192b36;border-color:#5a7888}
+  .diagram-heading{background:#203c35;color:var(--ink)}.diagram-heading span{color:#b8edda}
+  .diagram-tools,.diagram-tools span,.diagram-limit,figcaption,footer{color:var(--muted)}
+  .diagram-tools{border-color:#48606f}.diagram-index{background:#1d3230;border-color:#557c70}
+  .diagram-canvas{background:#14232f;border-color:#48606f}
+  .diagram-canvas svg text,.diagram-canvas svg tspan{fill:#e1e9ef}
+  .diagram-canvas svg rect:not([fill="none"]){fill:#233642;stroke:#7693a4}
+  .diagram-canvas svg path[stroke]:not([stroke="none"]),.diagram-canvas svg polyline[stroke]:not([stroke="none"]){stroke:#a5cfdf}
+  .diagram-canvas svg path[fill]:not([fill="none"]),.diagram-canvas svg polyline[fill]:not([fill="none"]){fill:#a5cfdf}
+  .diagram-canvas svg rect[fill="#e5f5ec"],.diagram-canvas svg rect[fill="#edf6f1"],.diagram-canvas svg rect[fill="#edf8f2"],.diagram-canvas svg rect[fill="#e4f2e9"],.diagram-canvas svg rect[fill="#deefe3"],.diagram-canvas svg rect[fill="#e4f1ed"],.diagram-canvas svg rect[fill="#e5f2ec"]{fill:#193a30}
+  .diagram-canvas svg rect[fill="#e8f2fc"],.diagram-canvas svg rect[fill="#eef4fa"],.diagram-canvas svg rect[fill="#f0f6fb"],.diagram-canvas svg rect[fill="#e5f0fa"],.diagram-canvas svg rect[fill="#dcecf6"],.diagram-canvas svg rect[fill="#eef4f7"],.diagram-canvas svg rect[fill="#e8f0fa"]{fill:#20394f}
+  .diagram-canvas svg rect[fill="#fff3db"],.diagram-canvas svg rect[fill="#fdf7ed"],.diagram-canvas svg rect[fill="#f5eedf"],.diagram-canvas svg rect[fill="#f8f1e6"],.diagram-canvas svg rect[fill="#f8edda"],.diagram-canvas svg rect[fill="#fbf0df"]{fill:#423522}
+  .diagram-canvas svg rect[fill="#f0e8fa"],.diagram-canvas svg rect[fill="#ece9f5"],.diagram-canvas svg rect[fill="#ece5f5"],.diagram-canvas svg rect[fill="#f5f1fa"],.diagram-canvas svg rect[fill="#edeaf6"]{fill:#372d48}
+  .state-lab{background:#19352d;border-color:#7ebba5}.lab-status>div{background:#1c2f3c;border-color:#658493}.lab-status dt{color:var(--muted)}
+}
 </style></head>
 <body><a class="skip" href="#main">本文へ移動</a><div class="shell"><aside class="sidebar"><a class="catalog-back" href="../">← 教材一覧へ戻る</a><div class="brand">組み込み開発<br>体系学習ガイド</div><div class="edition">FOUNDATIONS → DESIGN / v1.0</div><details class="nav-details" id="toc" open><summary class="sidebar-summary">目次を開く・閉じる</summary><nav aria-label="教材の目次"><a href="#start">はじめに・学習ルート</a><a href="#overview"><span class="nav-no">01</span>組み込みシステムの全体像</a>
 <a href="#hardware"><span class="nav-no">02</span>信号・回路・周辺機能の基礎</a>
