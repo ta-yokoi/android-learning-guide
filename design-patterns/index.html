@@ -1,0 +1,826 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="GoFの23デザインパターンを問題・設計図・Java 17の実装例・46問から学ぶ日本語教材。適用しない判断、類似パターン比較、通知システムの総合演習も収録。"><title>GoFデザインパターン 体系学習ガイド｜変更に向き合う設計</title><style>
+:root{color-scheme:light;--ink:#21313f;--muted:#546c79;--nav:#132d3d;--line:#dce4e8;--teal:#0d796e;--paper:#fff;--bg:#f4f6f5}*{box-sizing:border-box}html{scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.95 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}a{color:#17698e;text-underline-offset:3px}button,input{font:inherit}button{border:1px solid #a8bdc8;background:#fff;color:#164f63;border-radius:6px;padding:7px 12px;cursor:pointer}button:hover{background:#eaf4f1}button:disabled{opacity:.48;cursor:default}:focus-visible{outline:3px solid #ba8523;outline-offset:4px}.skip{position:absolute;top:-100px;left:12px;background:white;z-index:10;padding:12px}.skip:focus{top:12px}.shell{display:grid;grid-template-columns:276px minmax(0,1fr);max-width:1720px;margin:auto}.sidebar{position:sticky;top:0;height:100vh;background:var(--nav);color:#d4e0e7;padding:26px 19px;overflow:auto}.brand{font-size:21px;line-height:1.5;font-weight:750;color:#fff}.edition{font-size:11px;letter-spacing:.09em;color:#adc4cd;margin:12px 0 20px}.catalog-back{display:inline-block;color:#bce6d6;font-size:13px;margin:0 0 18px}.sidebar nav a{display:flex;gap:9px;align-items:baseline;color:#d5e2e9;text-decoration:none;font-size:12px;line-height:1.7;padding:7px 8px;border-radius:5px}.sidebar nav a:hover{background:#294a5f;color:#fff}.sidebar nav a.read{color:#a4e6cd}.nav-no{min-width:22px;color:#9ebbc9;font:11px/1.8 ui-monospace,monospace}.sidebar nav a.read .nav-no::after{content:' ✓'}.sidebar-summary{cursor:pointer;color:#d5e2e9;font-weight:650;padding:9px 8px}.side-tools{margin-top:24px;border-top:1px solid #3c5666;padding-top:18px}.side-tools label{display:block;font-size:12px}.side-tools progress{width:100%;height:8px;accent-color:#70d2a9}.side-tools p{font-size:11px;color:#b7ccd6;line-height:1.7}.side-tools button{margin-top:6px}main{min-width:0;padding:42px 44px 70px;max-width:1220px;width:100%}.chapter{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:32px 36px;margin:0 0 26px;overflow-wrap:anywhere}.eyebrow,.section-number{font-size:11px;letter-spacing:.13em;color:var(--teal);font-weight:750}h1{font-size:clamp(27px,3.3vw,42px);line-height:1.55;margin:14px 0 18px}h2{font-size:26px;line-height:1.55;margin:11px 0 21px}h3{font-size:18px;line-height:1.65;margin:28px 0 12px}p{margin:13px 0}.lead{font-size:17px;color:#47636f}.small{font-size:12px;color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}.chips span{background:#ecf5f0;border:1px solid #d3e7dd;color:#356456;border-radius:20px;padding:5px 12px;font-size:12px}.learning{display:grid;grid-template-columns:2fr 1fr;gap:18px;padding:16px 19px;background:#f2f6f7;border-radius:7px;font-size:13px;margin:0 0 22px}.learning span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.note{padding:16px 19px;border-left:3px solid #b58c49;background:#faf5e9;font-size:13px;margin:20px 0}.table-scroll{max-width:100%;overflow:auto;margin:18px 0;border:1px solid var(--line);border-radius:7px}table{border-collapse:collapse;min-width:660px;width:100%;font-size:13px}th,td{padding:11px 13px;border-bottom:1px solid #e3e9ed;text-align:left;vertical-align:top;line-height:1.8}thead th{background:#ecf3f5;font-size:12px}tbody th{background:#f8faf9;font-weight:650;min-width:120px}tr:last-child>*{border-bottom:0}.code-example{margin:19px 0;min-width:0;border-radius:7px;overflow:hidden;background:#132c3a;color:#e4edf2}.code-label{padding:9px 15px;background:#224354;color:#d3e6ec;font-size:11px}pre{margin:0;padding:17px 19px;max-width:100%;overflow:auto;font:12px/1.85 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4}pre code{font:inherit;white-space:pre}.diagram{margin:24px 0;border:1px solid #cbdde1;background:#fbfdfc;border-radius:8px;overflow:hidden;max-width:100%}.diagram-heading{display:flex;gap:12px;align-items:baseline;padding:14px 17px;background:#e8f1ef;font-size:14px}.diagram-heading span{font:11px/1.7 ui-monospace,monospace;color:#376258;flex-shrink:0}.diagram-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #dce8e6}.diagram-tools span{font-size:11px;color:#536e7a}.diagram-tools button{font-size:12px;padding:5px 10px}.diagram-canvas{overflow:auto;max-width:100%;background:#fff}.diagram svg{display:block;width:100%;min-width:800px;height:auto}.diagram.fit svg{min-width:0}figcaption{padding:13px 17px;color:#506976;font-size:12px;line-height:1.9}.diagram-index{background:#f2f6f7;border-radius:7px;padding:3px 20px 17px}.diagram-index>div{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px}.diagram-index a{font-size:12px}.exercise{padding:2px 20px 12px;background:#edf5f1;border:1px solid #d3e6dc;border-radius:7px;margin:24px 0}.exercise h3{margin-top:18px}.exercise p{font-size:13px}.quiz{border-top:1px solid var(--line);margin-top:30px}.answer{border:1px solid #d8e4e7;border-radius:6px;margin:11px 0;padding:0 15px}.answer summary{cursor:pointer;padding:12px 0;font-weight:650;font-size:13px}.answer p{font-size:13px;padding:0 5px 9px}.source-links{border-top:1px dashed #ccdce2;padding-top:18px;margin-top:24px;font-size:12px}.source-links b{display:block;margin-bottom:8px}.source-links a{display:inline-block;margin:0 16px 7px 0}.chapter-bottom{border-top:1px solid var(--line);margin-top:25px;padding-top:18px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:12px}.complete{display:flex;align-items:center;gap:7px;font-weight:650;color:var(--teal)}.complete input{width:17px;height:17px;accent-color:var(--teal)}.search-label{display:block;font-size:13px;font-weight:650}.search-input{display:block;width:100%;max-width:520px;border:1px solid #a5bdc7;border-radius:6px;padding:10px 12px;background:white;margin:8px 0}.state-lab{padding:20px;border:1px solid #bdd8cf;background:#f2f8f5;border-radius:8px;margin:20px 0}.lab-toolbar{display:flex;flex-wrap:wrap;gap:8px}.lab-toolbar button{font-size:12px}.lab-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.lab-status>div{background:white;border:1px solid #d7e7df;padding:11px;border-radius:6px}.lab-status dt{font-size:11px;color:#526d79}.lab-status dd{margin:4px 0 0;font-weight:700;overflow-wrap:anywhere}.state-lab [role=status]{border-left:3px solid var(--teal);padding-left:12px;font-size:13px}.page-footer{color:var(--muted);font-size:11px;text-align:center;padding:15px} [hidden]{display:none!important}
+@media(min-width:901px){.nav-details>summary{font-size:12px;list-style:none}.nav-details>summary::-webkit-details-marker{display:none}}
+@media(max-width:1100px){main{padding:30px 23px}.chapter{padding:27px 25px}.shell{grid-template-columns:246px minmax(0,1fr)}.lab-status{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.shell{display:block}.sidebar{position:static;height:auto;padding:20px}.brand{font-size:22px}.edition{margin:7px 0 12px}.catalog-back{margin-bottom:5px}.sidebar nav{display:grid;grid-template-columns:1fr 1fr}.side-tools{margin-top:13px;padding-top:13px}.side-tools progress{max-width:350px;display:block}.side-tools p{margin:5px 0}.side-tools button{margin-top:8px}main{padding:22px 18px 40px;max-width:none}.chapter{padding:25px 22px}.learning{grid-template-columns:1fr}.diagram-index>div{grid-template-columns:1fr}h2{font-size:24px}}
+@media(max-width:480px){body{font-size:14px}main{padding:16px 12px 30px}.chapter{padding:22px 17px;border-radius:8px}.sidebar nav{grid-template-columns:1fr}h1{font-size:28px}h2{font-size:22px}h3{font-size:17px}.lead{font-size:15px}.chapter-bottom{gap:12px}.lab-status{grid-template-columns:1fr 1fr}.diagram-heading{font-size:13px}.diagram-tools span{font-size:10px}.learning{padding:14px}.state-lab{padding:13px}pre{padding:14px;font-size:11px}}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+@media print{@page{margin:14mm}html{scroll-behavior:auto}body{background:#fff;font-size:10pt}.shell{display:block}.sidebar,.skip,.chapter-bottom,.diagram-tools,.lab-toolbar,.search-input,.search-label,#glossary-count{display:none!important}main{padding:0;max-width:none}.chapter{border:0;border-radius:0;padding:0;margin:0 0 20pt;break-before:page}.chapter:first-child{break-before:auto}.learning,.lab-status{display:block}.learning>div{margin:6pt 0}.diagram,.exercise,.note{break-inside:avoid}.diagram-canvas,.table-scroll{overflow:visible}.diagram svg{width:100%;min-width:0}.table-scroll table{min-width:0;font-size:8pt}th,td{padding:5pt;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow:visible;font-size:8pt;background:#f4f6f7;color:#172b37}pre code{white-space:pre-wrap;overflow-wrap:anywhere}.code-example{background:white;color:#172b37}.code-label{background:#e8edef;color:#172b37}.source-links a{overflow-wrap:anywhere}.page-footer{font-size:8pt}}
+</style>
+<style id="automatic-dark-mode">
+/* Follow the browser/OS appearance on screen; keep the existing light print palette. */
+:root{color-scheme:light}
+@media screen and (prefers-color-scheme: dark){
+  :root{color-scheme:dark;--ink:#e1e9ef;--muted:#b1c3cf;--nav:#102432;--line:#48606f;--blue:#8bd0f0;--teal:#8bdfc3;--paper:#18242f;--bg:#101820;--gold:#e4c489;--link:#8bd0f0}
+  body{background:var(--bg);color:var(--ink)}
+  a{color:var(--link)}a:hover{color:#b8e6fa}
+  h2{color:#d1e6f4}h3{color:#a4dcd1}
+  button,select,input[type="search"],.search-input,.glossary-search input{background:#233b4a;color:var(--ink);border-color:#7693a4}
+  button:hover{background:#2c4c5c}input::placeholder{color:#b1c3cf;opacity:1}
+  .skip{background:#233b4a;color:#e1e9ef}
+  .chapter{background:var(--paper);border-color:var(--line)}
+  .hero{background:linear-gradient(115deg,#19352f,#1c2a36)}
+  .hero .subtitle,.lead,.learning,.learning span{color:var(--muted)}
+  .chips span,.hero .chips span{background:#203c35;border-color:#628d7d;color:#b8edda}
+  .learning,.quiz,.chapter-bottom,.chapter-supplement,.source-links{border-color:var(--line)}
+  .source-links{color:var(--muted)}
+  th,td{border-color:#3f5564}thead th{background:#223745;color:#d4e6f0}
+  tbody tr:nth-child(even){background:#1d2d39}tbody th{background:#1c2c38}
+  .note,.exercise{background:#1c342d;border-color:#7ebba5;color:var(--ink)}
+  .example{background:#3a3021;border-color:#a98c58;color:var(--ink)}.example>b{color:#f0d6a5}
+  .advanced,.answer{background:#20323f;border-color:#577383}
+  .advanced summary,.answer summary{color:#b3d9e9}
+  .pill{background:#203e54;color:#b9e0fa}.pill.car{background:#372e4c;color:#ddcaf5}
+  .pill.design{background:#203e31;color:#bce8c8}.pill.internal{background:#423421;color:#f0d3a6}
+  .complete,.supplement-label,.diagram-number{color:var(--teal)}
+  .node{background:#223541;border-color:#81b9bd;color:var(--ink)}.arrow{color:#aad3e1}
+  .trace-step{background:#22333f;border-color:#6d8797;color:#c8d9e3}
+  .trace-step.active{background:#204237;border-color:#8cdbb9;color:#c3f4df}
+  .trace-description{background:#1c342d;color:var(--ink);border-color:var(--teal)}
+  code{background:#263d4b;color:#e1edf4}.code-example{background:#101e29;border-color:#567180;color:#e3edf4}
+  .code-label{background:#223b4b;color:#e3edf4}.code-example pre{color:#e3edf4}
+  .code-example code{background:transparent;color:inherit}
+  figure,.android-diagram,.diagram{background:#192b36;border-color:#5a7888}
+  .diagram-heading{background:#203c35;color:var(--ink)}.diagram-heading span{color:#b8edda}
+  .diagram-tools,.diagram-tools span,.diagram-limit,figcaption,footer{color:var(--muted)}
+  .diagram-tools{border-color:#48606f}.diagram-index{background:#1d3230;border-color:#557c70}
+  .diagram-canvas{background:#14232f;border-color:#48606f}
+  .diagram-canvas svg text,.diagram-canvas svg tspan{fill:#e1e9ef}
+  .diagram-canvas svg rect:not([fill="none"]){fill:#233642;stroke:#7693a4}
+  .diagram-canvas svg path[stroke]:not([stroke="none"]),.diagram-canvas svg polyline[stroke]:not([stroke="none"]){stroke:#a5cfdf}
+  .diagram-canvas svg path[fill]:not([fill="none"]),.diagram-canvas svg polyline[fill]:not([fill="none"]){fill:#a5cfdf}
+  .diagram-canvas svg rect[fill="#e5f5ec"],.diagram-canvas svg rect[fill="#edf6f1"],.diagram-canvas svg rect[fill="#edf8f2"],.diagram-canvas svg rect[fill="#e4f2e9"],.diagram-canvas svg rect[fill="#deefe3"],.diagram-canvas svg rect[fill="#e4f1ed"],.diagram-canvas svg rect[fill="#e5f2ec"]{fill:#193a30}
+  .diagram-canvas svg rect[fill="#e8f2fc"],.diagram-canvas svg rect[fill="#eef4fa"],.diagram-canvas svg rect[fill="#f0f6fb"],.diagram-canvas svg rect[fill="#e5f0fa"],.diagram-canvas svg rect[fill="#dcecf6"],.diagram-canvas svg rect[fill="#eef4f7"],.diagram-canvas svg rect[fill="#e8f0fa"]{fill:#20394f}
+  .diagram-canvas svg rect[fill="#fff3db"],.diagram-canvas svg rect[fill="#fdf7ed"],.diagram-canvas svg rect[fill="#f5eedf"],.diagram-canvas svg rect[fill="#f8f1e6"],.diagram-canvas svg rect[fill="#f8edda"],.diagram-canvas svg rect[fill="#fbf0df"]{fill:#423522}
+  .diagram-canvas svg rect[fill="#f0e8fa"],.diagram-canvas svg rect[fill="#ece9f5"],.diagram-canvas svg rect[fill="#ece5f5"],.diagram-canvas svg rect[fill="#f5f1fa"],.diagram-canvas svg rect[fill="#edeaf6"]{fill:#372d48}
+  .state-lab{background:#19352d;border-color:#7ebba5}.lab-status>div{background:#1c2f3c;border-color:#658493}.lab-status dt{color:var(--muted)}
+}
+</style><style>
+.diagram svg rect{fill:var(--paper);stroke:var(--teal);stroke-width:1.5}.diagram .svg-node{fill:var(--ink);font:14px sans-serif}.diagram .svg-label{fill:var(--ink);font:14px sans-serif;paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round}.diagram .edge{fill:none;stroke:var(--teal);stroke-width:1.7}.diagram .arrowhead{fill:var(--teal);stroke:none}.chapter-group{font-size:11px;color:#a4e6cd;margin:16px 8px 5px}.chapter p code{padding:2px 5px;border-radius:3px}.code-example pre code{background:transparent;color:inherit}.source-links a{overflow-wrap:anywhere}.storage-note{font-size:12px;color:var(--muted)}
+@media screen and (prefers-color-scheme:dark){.learning{background:#20323f}.lead{color:var(--muted)}.diagram svg rect{fill:var(--paper)!important;stroke:var(--teal)!important}.diagram svg .svg-node,.diagram svg .svg-label{fill:var(--ink)!important}.diagram svg .edge{fill:none!important;stroke:var(--teal)!important}.diagram svg .arrowhead{fill:var(--teal)!important;stroke:none!important}}
+@media print{.diagram svg rect{fill:#fff!important;stroke:#264e51!important}.diagram .svg-node,.diagram .svg-label{fill:#172b37!important}.diagram .svg-label{stroke:#fff!important}.diagram .edge{stroke:#264e51!important}.diagram .arrowhead{fill:#264e51!important}.answer{break-inside:avoid}.code-example{overflow:visible}.diagram-canvas:focus{outline:none}}
+</style></head><body><a class="skip" href="#main">本文へ移動</a><div class="shell"><aside class="sidebar"><a class="catalog-back" href="../">← 教材ライブラリへ戻る</a><div class="brand">GoF デザインパターン<br>体系学習ガイド</div><div class="edition">23 PATTERNS / JAVA 17</div><details class="nav-details" id="toc" open><summary class="sidebar-summary">目次を開く／閉じる</summary><nav aria-label="教材の目次"><p class="chapter-group">導入</p><a href="#start"><span class="nav-no">01</span>学び方と設計の基礎</a><p class="chapter-group">生成</p><a href="#abstract-factory"><span class="nav-no">02</span>Abstract Factory</a><a href="#builder"><span class="nav-no">03</span>Builder</a><a href="#factory-method"><span class="nav-no">04</span>Factory Method</a><a href="#prototype"><span class="nav-no">05</span>Prototype</a><a href="#singleton"><span class="nav-no">06</span>Singleton</a><p class="chapter-group">構造</p><a href="#adapter"><span class="nav-no">07</span>Adapter</a><a href="#bridge"><span class="nav-no">08</span>Bridge</a><a href="#composite"><span class="nav-no">09</span>Composite</a><a href="#decorator"><span class="nav-no">10</span>Decorator</a><a href="#facade"><span class="nav-no">11</span>Facade</a><a href="#flyweight"><span class="nav-no">12</span>Flyweight</a><a href="#proxy"><span class="nav-no">13</span>Proxy</a><p class="chapter-group">振る舞い</p><a href="#chain-of-responsibility"><span class="nav-no">14</span>Chain of Responsibility</a><a href="#command"><span class="nav-no">15</span>Command</a><a href="#interpreter"><span class="nav-no">16</span>Interpreter</a><a href="#iterator"><span class="nav-no">17</span>Iterator</a><a href="#mediator"><span class="nav-no">18</span>Mediator</a><a href="#memento"><span class="nav-no">19</span>Memento</a><a href="#observer"><span class="nav-no">20</span>Observer</a><a href="#state"><span class="nav-no">21</span>State</a><a href="#strategy"><span class="nav-no">22</span>Strategy</a><a href="#template-method"><span class="nav-no">23</span>Template Method</a><a href="#visitor"><span class="nav-no">24</span>Visitor</a><p class="chapter-group">応用</p><a href="#comparison"><span class="nav-no">25</span>類似パターンの比較と選び方</a><a href="#exercise"><span class="nav-no">26</span>総合演習：注文通知を育てる</a><p class="chapter-group">資料</p><a href="#glossary"><span class="nav-no">27</span>用語集</a><a href="#references"><span class="nav-no">28</span>参考資料と適用範囲</a></nav></details><div class="side-tools"><label for="reading-progress">学習の進捗</label><progress id="reading-progress" value="0" max="28"></progress><p id="reading-count" role="status" aria-live="polite">0 / 28 章を読了</p><p id="save-status">読了記録の保存状態を確認中です。</p><button type="button" id="print-guide">教材を印刷</button></div></aside><main id="main"><section class="chapter" id="start" aria-labelledby="title-start"><div class="section-number">CHAPTER 01 / 導入</div><h1 id="title-start">学び方と設計の基礎</h1><p class="lead">覚えるのは名前より、変更を受け止める場所。23の設計パターンを、問題・依存関係・コード・判断の順で学びます。</p>
+<div class="chips"><span>GoF 23パターン</span><span>Java 17</span><span>図23点</span><span>確認問題46問</span></div>
+<h3>この教材の読み方</h3><p>クラス・インターフェース・継承の基本が前提です。まず適用前のコードを読み、変更要求で困る場所を考えてください。次に図と適用後を対応させ、利点より先に「追加した型と依存」を数えます。最後に解答を開かず確認問題へ進みます。全章を順番に読むほか、比較表から悩んでいる設計へ移動できます。</p>
+<p>生成は「誰が何を作るか」、構造は「何と何をつなぐか」、振る舞いは「誰が判断して処理するか」を扱います。同じクラス図に見えても、解決したい問題が違えば名前も採用判断も変わります。</p>
+<h3>凝集度・結合度・委譲</h3><p><b>凝集度</b>は、一つの部品の責務がどれだけ一貫しているか。注文の検証と画面の配色を同じクラスへ入れると変更理由が増えます。<b>結合度</b>は、他の部品の詳細へどれだけ依存するか。外部APIの型や呼出順が多くの場所へ漏れると変更が波及します。インターフェースに依存しても、意味や呼出順への依存は残ります。</p>
+<p><b>委譲</b>は自分が受けた仕事を別オブジェクトへ依頼すること。継承は共通の型と実装を親から受け継ぎ、合成は他オブジェクトをフィールドとして持ちます。継承は親の契約に従う自然な置換関係があるときに使い、実行時に交換したい処理は合成を検討します。「常に合成が正解」という規則ではありません。</p>
+<h3>変更点を分離する</h3><p>会員割引の追加を想像してください。注文全体を継承するより、料金計算だけをPricingへ切り出すと注文受付は変えずに済みます。一方、割引が今後増えず一か所の条件分岐で済むなら、型を増やす利点は小さくなります。変更の頻度・範囲・テストのしやすさを根拠に判断します。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="SOLIDと設計上の注意"><table><thead><tr><th scope="col">原則</th><th scope="col">パターンとの接点</th><th scope="col">誤用を避ける視点</th></tr></thead><tbody>
+<tr><th scope="row">S：単一責任</th><td>FacadeやMediatorで調整の責務を集める</td><td>全業務を巨大な窓口へ詰め込まない</td></tr>
+<tr><th scope="row">O：開放閉鎖</th><td>StrategyやDecoratorで実装を追加する</td><td>すべての変更から閉じるのは不可能。守る変更軸を選ぶ</td></tr>
+<tr><th scope="row">L：リスコフ置換</th><td>共通インターフェースで具体型を扱う</td><td>型が同じでも事前条件・例外・副作用が違えば置換できない</td></tr>
+<tr><th scope="row">I：インターフェース分離</th><td>利用者に必要な操作だけを公開する</td><td>Compositeの葉へ無意味なaddを押しつけない</td></tr>
+<tr><th scope="row">D：依存性逆転</th><td>通知側が具体的SMSではなくSenderを使う</td><td>インターフェースを増やすだけで意味的な依存が消えるわけではない</td></tr>
+</tbody></table></div>
+<h3>コードを試す</h3><p>全コードは<b>Java 17の言語・標準API</b>を基準にしています。適用前は問題を示す小さな正常系、適用後は独立した実行例です。各コードをそれぞれ別ディレクトリの<code>Main.java</code>へ保存し、JDK 17以降で下記を実行します。同じ名前の型が章ごとに出るため、複数章を一つのファイルへ連結しないでください。</p>
+<pre tabindex="0" role="region" aria-label="Javaの実行コマンド"><code>javac --release 17 Main.java
+java Main</code></pre>
+<aside class="note">コードは設計の焦点を示す最小例です。各章に並行性・例外・永続化などの境界を記載しています。Androidの補足ではJava標準ライブラリの可用性やAPIレベル・desugaringも確認し、デスクトップ用の例を無条件に貼り付けないでください。読了数は理解度の保証ではありません。</aside>
+<noscript><p class="note">本文・図・解答はJavaScriptなしでも読めます。読了記録・図の表示切替・印刷時の解答展開にはJavaScriptが必要です。</p></noscript><div class="chapter-bottom"><a href="../">← 教材一覧</a><label class="complete"><input type="checkbox" data-complete="start">この章を読了</label><a href="#abstract-factory">次の章 →</a></div></section><section class="chapter" id="abstract-factory" aria-labelledby="title-abstract-factory"><div class="section-number">CHAPTER 02 / 生成</div><h2 id="title-abstract-factory">Abstract Factory｜関連する製品群をまとめて生成する</h2><p class="lead">関連する製品群をまとめて生成する。</p><div class="learning"><div><span>この章の到達点</span>Abstract Factoryの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>生成／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>画面のボタンとチェックボックスを個別に生成すると、異なるテーマの部品を混ぜられてしまう。</p><p><b>追加する要求：</b>ライト用の部品に加えて、ダーク用の部品一式を追加する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="abstract-factory">public class Main {
+    public static void main(String[] args) {
+        class LightButton { String draw() { return &quot;light button&quot;; } }
+        class DarkCheck { String draw() { return &quot;dark check&quot;; } }
+        LightButton button = new LightButton();
+        DarkCheck check = new DarkCheck(); // 個別生成ではテーマが混ざる
+        System.out.println(button.draw() + &quot; / &quot; + check.draw());
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-abstract-factory"><div class="diagram-heading"><span>図01</span><strong>Abstract Factoryの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Abstract Factoryの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-abstract-factory-title svg-abstract-factory-desc"><title id="svg-abstract-factory-title">Abstract Factoryの役割</title><desc id="svg-abstract-factory-desc">screenはThemeの生成操作を使う。DarkはThemeを実装する。Darkは対応するButtonとCheckを生成する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-abstract-factory" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">screen</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Theme</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Dark</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="54.0" text-anchor="middle" class="svg-node">Button</text><text x="772.5" y="76.0" text-anchor="middle" class="svg-node">Check</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-abstract-factory)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">生成を依頼</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-abstract-factory)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-abstract-factory)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">生成</text></svg></div><figcaption>screenはThemeの生成操作を使う。DarkはThemeを実装する。Darkは対応するButtonとCheckを生成する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="abstract-factory">public class Main {
+    interface Button { String draw(); }
+    interface Check { String draw(); }
+    interface Theme {
+        Button button();
+        Check check();
+    }
+    static class Light implements Theme {
+        public Button button() { return () -&gt; &quot;light button&quot;; }
+        public Check check() { return () -&gt; &quot;light check&quot;; }
+    }
+    static class Dark implements Theme {
+        public Button button() { return () -&gt; &quot;dark button&quot;; }
+        public Check check() { return () -&gt; &quot;dark check&quot;; }
+    }
+    static void screen(Theme theme) {
+        System.out.println(theme.button().draw() + &quot; / &quot; + theme.check().draw());
+    }
+    public static void main(String[] args) { screen(new Dark()); }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>dark button / dark check</code></pre></div><h3>変更に強くなった場所</h3><p>画面処理を変えずにThemeの実装を追加できる。テーマごとの整合性を一つの生成元へ集められる。ただし同じThemeから取得する規約も必要。</p><h3>コスト・前提・使わない判断</h3><p>製品の種類にSliderを増やすとThemeと全テーマ実装の変更が必要。関連する製品群がなければコンストラクタで十分。</p><h3>似たパターンとの違い</h3><p>Factory Methodはサブクラスが生成を差し替える仕組み。Abstract Factoryは製品群を生成する窓口で、内部にFactory Methodを使うこともある。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. テーマ追加時にscreenを書き換える必要はある？</summary><p>ない。Themeに依存するため、組立箇所でDarkを選べば画面処理は共通にできる。</p></details><details class="answer"><summary>Q2. Slider追加も変更箇所が一つに収まる？</summary><p>収まらない。製品種別を追加すると窓口と全製品群が影響を受ける。</p></details></div><div class="chapter-bottom"><a href="#start">← 前の章</a><label class="complete"><input type="checkbox" data-complete="abstract-factory">この章を読了</label><a href="#builder">次の章 →</a></div></section><section class="chapter" id="builder" aria-labelledby="title-builder"><div class="section-number">CHAPTER 03 / 生成</div><h2 id="title-builder">Builder｜複雑な生成手順と完成品を分離する</h2><p class="lead">複雑な生成手順と完成品を分離する。</p><div class="learning"><div><span>この章の到達点</span>Builderの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>生成／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>レポートのヘッダー・本文・末尾を呼出側が文字列結合しており、別形式の生成手順にも同じ順序が重複する。</p><p><b>追加する要求：</b>同じ集計手順からテキスト形式とHTML形式を出力する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="builder">public class Main {
+    public static void main(String[] args) {
+        String report = &quot;TITLE: Sales\n&quot; + &quot;TOTAL: 120\n&quot; + &quot;END&quot;;
+        System.out.println(report);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-builder"><div class="diagram-heading"><span>図02</span><strong>Builderの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Builderの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-builder-title svg-builder-desc"><title id="svg-builder-title">Builderの役割</title><desc id="svg-builder-desc">DirectorはBuilderへ順に処理を依頼する。具体Builderが各生成操作を実装する。具体Builderが生成途中の状態と結果を保持する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-builder" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">ReportDirector</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">ReportBuilder</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="54.0" text-anchor="middle" class="svg-node">TextBuilder</text><text x="552.5" y="76.0" text-anchor="middle" class="svg-node">HtmlBuilder</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">完成したString</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-builder)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">生成手順を指示</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-builder)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-builder)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">構築</text></svg></div><figcaption>DirectorはBuilderへ順に処理を依頼する。具体Builderが各生成操作を実装する。具体Builderが生成途中の状態と結果を保持する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="builder">public class Main {
+    interface ReportBuilder {
+        void title(String text);
+        void total(int value);
+        void end();
+        String result();
+    }
+    static class TextBuilder implements ReportBuilder {
+        private final StringBuilder out = new StringBuilder();
+        public void title(String s) { out.append(&quot;TITLE: &quot;).append(s).append(&quot;\n&quot;); }
+        public void total(int n) { out.append(&quot;TOTAL: &quot;).append(n).append(&quot;\n&quot;); }
+        public void end() { out.append(&quot;END&quot;); }
+        public String result() { return out.toString(); }
+    }
+    static class HtmlBuilder implements ReportBuilder {
+        private final StringBuilder out = new StringBuilder();
+        public void title(String s) { out.append(&quot;&lt;h1&gt;&quot;).append(s).append(&quot;&lt;/h1&gt;&quot;); }
+        public void total(int n) { out.append(&quot;&lt;p&gt;&quot;).append(n).append(&quot;&lt;/p&gt;&quot;); }
+        public void end() { out.append(&quot;&lt;!-- end --&gt;&quot;); }
+        public String result() { return out.toString(); }
+    }
+    static class ReportDirector {
+        void construct(ReportBuilder b) {
+            b.title(&quot;Sales&quot;); b.total(120); b.end();
+        }
+    }
+    public static void main(String[] args) {
+        ReportBuilder b = new TextBuilder();
+        new ReportDirector().construct(b);
+        System.out.println(b.result());
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>TITLE: Sales
+TOTAL: 120
+END</code></pre></div><h3>変更に強くなった場所</h3><p>生成順序はDirector、表現は各Builderに分離される。HTML追加時に集計手順を複製せずに済む。</p><h3>コスト・前提・使わない判断</h3><p>途中状態の扱いや再利用の可否を決める必要がある。この例は1インスタンス1回の生成を想定し、HTMLの動的入力にはエスケープが必要。数項目の不変オブジェクトならコンストラクタやrecordが簡潔。</p><h3>似たパターンとの違い</h3><p>Abstract Factoryは関連製品の生成窓口。Builderは複数段階の組立を制御する。Javaでよく見る流暢な設定APIだけがGoF Builderではない。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. HTML対応でDirectorを複製する？</summary><p>不要。同じReportBuilderの操作列を別の具体Builderへ渡せる。</p></details><details class="answer"><summary>Q2. 同じBuilderでconstructを2回呼ぶと？</summary><p>この実装は追記する。再利用したいならリセットや生成後の状態管理を別途定義する。</p></details></div><div class="chapter-bottom"><a href="#abstract-factory">← 前の章</a><label class="complete"><input type="checkbox" data-complete="builder">この章を読了</label><a href="#factory-method">次の章 →</a></div></section><section class="chapter" id="factory-method" aria-labelledby="title-factory-method"><div class="section-number">CHAPTER 04 / 生成</div><h2 id="title-factory-method">Factory Method｜生成をサブクラスの判断に委ねる</h2><p class="lead">生成をサブクラスの判断に委ねる。</p><div class="learning"><div><span>この章の到達点</span>Factory Methodの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>生成／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>インポート処理の共通手順がCSVパーサーのコンストラクタへ直接依存している。</p><p><b>追加する要求：</b>前後処理は共通に保ち、JSONの読取も追加する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="factory-method">public class Main {
+    public static void main(String[] args) {
+        class CsvParser { String parse() { return &quot;CSV parsed&quot;; } }
+        class Importer {
+            void run() {
+                CsvParser parser = new CsvParser(); // 生成先が固定
+                System.out.println(&quot;open -&gt; &quot; + parser.parse() + &quot; -&gt; close&quot;);
+            }
+        }
+        new Importer().run();
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-factory-method"><div class="diagram-heading"><span>図03</span><strong>Factory Methodの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Factory Methodの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-factory-method-title svg-factory-method-desc"><title id="svg-factory-method-title">Factory Methodの役割</title><desc id="svg-factory-method-desc">runは生成フックcreateParserを呼ぶ。JsonImporterは生成フックをオーバーライドする。具体生成フックがParser実装を返す。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-factory-method" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">Importer.run</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">createParser</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">JsonImporter</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="54.0" text-anchor="middle" class="svg-node">Parser</text><text x="772.5" y="76.0" text-anchor="middle" class="svg-node">JsonParser</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-factory-method)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">呼出</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-factory-method)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">上書き</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-factory-method)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">生成</text></svg></div><figcaption>runは生成フックcreateParserを呼ぶ。JsonImporterは生成フックをオーバーライドする。具体生成フックがParser実装を返す。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="factory-method">public class Main {
+    interface Parser { String parse(); }
+    static class CsvParser implements Parser {
+        public String parse() { return &quot;CSV parsed&quot;; }
+    }
+    static class JsonParser implements Parser {
+        public String parse() { return &quot;JSON parsed&quot;; }
+    }
+    static abstract class Importer {
+        protected abstract Parser createParser(); // Factory Method
+        final void run() {
+            System.out.println(&quot;open -&gt; &quot; + createParser().parse() + &quot; -&gt; close&quot;);
+        }
+    }
+    static class CsvImporter extends Importer {
+        protected Parser createParser() { return new CsvParser(); }
+    }
+    static class JsonImporter extends Importer {
+        protected Parser createParser() { return new JsonParser(); }
+    }
+    public static void main(String[] args) { new JsonImporter().run(); }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>open -&gt; JSON parsed -&gt; close</code></pre></div><h3>変更に強くなった場所</h3><p>共通処理を継承したまま生成するParserを差し替えられる。依存先の具体型をサブクラスへ移せる。</p><h3>コスト・前提・使わない判断</h3><p>製品ごとにImporterのサブクラスが増える。生成差替えだけならParserをコンストラクタ引数で受ける方が単純なこともある。</p><h3>似たパターンとの違い</h3><p>単なるstatic of()やswitchを持つ生成関数とは区別する。GoF Factory Methodの中心は継承とオーバーライドによる生成の差替え。Template Methodと組み合わせやすい。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. createParserをstaticにすると同じ仕組みになる？</summary><p>ならない。staticメソッドは動的ディスパッチでオーバーライドされず、この継承上の差替えを失う。</p></details><details class="answer"><summary>Q2. 共通のrunはJSONの具体型を知る？</summary><p>知らない。Parser契約を使い、具体的な生成はJsonImporterが担当する。</p></details></div><div class="chapter-bottom"><a href="#builder">← 前の章</a><label class="complete"><input type="checkbox" data-complete="factory-method">この章を読了</label><a href="#prototype">次の章 →</a></div></section><section class="chapter" id="prototype" aria-labelledby="title-prototype"><div class="section-number">CHAPTER 05 / 生成</div><h2 id="title-prototype">Prototype｜既存のひな型から独立した複製を作る</h2><p class="lead">既存のひな型から独立した複製を作る。</p><div class="learning"><div><span>この章の到達点</span>Prototypeの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>生成／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>帳票テンプレートと同じ設定を新規作成するたびに、呼出側が内部構造を知ってコピーしている。</p><p><b>追加する要求：</b>ひな型のタグ一覧を複製し、一方だけにタグを追加する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="prototype">public class Main {
+    public static void main(String[] args) {
+        var tags = new java.util.ArrayList&lt;&gt;(java.util.List.of(&quot;base&quot;));
+        var copy = tags; // コピーのつもりで参照を共有
+        copy.add(&quot;urgent&quot;);
+        System.out.println(tags);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-prototype"><div class="diagram-heading"><span>図04</span><strong>Prototypeの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Prototypeの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-prototype-title svg-prototype-desc"><title id="svg-prototype-title">Prototypeの役割</title><desc id="svg-prototype-desc">利用側はcopyを呼ぶ。Templateが複製契約を実装する。Templateが新しいリストを持つ複製を生成する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-prototype" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Prototype.copy</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Template</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">複製Template</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-prototype)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">呼出</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-prototype)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-prototype)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">複製</text></svg></div><figcaption>利用側はcopyを呼ぶ。Templateが複製契約を実装する。Templateが新しいリストを持つ複製を生成する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="prototype">public class Main {
+    interface Prototype { Prototype copy(); }
+    static class Template implements Prototype {
+        private final java.util.List&lt;String&gt; tags;
+        Template(java.util.List&lt;String&gt; tags) {
+            this.tags = new java.util.ArrayList&lt;&gt;(tags);
+        }
+        public Template copy() { return new Template(tags); }
+        void add(String tag) { tags.add(tag); }
+        String describe() { return tags.toString(); }
+    }
+    public static void main(String[] args) {
+        Template base = new Template(java.util.List.of(&quot;base&quot;));
+        Template copy = base.copy();
+        copy.add(&quot;urgent&quot;);
+        System.out.println(base.describe());
+        System.out.println(copy.describe());
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>[base]
+[base, urgent]</code></pre></div><h3>変更に強くなった場所</h3><p>複製の知識をTemplateに閉じ込められ、呼出側は初期化の詳細を知らずに既存設定を基にできる。</p><h3>コスト・前提・使わない判断</h3><p>深いコピーの境界と循環参照を設計する必要がある。この例ではStringは不変なのでリストを複製すればよい。共有資源や接続を無条件にコピーしない。生成が簡単ならnewで十分。</p><h3>似たパターンとの違い</h3><p>Builderは段階的に組み立て、Prototypeは完成済みのひな型を複製する。Object.cloneを使うことは必須でない。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. リストの代入だけで独立する？</summary><p>しない。同じ可変リストを共有するため、片方の変更がもう片方にも見える。</p></details><details class="answer"><summary>Q2. 要素が可変オブジェクトならこのcopyで十分？</summary><p>独立させたい要素も複製する必要がある。浅いコピーと深いコピーの境界を契約に明記する。</p></details></div><div class="chapter-bottom"><a href="#factory-method">← 前の章</a><label class="complete"><input type="checkbox" data-complete="prototype">この章を読了</label><a href="#singleton">次の章 →</a></div></section><section class="chapter" id="singleton" aria-labelledby="title-singleton"><div class="section-number">CHAPTER 06 / 生成</div><h2 id="title-singleton">Singleton｜生成数を制限し共通の取得口を提供する</h2><p class="lead">生成数を制限し共通の取得口を提供する。</p><div class="learning"><div><span>この章の到達点</span>Singletonの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>生成／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>変更されない既定設定をどこでもnewしており、同一インスタンスという要件を守れない。</p><p><b>追加する要求：</b>プロセス内の同じクラスローダーでは既定設定を一つに限定する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="singleton">public class Main {
+    public static void main(String[] args) {
+        Object first = new Object();
+        Object second = new Object();
+        System.out.println(first == second);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-singleton"><div class="diagram-heading"><span>図05</span><strong>Singletonの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Singletonの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-singleton-title svg-singleton-desc"><title id="svg-singleton-title">Singletonの役割</title><desc id="svg-singleton-desc">利用側が共通の取得口にアクセスする。JVMのenum初期化がインスタンス生成を制御する。唯一のインスタンスがregionを提供する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-singleton" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="54.0" text-anchor="middle" class="svg-node">利用側A</text><text x="112.5" y="76.0" text-anchor="middle" class="svg-node">B</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Defaults.INSTANCE</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">enum初期化</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">不変の設定値</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-singleton)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">参照</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-singleton)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">生成制御</text><path d="M332.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-singleton)"/><text x="552.5" y="275" text-anchor="middle" class="svg-label">提供</text></svg></div><figcaption>利用側が共通の取得口にアクセスする。JVMのenum初期化がインスタンス生成を制御する。唯一のインスタンスがregionを提供する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="singleton">public class Main {
+    enum Defaults {
+        INSTANCE;
+        String region() { return &quot;JP&quot;; }
+    }
+    public static void main(String[] args) {
+        Defaults a = Defaults.INSTANCE;
+        Defaults b = Defaults.INSTANCE;
+        System.out.println(a == b);
+        System.out.println(a.region());
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>true
+JP</code></pre></div><h3>変更に強くなった場所</h3><p>enumの初期化により安全に単一インスタンスを公開できる。この例は可変データを持たないので共有更新の競合もない。</p><h3>コスト・前提・使わない判断</h3><p>単一性はクラスローダー単位であり別プロセスまでは及ばない。可変フィールドの更新が自動的にスレッド安全になるわけではない。グローバルな依存はテスト差替えや並列実行を難しくするため、通常は組立側で一つ作り依存注入する案も検討する。</p><h3>似たパターンとの違い</h3><p>単にアプリ起動時に一つ作って渡す設計は、型自身が生成制限するSingletonとは異なる。Flyweightの共有対象は複数種類の値でもよい。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. enumなら内部のArrayListへの同時追加も安全？</summary><p>安全ではない。初期化の安全性と可変状態の並行操作は別で、同期や不変化などが必要。</p></details><details class="answer"><summary>Q2. テストごとに別設定を使いたい場合は？</summary><p>インターフェース経由で設定を注入する方が差替えやすい。Singletonが本当に必要か再検討する。</p></details></div><div class="chapter-bottom"><a href="#prototype">← 前の章</a><label class="complete"><input type="checkbox" data-complete="singleton">この章を読了</label><a href="#adapter">次の章 →</a></div></section><section class="chapter" id="adapter" aria-labelledby="title-adapter"><div class="section-number">CHAPTER 07 / 構造</div><h2 id="title-adapter">Adapter｜既存APIを利用側の契約へ変換する</h2><p class="lead">既存APIを利用側の契約へ変換する。</p><div class="learning"><div><span>この章の到達点</span>Adapterの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>通知側はsend(String)を使いたいが、既存SMSライブラリの操作はpost(String)になっている。</p><p><b>追加する要求：</b>SMS実装を変えずに、新しい通知サービスから利用する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="adapter">public class Main {
+    public static void main(String[] args) {
+        class LegacySms { void post(String s) { System.out.println(&quot;SMS: &quot; + s); } }
+        LegacySms sms = new LegacySms();
+        sms.post(&quot;ready&quot;); // 呼出側が外部APIを直接知る
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-adapter"><div class="diagram-heading"><span>図06</span><strong>Adapterの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Adapterの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-adapter-title svg-adapter-desc"><title id="svg-adapter-title">Adapterの役割</title><desc id="svg-adapter-desc">通知サービスはSenderを使う。SmsAdapterはSenderを実装する。Adapterはpostへ変換して委譲する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-adapter" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">通知サービス</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Sender</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">SmsAdapter</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">LegacySms</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-adapter)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">利用</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-adapter)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-adapter)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">委譲・変換</text></svg></div><figcaption>通知サービスはSenderを使う。SmsAdapterはSenderを実装する。Adapterはpostへ変換して委譲する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="adapter">public class Main {
+    interface Sender { void send(String text); }
+    static class LegacySms {
+        void post(String payload) { System.out.println(&quot;SMS: &quot; + payload); }
+    }
+    static class SmsAdapter implements Sender {
+        private final LegacySms legacy;
+        SmsAdapter(LegacySms legacy) { this.legacy = legacy; }
+        public void send(String text) { legacy.post(text); }
+    }
+    public static void main(String[] args) {
+        Sender sender = new SmsAdapter(new LegacySms());
+        sender.send(&quot;ready&quot;);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>SMS: ready</code></pre></div><h3>変更に強くなった場所</h3><p>利用側はSenderだけに依存する。外部APIの差異や引数変換をAdapterへ局所化できる。</p><h3>コスト・前提・使わない判断</h3><p>名前を変えるだけでは意味の互換性は保証しない。単位・例外・同期非同期の差も調整する必要がある。既存APIがそのまま契約を満たすなら不要。</p><h3>似たパターンとの違い</h3><p>Bridgeは最初から二つの変化軸を分離する設計。Adapterは既存の不一致を橋渡しする。Facadeは複雑な操作群の窓口を作る。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. postが非同期でも単に呼べばsend完了を保証できる？</summary><p>できない。sendの契約が受付か送信完了かを定め、必要なら非同期の結果も変換する。</p></details><details class="answer"><summary>Q2. LegacySms自体を編集する必要は？</summary><p>不要。合成によるAdapterが既存インスタンスを包んでいる。</p></details></div><div class="chapter-bottom"><a href="#singleton">← 前の章</a><label class="complete"><input type="checkbox" data-complete="adapter">この章を読了</label><a href="#bridge">次の章 →</a></div></section><section class="chapter" id="bridge" aria-labelledby="title-bridge"><div class="section-number">CHAPTER 08 / 構造</div><h2 id="title-bridge">Bridge｜抽象側と実装側の変化軸を分離する</h2><p class="lead">抽象側と実装側の変化軸を分離する。</p><div class="learning"><div><span>この章の到達点</span>Bridgeの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>緊急通知・通常通知と、メール・SMSの組合せごとにサブクラスを作ると種類が掛け算で増える。</p><p><b>追加する要求：</b>通知の優先度と送信手段を独立に追加する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="bridge">public class Main {
+    public static void main(String[] args) {
+        class UrgentSms {
+            void publish(String text) { System.out.println(&quot;SMS: URGENT: &quot; + text); }
+        }
+        class NormalMail {
+            void publish(String text) { System.out.println(&quot;MAIL: &quot; + text); }
+        }
+        new UrgentSms().publish(&quot;fire&quot;);
+        new NormalMail().publish(&quot;ready&quot;);
+        // UrgentMailやNormalSmsも同じ形で増え、組合せが型になる
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-bridge"><div class="diagram-heading"><span>図07</span><strong>Bridgeの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Bridgeの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-bridge-title svg-bridge-desc"><title id="svg-bridge-title">Bridgeの役割</title><desc id="svg-bridge-desc">NormalとUrgentはNoticeを継承する。NoticeはChannel参照を保持して委譲する。MailとSmsはChannelを実装する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-bridge" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="54.0" text-anchor="middle" class="svg-node">Normal</text><text x="112.5" y="76.0" text-anchor="middle" class="svg-node">Urgent</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Notice</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Channel</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="54.0" text-anchor="middle" class="svg-node">Mail</text><text x="772.5" y="76.0" text-anchor="middle" class="svg-node">Sms</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-bridge)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">継承</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-bridge)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">保持・委譲</text><path d="M772.5 111 V285 H552.5 V113" class="edge" marker-end="url(#arrow-bridge)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">実装</text></svg></div><figcaption>NormalとUrgentはNoticeを継承する。NoticeはChannel参照を保持して委譲する。MailとSmsはChannelを実装する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="bridge">public class Main {
+    interface Channel { void send(String text); }
+    static class Mail implements Channel {
+        public void send(String s) { System.out.println(&quot;MAIL: &quot; + s); }
+    }
+    static class Sms implements Channel {
+        public void send(String s) { System.out.println(&quot;SMS: &quot; + s); }
+    }
+    static abstract class Notice {
+        protected final Channel channel;
+        Notice(Channel channel) { this.channel = channel; }
+        abstract void publish(String text);
+    }
+    static class Normal extends Notice {
+        Normal(Channel c) { super(c); }
+        void publish(String s) { channel.send(s); }
+    }
+    static class Urgent extends Notice {
+        Urgent(Channel c) { super(c); }
+        void publish(String s) { channel.send(&quot;URGENT: &quot; + s); }
+    }
+    public static void main(String[] args) {
+        new Urgent(new Sms()).publish(&quot;fire&quot;);
+        new Normal(new Mail()).publish(&quot;ready&quot;);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>SMS: URGENT: fire
+MAIL: ready</code></pre></div><h3>変更に強くなった場所</h3><p>優先度のクラスと媒体のクラスを別々に増やせる。Urgent専用SMSなどの組合せ型が不要になる。</p><h3>コスト・前提・使わない判断</h3><p>二つの階層と組立処理が必要になる。片方の変化がなく、単一実装が続くなら分離のコストが高い。全組合せが有効かは別途制約を定める。</p><h3>似たパターンとの違い</h3><p>Adapterは既存APIの不一致を吸収する。Bridgeは抽象と実装の両方を独立に拡張するための関係を初めから用意する。Strategyは主に一つの方策の交換に着目する。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 新しいPush媒体の追加にUrgentの修正は必要？</summary><p>Channelを実装すれば原則不要。Urgentは媒体の具体型を参照していない。</p></details><details class="answer"><summary>Q2. Channelが一種類でも必ずBridgeにすべき？</summary><p>必要とは限らない。変化が見込めず抽象化の利点が小さいなら単純な依存でよい。</p></details></div><div class="chapter-bottom"><a href="#adapter">← 前の章</a><label class="complete"><input type="checkbox" data-complete="bridge">この章を読了</label><a href="#composite">次の章 →</a></div></section><section class="chapter" id="composite" aria-labelledby="title-composite"><div class="section-number">CHAPTER 09 / 構造</div><h2 id="title-composite">Composite｜葉とまとまりを同じ操作で扱う</h2><p class="lead">葉とまとまりを同じ操作で扱う。</p><div class="learning"><div><span>この章の到達点</span>Compositeの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>ファイルとフォルダーでサイズ計算の呼び方が違い、利用側が階層をたどるたびに型判定している。</p><p><b>追加する要求：</b>フォルダー内に別のフォルダーを置いても、合計サイズを同じ操作で求める。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="composite">public class Main {
+    public static void main(String[] args) {
+        record FileEntry(int size) {}
+        class Folder {
+            final java.util.List&lt;FileEntry&gt; files = new java.util.ArrayList&lt;&gt;();
+            int size() { return files.stream().mapToInt(FileEntry::size).sum(); }
+        }
+        Folder folder = new Folder();
+        folder.files.add(new FileEntry(4));
+        folder.files.add(new FileEntry(6));
+        System.out.println(folder.size());
+        // filesにはFolderを追加できず、階層ごとの別処理が必要
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-composite"><div class="diagram-heading"><span>図08</span><strong>Compositeの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Compositeの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-composite-title svg-composite-desc"><title id="svg-composite-title">Compositeの役割</title><desc id="svg-composite-desc">利用側はEntryのsizeを呼ぶ。FolderはEntryを実装する。Folderは子Entryを保持し再帰的にsizeを呼ぶ。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-composite" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Entry.size</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Folder</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="54.0" text-anchor="middle" class="svg-node">子Entry（File</text><text x="772.5" y="76.0" text-anchor="middle" class="svg-node">Folder）</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-composite)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">利用</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-composite)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-composite)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">保持・再帰呼出</text></svg></div><figcaption>利用側はEntryのsizeを呼ぶ。FolderはEntryを実装する。Folderは子Entryを保持し再帰的にsizeを呼ぶ。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="composite">public class Main {
+    interface Entry { int size(); }
+    record FileEntry(int size) implements Entry {}
+    static class Folder implements Entry {
+        private final java.util.List&lt;Entry&gt; children = new java.util.ArrayList&lt;&gt;();
+        void add(Entry entry) { children.add(entry); }
+        public int size() { return children.stream().mapToInt(Entry::size).sum(); }
+    }
+    public static void main(String[] args) {
+        Folder inner = new Folder();
+        inner.add(new FileEntry(6));
+        Folder root = new Folder();
+        root.add(new FileEntry(4)); root.add(inner);
+        Entry entry = root;
+        System.out.println(entry.size());
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>10</code></pre></div><h3>変更に強くなった場所</h3><p>葉も複合物もEntryとして扱える。階層の深さに依存しない集計処理になる。</p><h3>コスト・前提・使わない判断</h3><p>全要素で同じ操作が自然に成立することが前提。循環を許すと無限再帰になるため実用では親子制約が必要。浅い固定データの合計だけならリストで十分。</p><h3>似たパターンとの違い</h3><p>Decoratorも同じインターフェースを包むが、通常は一つの対象へ機能を追加する。Compositeは複数の子と木構造に着目する。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. FileEntryにaddを定義する必要は？</summary><p>この例は子の管理をFolderだけに置く。全Entryに追加操作を持たせると葉で無効な操作が生じる。</p></details><details class="answer"><summary>Q2. root.add(root)はどうなる？</summary><p>sizeが無限再帰する。この最小例は木の構築を利用側に任せており、循環防止は追加設計が必要。</p></details></div><div class="chapter-bottom"><a href="#bridge">← 前の章</a><label class="complete"><input type="checkbox" data-complete="composite">この章を読了</label><a href="#decorator">次の章 →</a></div></section><section class="chapter" id="decorator" aria-labelledby="title-decorator"><div class="section-number">CHAPTER 10 / 構造</div><h2 id="title-decorator">Decorator｜同じ契約で包み機能を重ねる</h2><p class="lead">同じ契約で包み機能を重ねる。</p><div class="learning"><div><span>この章の到達点</span>Decoratorの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>通知のログ付き・大文字化付き・両方付きという組合せを継承で表すとクラスが増える。</p><p><b>追加する要求：</b>送信処理を変更せず、ログと本文加工を選んで重ねる。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="decorator">public class Main {
+    public static void main(String[] args) {
+        String text = &quot;ready&quot;.toUpperCase(java.util.Locale.ROOT);
+        System.out.println(&quot;LOG: &quot; + text);
+        System.out.println(&quot;MAIL: &quot; + text);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-decorator"><div class="diagram-heading"><span>図09</span><strong>Decoratorの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Decoratorの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-decorator-title svg-decorator-desc"><title id="svg-decorator-title">Decoratorの役割</title><desc id="svg-decorator-desc">利用側はSender契約でLoggingを呼ぶ。Loggingは追加処理後に内側へ委譲する。Upperは加工後にMailへ委譲する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-decorator" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Logging（Sender）</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Upper（Sender）</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">Mail（Sender）</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-decorator)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">send</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-decorator)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">send</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-decorator)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">send</text></svg></div><figcaption>利用側はSender契約でLoggingを呼ぶ。Loggingは追加処理後に内側へ委譲する。Upperは加工後にMailへ委譲する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="decorator">public class Main {
+    interface Sender { void send(String text); }
+    static class Mail implements Sender {
+        public void send(String s) { System.out.println(&quot;MAIL: &quot; + s); }
+    }
+    static class Upper implements Sender {
+        private final Sender next;
+        Upper(Sender next) { this.next = next; }
+        public void send(String s) { next.send(s.toUpperCase(java.util.Locale.ROOT)); }
+    }
+    static class Logging implements Sender {
+        private final Sender next;
+        Logging(Sender next) { this.next = next; }
+        public void send(String s) {
+            System.out.println(&quot;LOG: &quot; + s); next.send(s);
+        }
+    }
+    public static void main(String[] args) {
+        Sender sender = new Logging(new Upper(new Mail()));
+        sender.send(&quot;ready&quot;);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>LOG: ready
+MAIL: READY</code></pre></div><h3>変更に強くなった場所</h3><p>送信の基本実装を変えずに機能を合成できる。組合せをクラスとして全列挙しなくてよい。</p><h3>コスト・前提・使わない判断</h3><p>順序によって挙動が変わり、ラッパーが深いと追跡しにくい。固定の機能一つだけなら通常のメソッド内処理が明快。再試行を重ねる場合は多重送信にも注意する。</p><h3>似たパターンとの違い</h3><p>Proxyはアクセス制御や遅延取得を主目的に代理する。Decoratorは契約を保って責務を加える。形が同じでも意図が異なる。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. UpperをLoggingの外にするとログは？</summary><p>大文字になる。外側で加工してから内側へ渡るため、合成順が観測結果を変える。</p></details><details class="answer"><summary>Q2. 新しい署名追加をMailのサブクラスにする必要は？</summary><p>ない。Senderを実装する別のDecoratorを作って組み合わせられる。</p></details></div><div class="chapter-bottom"><a href="#composite">← 前の章</a><label class="complete"><input type="checkbox" data-complete="decorator">この章を読了</label><a href="#facade">次の章 →</a></div></section><section class="chapter" id="facade" aria-labelledby="title-facade"><div class="section-number">CHAPTER 11 / 構造</div><h2 id="title-facade">Facade｜複雑なサブシステムへの入口をまとめる</h2><p class="lead">複雑なサブシステムへの入口をまとめる。</p><div class="learning"><div><span>この章の到達点</span>Facadeの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>注文画面ごとに在庫確認・決済・配送依頼の順序が重複し、処理の呼び忘れが起きる。</p><p><b>追加する要求：</b>画面からはcheckout一回で共通の手順を呼びたい。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="facade">public class Main {
+    public static void main(String[] args) {
+        class Stock { void check() { System.out.println(&quot;stock checked&quot;); } }
+        class Payment { void pay() { System.out.println(&quot;paid&quot;); } }
+        class Shipping { void ship() { System.out.println(&quot;shipped&quot;); } }
+        // 各画面が順序と全サブシステムを知る
+        new Stock().check();
+        new Payment().pay();
+        new Shipping().ship();
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-facade"><div class="diagram-heading"><span>図10</span><strong>Facadeの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Facadeの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-facade-title svg-facade-desc"><title id="svg-facade-title">Facadeの役割</title><desc id="svg-facade-desc">画面はcheckoutを一度呼ぶ。Checkoutが三つのサブシステムを順に利用する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-facade" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">画面</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Checkout</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="43.0" text-anchor="middle" class="svg-node">Stock</text><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Payment</text><text x="552.5" y="87.0" text-anchor="middle" class="svg-node">Shipping</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-facade)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">checkout</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-facade)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">順に呼出</text></svg></div><figcaption>画面はcheckoutを一度呼ぶ。Checkoutが三つのサブシステムを順に利用する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="facade">public class Main {
+    static class Stock { void check() { System.out.println(&quot;stock checked&quot;); } }
+    static class Payment { void pay() { System.out.println(&quot;paid&quot;); } }
+    static class Shipping { void ship() { System.out.println(&quot;shipped&quot;); } }
+    static class Checkout {
+        private final Stock stock;
+        private final Payment payment;
+        private final Shipping shipping;
+        Checkout(Stock s, Payment p, Shipping h) { stock=s; payment=p; shipping=h; }
+        void checkout() { stock.check(); payment.pay(); shipping.ship(); }
+    }
+    public static void main(String[] args) {
+        new Checkout(new Stock(), new Payment(), new Shipping()).checkout();
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>stock checked
+paid
+shipped</code></pre></div><h3>変更に強くなった場所</h3><p>画面が知る依存と手順を減らせる。サブシステムの呼出変更を窓口で吸収できる。</p><h3>コスト・前提・使わない判断</h3><p>何でも入れる巨大な窓口にしない。この例は全操作成功を仮定し、実用では決済後の失敗・補償・冪等性を設計する。元のAPIが簡単なら窓口の追加は不要。</p><h3>似たパターンとの違い</h3><p>Adapterは期待する別の契約へ変換する。Facadeは扱いやすい上位の窓口を提供する。Mediatorは参加者間の相互作用を仲介する。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. Facadeを置くとトランザクションが保証される？</summary><p>されない。分散した決済と配送の整合性は補償処理など別の設計が必要。</p></details><details class="answer"><summary>Q2. サブシステムの直接利用を必ず禁止する？</summary><p>GoFの定義上は必須でない。公開範囲と依存の規則はシステムごとに決める。</p></details></div><div class="chapter-bottom"><a href="#decorator">← 前の章</a><label class="complete"><input type="checkbox" data-complete="facade">この章を読了</label><a href="#flyweight">次の章 →</a></div></section><section class="chapter" id="flyweight" aria-labelledby="title-flyweight"><div class="section-number">CHAPTER 12 / 構造</div><h2 id="title-flyweight">Flyweight｜共有できる状態をまとめて保持する</h2><p class="lead">共有できる状態をまとめて保持する。</p><div class="learning"><div><span>この章の到達点</span>Flyweightの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>画面の多数の文字が同じフォント情報を個別に保持し、重複したオブジェクトが増える。</p><p><b>追加する要求：</b>フォント定義は共有し、文字や位置は描画ごとに渡す。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="flyweight">public class Main {
+    public static void main(String[] args) {
+        record GlyphStyle(String font) {}
+        GlyphStyle a = new GlyphStyle(&quot;Serif&quot;);
+        GlyphStyle b = new GlyphStyle(&quot;Serif&quot;);
+        System.out.println(a == b); // 値が同じでも別インスタンス
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-flyweight"><div class="diagram-heading"><span>図11</span><strong>Flyweightの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Flyweightの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-flyweight-title svg-flyweight-desc"><title id="svg-flyweight-title">Flyweightの役割</title><desc id="svg-flyweight-desc">描画側はPoolからスタイルを取得する。Poolがキーごとの共有インスタンスを保持する。drawには文字と位置を外部状態として渡す。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-flyweight" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">描画側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">StylePool</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">共有GlyphStyle</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">文字・位置</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-flyweight)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">取得</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-flyweight)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">共有管理</text><path d="M772.5 111 V285 H552.5 V113" class="edge" marker-end="url(#arrow-flyweight)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">drawの引数</text></svg></div><figcaption>描画側はPoolからスタイルを取得する。Poolがキーごとの共有インスタンスを保持する。drawには文字と位置を外部状態として渡す。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="flyweight">public class Main {
+    record GlyphStyle(String font) {
+        void draw(char c, int x) { System.out.println(font + &quot;: &quot; + c + &quot;@&quot; + x); }
+    }
+    static class StylePool {
+        private final java.util.Map&lt;String,GlyphStyle&gt; styles = new java.util.HashMap&lt;&gt;();
+        GlyphStyle get(String font) { return styles.computeIfAbsent(font, GlyphStyle::new); }
+    }
+    public static void main(String[] args) {
+        StylePool pool = new StylePool();
+        GlyphStyle a = pool.get(&quot;Serif&quot;), b = pool.get(&quot;Serif&quot;);
+        System.out.println(a == b);
+        a.draw(&#x27;A&#x27;, 0); b.draw(&#x27;B&#x27;, 10);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>true
+Serif: A@0
+Serif: B@10</code></pre></div><h3>変更に強くなった場所</h3><p>内在状態のフォントを共有し、外在状態の文字・位置は都度渡すことで重複保持を減らせる。</p><h3>コスト・前提・使わない判断</h3><p>キー設計とキャッシュ寿命の管理が必要。サンプルのHashMapは同時アクセスに対応しない。件数が少ない、状態のほとんどが個別、共有が計測上不要なら採用しない。</p><h3>似たパターンとの違い</h3><p>Singletonは型のインスタンス数を一つに制限する。Flyweightはキーごとに複数の共有値を持ちうる。単なるキャッシュとも共有状態と外部状態の分離という観点が異なる。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 位置xをGlyphStyleの可変フィールドに入れると？</summary><p>別の文字の描画で上書きされる。共有してはいけない個別状態は外から渡す。</p></details><details class="answer"><summary>Q2. Poolはずっと成長してよい？</summary><p>入力の種類が無制限ならメモリを圧迫する。上限や破棄方針を設計し、効果を計測する。</p></details></div><div class="chapter-bottom"><a href="#facade">← 前の章</a><label class="complete"><input type="checkbox" data-complete="flyweight">この章を読了</label><a href="#proxy">次の章 →</a></div></section><section class="chapter" id="proxy" aria-labelledby="title-proxy"><div class="section-number">CHAPTER 13 / 構造</div><h2 id="title-proxy">Proxy｜代理を介して対象へのアクセスを制御する</h2><p class="lead">代理を介して対象へのアクセスを制御する。</p><div class="learning"><div><span>この章の到達点</span>Proxyの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>構造／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>重い文書を参照する可能性だけで毎回読み込んでおり、閲覧しない場合もコストがかかる。</p><p><b>追加する要求：</b>文書が初めて表示される時点まで読込を遅らせる。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="proxy">public class Main {
+    public static void main(String[] args) {
+        class RealDocument {
+            RealDocument() { System.out.println(&quot;load manual&quot;); }
+            String read() { return &quot;manual&quot;; }
+        }
+        RealDocument doc = new RealDocument(); // 使う前に読込が起きる
+        System.out.println(&quot;document ready&quot;);
+        System.out.println(doc.read());
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-proxy"><div class="diagram-heading"><span>図12</span><strong>Proxyの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Proxyの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-proxy-title svg-proxy-desc"><title id="svg-proxy-title">Proxyの役割</title><desc id="svg-proxy-desc">利用側はDocumentを利用する。LazyDocumentは同じ契約を実装する。Proxyは初回アクセスで実体を生成して委譲する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-proxy" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Document</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">LazyDocument</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">RealDocument</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-proxy)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">利用</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-proxy)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-proxy)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">遅延生成・委譲</text></svg></div><figcaption>利用側はDocumentを利用する。LazyDocumentは同じ契約を実装する。Proxyは初回アクセスで実体を生成して委譲する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="proxy">public class Main {
+    interface Document { String read(); }
+    static class RealDocument implements Document {
+        RealDocument() { System.out.println(&quot;load manual&quot;); }
+        public String read() { return &quot;manual&quot;; }
+    }
+    static class LazyDocument implements Document {
+        private RealDocument real;
+        public synchronized String read() {
+            if (real == null) real = new RealDocument();
+            return real.read();
+        }
+    }
+    public static void main(String[] args) {
+        Document doc = new LazyDocument();
+        System.out.println(&quot;proxy ready&quot;);
+        System.out.println(doc.read());
+        System.out.println(doc.read());
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>proxy ready
+load manual
+manual
+manual</code></pre></div><h3>変更に強くなった場所</h3><p>利用側の呼出形を保ったまま、重い実体の生成時期を制御できる。ここでは同期により初期化の重複を防ぐ。</p><h3>コスト・前提・使わない判断</h3><p>初回アクセスが遅くなる。失敗の再試行・キャッシュ更新・権限判定は別途必要。軽い対象なら直接参照する方が簡単で、毎回同期するコストも避けられる。</p><h3>似たパターンとの違い</h3><p>Decoratorは機能を重ねる目的、Proxyは実体へのアクセスを仲介する目的。Adapterと違い利用側の契約を変更しない。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. new LazyDocumentだけで読込が起きる？</summary><p>起きない。RealDocumentを作るのはreadが初めて呼ばれたとき。</p></details><details class="answer"><summary>Q2. Proxyを置くだけで権限検査になる？</summary><p>ならない。この例は遅延生成だけを実装している。保護Proxyには明示的な権限判定が必要。</p></details></div><div class="chapter-bottom"><a href="#flyweight">← 前の章</a><label class="complete"><input type="checkbox" data-complete="proxy">この章を読了</label><a href="#chain-of-responsibility">次の章 →</a></div></section><section class="chapter" id="chain-of-responsibility" aria-labelledby="title-chain-of-responsibility"><div class="section-number">CHAPTER 14 / 振る舞い</div><h2 id="title-chain-of-responsibility">Chain of Responsibility｜処理できる担当へ要求を順に渡す</h2><p class="lead">処理できる担当へ要求を順に渡す。</p><div class="learning"><div><span>この章の到達点</span>Chain of Responsibilityの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>経費の承認先を金額で分岐する処理が利用側に集中し、承認担当の追加ごとに変更される。</p><p><b>追加する要求：</b>小額はチーム、大きい額は部門へ回し、それでも範囲外なら却下する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="chain-of-responsibility">public class Main {
+    public static void main(String[] args) {
+        int amount = 600;
+        System.out.println(amount &lt;= 100 ? &quot;team&quot; : amount &lt;= 1000 ? &quot;department&quot; : &quot;rejected&quot;);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-chain-of-responsibility"><div class="diagram-heading"><span>図13</span><strong>Chain of Responsibilityの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Chain of Responsibilityの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-chain-of-responsibility-title svg-chain-of-responsibility-desc"><title id="svg-chain-of-responsibility-title">Chain of Responsibilityの役割</title><desc id="svg-chain-of-responsibility-desc">呼出側が先頭へ要求する。teamが扱えない要求をnextへ渡す。departmentも扱えなければ終端で却下する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-chain-of-responsibility" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">呼出側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">team（Approver）</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">department（Approver）</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">終端 rejected</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-chain-of-responsibility)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">要求</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-chain-of-responsibility)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">未処理を転送</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-chain-of-responsibility)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">範囲外</text></svg></div><figcaption>呼出側が先頭へ要求する。teamが扱えない要求をnextへ渡す。departmentも扱えなければ終端で却下する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="chain-of-responsibility">public class Main {
+    static abstract class Approver {
+        private final Approver next;
+        Approver(Approver next) { this.next = next; }
+        abstract boolean canHandle(int amount);
+        abstract String name();
+        String approve(int amount) {
+            if (amount &lt; 0) throw new IllegalArgumentException(&quot;negative amount&quot;);
+            if (canHandle(amount)) return name();
+            return next == null ? &quot;rejected&quot; : next.approve(amount);
+        }
+    }
+    static class LimitApprover extends Approver {
+        private final int limit;
+        private final String label;
+        LimitApprover(int limit, String label, Approver next) {
+            super(next); this.limit=limit; this.label=label;
+        }
+        boolean canHandle(int amount) { return amount &lt;= limit; }
+        String name() { return label; }
+    }
+    public static void main(String[] args) {
+        Approver chain = new LimitApprover(100, &quot;team&quot;,
+            new LimitApprover(1000, &quot;department&quot;, null));
+        System.out.println(chain.approve(600));
+        System.out.println(chain.approve(2000));
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>department
+rejected</code></pre></div><h3>変更に強くなった場所</h3><p>要求元は承認担当を知らなくてよい。組立時に担当の順序や上限を変更できる。</p><h3>コスト・前提・使わない判断</h3><p>順序が結果を変え、担当が見つからない可能性もある。終端処理と循環防止が必要。固定された数条件ならif文の方が追いやすい。</p><h3>似たパターンとの違い</h3><p>Commandは要求をオブジェクト化する。Chainは受信者の選択と転送に着目する。全段で処理するパイプラインと、誰か一人が処理する連鎖も区別する。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 高額担当を先頭に置くと？</summary><p>小額まで先頭で承認される。この例は最初に扱える担当で停止するので順序が重要。</p></details><details class="answer"><summary>Q2. 誰も扱えない要求は成功扱いでよい？</summary><p>よくない。この例ではrejectedを返す。未処理の結果を契約として明示する。</p></details></div><div class="chapter-bottom"><a href="#proxy">← 前の章</a><label class="complete"><input type="checkbox" data-complete="chain-of-responsibility">この章を読了</label><a href="#command">次の章 →</a></div></section><section class="chapter" id="command" aria-labelledby="title-command"><div class="section-number">CHAPTER 15 / 振る舞い</div><h2 id="title-command">Command｜要求をオブジェクトとして保持する</h2><p class="lead">要求をオブジェクトとして保持する。</p><div class="learning"><div><span>この章の到達点</span>Commandの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>ボタンが文書編集を直接呼ぶため、後で実行したり履歴から取り消したりできない。</p><p><b>追加する要求：</b>追記操作を履歴に残し、直前の一操作を取り消す。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="command">public class Main {
+    public static void main(String[] args) {
+        StringBuilder doc = new StringBuilder(&quot;A&quot;);
+        doc.append(&quot;B&quot;);
+        System.out.println(doc);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-command"><div class="diagram-heading"><span>図14</span><strong>Commandの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Commandの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-command-title svg-command-desc"><title id="svg-command-title">Commandの役割</title><desc id="svg-command-desc">InvokerはCommandを履歴に保持する。Appendはexecuteとundoを実装する。AppendがReceiverの文書を変更する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-command" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">History（Invoker）</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Command</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Append</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">StringBuilder（Receiver）</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-command)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">実行・保持</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-command)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-command)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">操作</text></svg></div><figcaption>InvokerはCommandを履歴に保持する。Appendはexecuteとundoを実装する。AppendがReceiverの文書を変更する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="command">public class Main {
+    interface Command { void execute(); void undo(); }
+    static class Append implements Command {
+        private final StringBuilder doc;
+        private final String text;
+        private int oldLength;
+        Append(StringBuilder doc, String text) { this.doc=doc; this.text=text; }
+        public void execute() { oldLength=doc.length(); doc.append(text); }
+        public void undo() { doc.setLength(oldLength); }
+    }
+    static class History {
+        private final java.util.Deque&lt;Command&gt; done = new java.util.ArrayDeque&lt;&gt;();
+        void run(Command c) { c.execute(); done.push(c); }
+        void undo() { if (!done.isEmpty()) done.pop().undo(); }
+    }
+    public static void main(String[] args) {
+        StringBuilder doc = new StringBuilder(&quot;A&quot;);
+        History history = new History();
+        history.run(new Append(doc, &quot;B&quot;));
+        System.out.println(doc);
+        history.undo(); System.out.println(doc);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>AB
+A</code></pre></div><h3>変更に強くなった場所</h3><p>要求の実行者と文書操作を分離し、履歴・遅延実行へ展開できる。取り消しに必要な情報を操作自身に保持できる。</p><h3>コスト・前提・使わない判断</h3><p>この例は一つのCommandを一度だけ実行し、全編集をHistory経由にする前提。外部編集や非同期実行が混ざるとundoが壊れる。副作用を必ず取り消せるとは限らず、単発呼出だけなら関数で十分。</p><h3>似たパターンとの違い</h3><p>Strategyは処理方法を交換する。Commandは特定の要求と対象を保持する。Mementoは状態を保存し、Commandのundoを支える場合がある。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. Commandを導入すればメール送信もundoできる？</summary><p>できない。外部へ届いた副作用は消せないため、取消通知や補償という別の操作を考える。</p></details><details class="answer"><summary>Q2. 同じAppendを履歴へ何度も積んでよい？</summary><p>この最小例では不可。oldLengthが上書きされるので、実行ごとに新しいCommandを作る。</p></details></div><div class="chapter-bottom"><a href="#chain-of-responsibility">← 前の章</a><label class="complete"><input type="checkbox" data-complete="command">この章を読了</label><a href="#interpreter">次の章 →</a></div></section><section class="chapter" id="interpreter" aria-labelledby="title-interpreter"><div class="section-number">CHAPTER 16 / 振る舞い</div><h2 id="title-interpreter">Interpreter｜小さな言語の規則を構文木で評価する</h2><p class="lead">小さな言語の規則を構文木で評価する。</p><div class="learning"><div><span>この章の到達点</span>Interpreterの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>検索条件が固定のif式に埋め込まれており、条件を組み合わせるたびに処理を追加している。</p><p><b>追加する要求：</b>単語の包含判定をANDで組み合わせた条件木を作る。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="interpreter">public class Main {
+    public static void main(String[] args) {
+        String text = &quot;urgent paid&quot;;
+        System.out.println(text.contains(&quot;urgent&quot;) &amp;&amp; text.contains(&quot;paid&quot;));
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-interpreter"><div class="diagram-heading"><span>図15</span><strong>Interpreterの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Interpreterの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-interpreter-title svg-interpreter-desc"><title id="svg-interpreter-title">Interpreterの役割</title><desc id="svg-interpreter-desc">利用側が条件の構文木を組み立てる。AndはExprを実装し子Exprを評価する。葉のContainsが文脈文字列を判定する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-interpreter" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Expr</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">And</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">Contains</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-interpreter)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">eval</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-interpreter)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装・子を保持</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-interpreter)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">子のeval</text></svg></div><figcaption>利用側が条件の構文木を組み立てる。AndはExprを実装し子Exprを評価する。葉のContainsが文脈文字列を判定する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="interpreter">public class Main {
+    interface Expr { boolean eval(String context); }
+    record Contains(String word) implements Expr {
+        public boolean eval(String context) { return context.contains(word); }
+    }
+    record And(Expr left, Expr right) implements Expr {
+        public boolean eval(String context) { return left.eval(context) &amp;&amp; right.eval(context); }
+    }
+    public static void main(String[] args) {
+        Expr rule = new And(new Contains(&quot;urgent&quot;), new Contains(&quot;paid&quot;));
+        System.out.println(rule.eval(&quot;urgent paid&quot;));
+        System.out.println(rule.eval(&quot;urgent&quot;));
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>true
+false</code></pre></div><h3>変更に強くなった場所</h3><p>終端式Containsと非終端式Andを組み合わせ、同じ評価契約で規則を表せる。ORも新しい式として追加できる。文法は Expr := Contains(word) | And(Expr, Expr)。</p><h3>コスト・前提・使わない判断</h3><p>構文解析は含めていない。文字列から入力するなら字句・構文解析と不正入力・深さの制限が必要。大規模言語では型数や評価コストが増えるため、既存の解析器やクエリ機構を検討する。</p><h3>似たパターンとの違い</h3><p>Compositeの木構造を使えるが、Interpreterは文法の規則と評価の意味を定義することに着目する。単なる条件関数の交換ならStrategyでもよい。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. &quot;urgent AND paid&quot;をevalへ渡せば構文解析される？</summary><p>されない。evalの引数は判定対象の文脈であり、式の文字列を解析する機能はない。</p></details><details class="answer"><summary>Q2. OR追加時に既存のAndを変更する？</summary><p>不要。Exprを実装するOrを追加して木に組み込める。ただし文法の入口も必要なら更新する。</p></details></div><div class="chapter-bottom"><a href="#command">← 前の章</a><label class="complete"><input type="checkbox" data-complete="interpreter">この章を読了</label><a href="#iterator">次の章 →</a></div></section><section class="chapter" id="iterator" aria-labelledby="title-iterator"><div class="section-number">CHAPTER 17 / 振る舞い</div><h2 id="title-iterator">Iterator｜内部構造を公開せず順に取り出す</h2><p class="lead">内部構造を公開せず順に取り出す。</p><div class="learning"><div><span>この章の到達点</span>Iteratorの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>プレイリストの内部配列を公開すると、利用側が要素を書き換えたり配列実装へ依存したりする。</p><p><b>追加する要求：</b>内部配列を隠したままfor-eachで曲名を読みたい。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="iterator">public class Main {
+    public static void main(String[] args) {
+        String[] songs = {&quot;intro&quot;, &quot;finale&quot;};
+        for (int i=0; i&lt;songs.length; i++) System.out.println(songs[i]);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-iterator"><div class="diagram-heading"><span>図16</span><strong>Iteratorの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Iteratorの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-iterator-title svg-iterator-desc"><title id="svg-iterator-title">Iteratorの役割</title><desc id="svg-iterator-desc">利用側がiteratorを取得する。Playlistが独立した走査位置を作る。Iteratorが配列を公開せず順番に読む。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-iterator" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">for-each利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Playlist（Iterable）</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Iterator</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">内部songs配列</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-iterator)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">iterator取得</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-iterator)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">生成</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-iterator)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">読取</text></svg></div><figcaption>利用側がiteratorを取得する。Playlistが独立した走査位置を作る。Iteratorが配列を公開せず順番に読む。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="iterator">public class Main {
+    static class Playlist implements Iterable&lt;String&gt; {
+        private final String[] songs;
+        Playlist(String... songs) { this.songs=songs.clone(); }
+        public java.util.Iterator&lt;String&gt; iterator() {
+            return new java.util.Iterator&lt;&gt;() {
+                private int index;
+                public boolean hasNext() { return index &lt; songs.length; }
+                public String next() {
+                    if (!hasNext()) throw new java.util.NoSuchElementException();
+                    return songs[index++];
+                }
+            };
+        }
+    }
+    public static void main(String[] args) {
+        Playlist playlist = new Playlist(&quot;intro&quot;, &quot;finale&quot;);
+        for (String song : playlist) System.out.println(song);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>intro
+finale</code></pre></div><h3>変更に強くなった場所</h3><p>利用側はデータ構造ではなく走査契約に依存する。iteratorごとにindexがあるため独立に走査できる。</p><h3>コスト・前提・使わない判断</h3><p>変更中の走査・スナップショット・順序の契約が必要。この例では配列をコピーし変更操作を公開していない。既存のListが要件を満たすなら独自Iteratorを実装しない。</p><h3>似たパターンとの違い</h3><p>Visitorは要素ごとの処理を分離する。Iteratorは訪問の順序と位置を管理し、処理内容自体は利用側に任せる。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 終端でnextを呼ぶとnullを返す？</summary><p>この契約ではNoSuchElementExceptionを投げる。nullは正規の要素とも区別できない。</p></details><details class="answer"><summary>Q2. 二つのfor-eachで走査位置は共有される？</summary><p>共有されない。iteratorを呼ぶたびに新しいindexを持つIteratorを作る。</p></details></div><div class="chapter-bottom"><a href="#interpreter">← 前の章</a><label class="complete"><input type="checkbox" data-complete="iterator">この章を読了</label><a href="#mediator">次の章 →</a></div></section><section class="chapter" id="mediator" aria-labelledby="title-mediator"><div class="section-number">CHAPTER 18 / 振る舞い</div><h2 id="title-mediator">Mediator｜参加者間のやり取りを仲介へ集める</h2><p class="lead">参加者間のやり取りを仲介へ集める。</p><div class="learning"><div><span>この章の到達点</span>Mediatorの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>フォームの入力欄とボタンが直接参照し合い、検証ルールの変更が複数部品へ散らばる。</p><p><b>追加する要求：</b>入力が空白なら送信ボタンを無効化するルールを一か所へ置く。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="mediator">public class Main {
+    public static void main(String[] args) {
+        String text = &quot;hello&quot;;
+        boolean enabled = !text.isBlank(); // 各UI部品が他部品の条件を知る
+        System.out.println(enabled);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-mediator"><div class="diagram-heading"><span>図17</span><strong>Mediatorの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Mediatorの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-mediator-title svg-mediator-desc"><title id="svg-mediator-title">Mediatorの役割</title><desc id="svg-mediator-desc">FieldはMediatorへ変更を通知する。FormがMediatorを実装する。Formがルールに基づきButtonを更新する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-mediator" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">Field</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Mediator</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Form</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">Button</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-mediator)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">変更を通知</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-mediator)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-mediator)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">更新</text></svg></div><figcaption>FieldはMediatorへ変更を通知する。FormがMediatorを実装する。Formがルールに基づきButtonを更新する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="mediator">public class Main {
+    interface Mediator { void changed(); }
+    static class Field {
+        private String value = &quot;&quot;;
+        private final Mediator mediator;
+        Field(Mediator mediator) { this.mediator=mediator; }
+        void set(String value) { this.value=value; mediator.changed(); }
+        String value() { return value; }
+    }
+    static class Button { boolean enabled; }
+    static class Form implements Mediator {
+        final Field field = new Field(this);
+        final Button button = new Button();
+        public void changed() { button.enabled = !field.value().isBlank(); }
+    }
+    public static void main(String[] args) {
+        Form form = new Form();
+        form.field.set(&quot;hello&quot;); System.out.println(form.button.enabled);
+        form.field.set(&quot; &quot;); System.out.println(form.button.enabled);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>true
+false</code></pre></div><h3>変更に強くなった場所</h3><p>FieldはButtonを知らず、参加者同士の依存を減らせる。フォーム全体の調整をFormにまとめられる。</p><h3>コスト・前提・使わない判断</h3><p>仲介に業務を集めすぎると巨大化する。相互通知の再帰ループにも注意する。部品二つの単純な関係なら直接のイベント処理の方が短いこともある。</p><h3>似たパターンとの違い</h3><p>Observerは購読者への通知の仕組み。Mediatorは参加者をどう協調させるかというルール。Facadeと異なり、参加者から仲介へ通知が向かう。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. FieldはButtonの型を知る必要がある？</summary><p>ない。変更の通知先はMediatorだけで、具体的な有効化ルールはFormにある。</p></details><details class="answer"><summary>Q2. 全画面を一つのMediatorで管理する？</summary><p>通常は責務が広すぎる。画面や対話の単位に分け、業務処理そのものとは境界を設ける。</p></details></div><div class="chapter-bottom"><a href="#iterator">← 前の章</a><label class="complete"><input type="checkbox" data-complete="mediator">この章を読了</label><a href="#memento">次の章 →</a></div></section><section class="chapter" id="memento" aria-labelledby="title-memento"><div class="section-number">CHAPTER 19 / 振る舞い</div><h2 id="title-memento">Memento｜内部状態を外へ漏らさず保存・復元する</h2><p class="lead">内部状態を外へ漏らさず保存・復元する。</p><div class="learning"><div><span>この章の到達点</span>Mementoの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>エディターの取り消し機能が内部フィールドを直接読み書きし、表現変更のたびに壊れる。</p><p><b>追加する要求：</b>保存側は状態の中身を操作せず、過去の文章へ復元する。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="memento">public class Main {
+    public static void main(String[] args) {
+        String text = &quot;draft&quot;;
+        String oldText = text; // 履歴側が表現を知っている
+        text = &quot;edited&quot;;
+        text = oldText;
+        System.out.println(text);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-memento"><div class="diagram-heading"><span>図18</span><strong>Mementoの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Mementoの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-memento-title svg-memento-desc"><title id="svg-memento-title">Mementoの役割</title><desc id="svg-memento-desc">Caretakerがsaveとrestoreを依頼する。Editorが状態をSnapshotへ保存しそこから復元する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-memento" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">Caretaker（main）</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Editor（Originator）</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Snapshot（Memento）</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-memento)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">保存・復元依頼</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-memento)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">生成・解釈</text><path d="M112.5 111 V285 H552.5 V113" class="edge" marker-end="url(#arrow-memento)"/><text x="332.5" y="275" text-anchor="middle" class="svg-label">内容を見ず保持</text></svg></div><figcaption>Caretakerがsaveとrestoreを依頼する。Editorが状態をSnapshotへ保存しそこから復元する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="memento">public class Main {
+    static class Editor {
+        private String text = &quot;&quot;;
+        static final class Snapshot {
+            private final String text;
+            private Snapshot(String text) { this.text=text; }
+        }
+        void type(String text) { this.text=text; }
+        Snapshot save() { return new Snapshot(text); }
+        void restore(Snapshot s) { text=s.text; }
+        String text() { return text; }
+    }
+    public static void main(String[] args) {
+        Editor editor = new Editor();
+        editor.type(&quot;draft&quot;);
+        Editor.Snapshot saved = editor.save(); // Caretakerは保持だけ
+        editor.type(&quot;edited&quot;);
+        editor.restore(saved);
+        System.out.println(editor.text());
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>draft</code></pre></div><h3>変更に強くなった場所</h3><p>保存と復元の知識をEditorに閉じ込められる。通常の別トップレベルのCaretakerへSnapshotの内容を公開する必要がない。</p><h3>コスト・前提・使わない判断</h3><p>大きな状態を毎回保存するとメモリを消費する。サンプルの全型は実行の便宜上Main内にあり、Javaの同一ネスト内のprivateアクセスは可能。実製品ではEditorを別ファイルに分離し、作成元・版の整合も検証する。単なる不変値のコピーなら専用型は不要な場合もある。</p><h3>似たパターンとの違い</h3><p>Commandは操作を記録し、Mementoは状態を記録する。両者を組み合わせ、操作実行前のSnapshotをundoに使える。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. CaretakerがSnapshotのtextを変更する設計でよい？</summary><p>よくない。内容を公開せず、不変な記録としてOriginatorだけが解釈するのが狙い。</p></details><details class="answer"><summary>Q2. ファイル保存にもそのまま使える？</summary><p>この例はメモリ内だけ。永続化するなら形式・版・互換性・破損検査を追加する。</p></details></div><div class="chapter-bottom"><a href="#mediator">← 前の章</a><label class="complete"><input type="checkbox" data-complete="memento">この章を読了</label><a href="#observer">次の章 →</a></div></section><section class="chapter" id="observer" aria-labelledby="title-observer"><div class="section-number">CHAPTER 20 / 振る舞い</div><h2 id="title-observer">Observer｜状態の変化を購読者へ通知する</h2><p class="lead">状態の変化を購読者へ通知する。</p><div class="learning"><div><span>この章の到達点</span>Observerの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>注文確定処理がメール通知・監査ログを直接呼び、通知先を増やすたびに注文側が変更される。</p><p><b>追加する要求：</b>購読者を追加・解除でき、一人の通知失敗で残りの通知を止めないようにする。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="observer">public class Main {
+    public static void main(String[] args) {
+        class Mail { void send(String e) { System.out.println(&quot;mail: &quot; + e); } }
+        class Audit { void log(String e) { System.out.println(&quot;audit: &quot; + e); } }
+        class Order {
+            void paid() {
+                new Mail().send(&quot;paid&quot;);
+                new Audit().log(&quot;paid&quot;); // 注文側が通知先を列挙する
+            }
+        }
+        new Order().paid();
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-observer"><div class="diagram-heading"><span>図19</span><strong>Observerの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Observerの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-observer-title svg-observer-desc"><title id="svg-observer-title">Observerの役割</title><desc id="svg-observer-desc">注文処理がイベントをpublishする。Eventsは購読者のスナップショットへ順に通知する。各通知先がListenerを実装する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-observer" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">注文処理</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Events（Subject）</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Listener</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="54.0" text-anchor="middle" class="svg-node">メール</text><text x="772.5" y="76.0" text-anchor="middle" class="svg-node">監査</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-observer)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">publish</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-observer)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">登録先へ通知</text><path d="M772.5 111 V285 H552.5 V113" class="edge" marker-end="url(#arrow-observer)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">実装</text></svg></div><figcaption>注文処理がイベントをpublishする。Eventsは購読者のスナップショットへ順に通知する。各通知先がListenerを実装する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="observer">public class Main {
+    interface Listener { void on(String event); }
+    static class Events {
+        private final java.util.List&lt;Listener&gt; listeners = new java.util.ArrayList&lt;&gt;();
+        void subscribe(Listener l) { if (!listeners.contains(l)) listeners.add(l); }
+        void unsubscribe(Listener l) { listeners.remove(l); }
+        void publish(String event) {
+            for (Listener l : java.util.List.copyOf(listeners)) {
+                try { l.on(event); }
+                catch (RuntimeException ex) { System.out.println(&quot;listener failed&quot;); }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        Events events = new Events();
+        Listener mail = e -&gt; System.out.println(&quot;mail: &quot; + e);
+        events.subscribe(mail);
+        events.subscribe(e -&gt; { throw new IllegalStateException(&quot;offline&quot;); });
+        events.subscribe(e -&gt; System.out.println(&quot;audit: &quot; + e));
+        events.publish(&quot;paid&quot;);
+        events.unsubscribe(mail);
+        events.publish(&quot;shipped&quot;);
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>mail: paid
+listener failed
+audit: paid
+listener failed
+audit: shipped</code></pre></div><h3>変更に強くなった場所</h3><p>注文側が具体的な通知先を知らずに変更を知らせられる。解除により不要な通知や参照保持を減らせる。</p><h3>コスト・前提・使わない判断</h3><p>サンプルは単一スレッド、登録順、同期通知。通知中の解除は次のpublishから有効。RuntimeExceptionだけを隔離するが、失敗を握りつぶさず実用では監視・再試行を設計する。遅い購読者は全体を遅らせる。通知先が一つで固定なら直接呼出でよい。</p><h3>似たパターンとの違い</h3><p>Mediatorは協調ルールを仲介する。Observerは一対多の変更通知を提供する。永続的なメッセージキューと違い、この例は再起動後の配送を保証しない。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 購読解除しない場合に起こる問題は？</summary><p>Subjectが購読者を保持し続け、不要な通知やメモリ保持が起こりうる。ライフサイクルと解除を対応づける。</p></details><details class="answer"><summary>Q2. 通知失敗時に処理を続ければ配送保証も得られる？</summary><p>得られない。残りの購読者へ進むだけで失敗通知は未配送。保証が必要なら記録と再試行の設計が必要。</p></details></div><div class="chapter-bottom"><a href="#memento">← 前の章</a><label class="complete"><input type="checkbox" data-complete="observer">この章を読了</label><a href="#state">次の章 →</a></div></section><section class="chapter" id="state" aria-labelledby="title-state"><div class="section-number">CHAPTER 21 / 振る舞い</div><h2 id="title-state">State｜状態ごとの振る舞いと遷移を分ける</h2><p class="lead">状態ごとの振る舞いと遷移を分ける。</p><div class="learning"><div><span>この章の到達点</span>Stateの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>注文の支払操作と発送操作が状態文字列のif分岐を共有し、遷移ルールが散らばっている。</p><p><b>追加する要求：</b>未払いでは発送を拒否し、支払後は発送できるようにする。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="state">public class Main {
+    public static void main(String[] args) {
+        String state = &quot;unpaid&quot;;
+        if (state.equals(&quot;unpaid&quot;)) System.out.println(&quot;pay first&quot;);
+        else System.out.println(&quot;shipped&quot;);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-state"><div class="diagram-heading"><span>図20</span><strong>Stateの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Stateの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-state-title svg-state-desc"><title id="svg-state-title">Stateの役割</title><desc id="svg-state-desc">Orderは現在のStateへ操作を委譲する。Unpaidが支払い時にPaidへ遷移する。Paidが発送時にShippedへ遷移する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-state" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">Order（Context）</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">State</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Unpaid → Paid</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">Paid → Shipped</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-state)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">現在状態へ委譲</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-state)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装・遷移</text><path d="M772.5 111 V285 H332.5 V113" class="edge" marker-end="url(#arrow-state)"/><text x="552.5" y="275" text-anchor="middle" class="svg-label">実装・遷移</text></svg></div><figcaption>Orderは現在のStateへ操作を委譲する。Unpaidが支払い時にPaidへ遷移する。Paidが発送時にShippedへ遷移する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="state">public class Main {
+    interface State { void pay(Order order); void ship(Order order); }
+    static class Unpaid implements State {
+        public void pay(Order o) { o.state=new Paid(); System.out.println(&quot;paid&quot;); }
+        public void ship(Order o) { System.out.println(&quot;pay first&quot;); }
+    }
+    static class Paid implements State {
+        public void pay(Order o) { System.out.println(&quot;already paid&quot;); }
+        public void ship(Order o) { o.state=new Shipped(); System.out.println(&quot;shipped&quot;); }
+    }
+    static class Shipped implements State {
+        public void pay(Order o) { System.out.println(&quot;already paid&quot;); }
+        public void ship(Order o) { System.out.println(&quot;already shipped&quot;); }
+    }
+    static class Order {
+        private State state = new Unpaid();
+        void pay() { state.pay(this); }
+        void ship() { state.ship(this); }
+    }
+    public static void main(String[] args) {
+        Order order=new Order(); order.ship(); order.pay(); order.ship();
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>pay first
+paid
+shipped</code></pre></div><h3>変更に強くなった場所</h3><p>状態ごとの許可操作と遷移を同じ場所へ集められる。新しい状態の振る舞いをクラスとして扱える。</p><h3>コスト・前提・使わない判断</h3><p>クラスが増え、状態間の参照も生じる。操作追加は全Stateへ影響する。例はメモリ内の直列操作で、永続化・競合・実際の決済は扱わない。少数の固定状態ならenumとswitchが明快。</p><h3>似たパターンとの違い</h3><p>Strategyは外部から方策を選ぶことが中心。Stateは内部状態に応じた振る舞いとライフサイクル上の遷移が中心。この例ではState自身が次状態を設定する。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 未払いのshipを無視してよい？</summary><p>契約次第だが利用側が結果を判断できる必要がある。この例はpay firstを表示し、状態を維持する。</p></details><details class="answer"><summary>Q2. Stateなら同時に二度決済されることも防げる？</summary><p>型分離だけでは防げない。並行更新の排他・永続化・決済の冪等性は別途必要。</p></details></div><div class="chapter-bottom"><a href="#observer">← 前の章</a><label class="complete"><input type="checkbox" data-complete="state">この章を読了</label><a href="#strategy">次の章 →</a></div></section><section class="chapter" id="strategy" aria-labelledby="title-strategy"><div class="section-number">CHAPTER 22 / 振る舞い</div><h2 id="title-strategy">Strategy｜目的が同じアルゴリズムを交換する</h2><p class="lead">目的が同じアルゴリズムを交換する。</p><div class="learning"><div><span>この章の到達点</span>Strategyの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>料金計算のif分岐に割引ルールが増え、注文処理が全キャンペーンの計算を知ってしまう。</p><p><b>追加する要求：</b>通常料金と会員料金を、注文処理の修正なしに選ぶ。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="strategy">public class Main {
+    public static void main(String[] args) {
+        int base = 1000;
+        boolean member = true;
+        System.out.println(member ? base * 9 / 10 : base);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-strategy"><div class="diagram-heading"><span>図21</span><strong>Strategyの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Strategyの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-strategy-title svg-strategy-desc"><title id="svg-strategy-title">Strategyの役割</title><desc id="svg-strategy-desc">組立側が方策を選んで注入する。CheckoutはPricingへ料金計算を委譲する。各方策が同じprice契約を実装する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-strategy" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">組立側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Checkout</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">Pricing</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="54.0" text-anchor="middle" class="svg-node">Member</text><text x="772.5" y="76.0" text-anchor="middle" class="svg-node">Regular</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-strategy)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">方策を注入</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-strategy)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">計算を委譲</text><path d="M772.5 111 V285 H552.5 V113" class="edge" marker-end="url(#arrow-strategy)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">実装</text></svg></div><figcaption>組立側が方策を選んで注入する。CheckoutはPricingへ料金計算を委譲する。各方策が同じprice契約を実装する。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="strategy">public class Main {
+    interface Pricing { int price(int base); }
+    static class Regular implements Pricing {
+        public int price(int base) { return base; }
+    }
+    static class Member implements Pricing {
+        public int price(int base) { return base * 9 / 10; }
+    }
+    static class Checkout {
+        private final Pricing pricing;
+        Checkout(Pricing pricing) { this.pricing=pricing; }
+        int total(int base) { return pricing.price(base); }
+    }
+    public static void main(String[] args) {
+        System.out.println(new Checkout(new Member()).total(1000));
+        System.out.println(new Checkout(new Regular()).total(1000));
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>900
+1000</code></pre></div><h3>変更に強くなった場所</h3><p>アルゴリズムの変更を注文処理から切り離せる。方策単位でテストしやすく、組立側で選択できる。</p><h3>コスト・前提・使わない判断</h3><p>利用側か組立側は方策を選ぶ知識が必要。単純な一条件だけならifの方が明快。例のint計算は小さな非負値を想定し、金額の丸め・オーバーフロー・通貨は実用で定義する。</p><h3>似たパターンとの違い</h3><p>Stateは状態と遷移をモデル化する。Strategyは同じ目的の手段を交換する。Template Methodは継承で一部手順を変えるのに対し、Strategyは合成で交換する。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 会員が変わるとCheckout内部でState遷移させる？</summary><p>この例は組立側がMemberを選ぶStrategy。利用者のライフサイクル自体はモデル化していない。</p></details><details class="answer"><summary>Q2. 方策は必ずクラスにする？</summary><p>不要。単一メソッドならJavaのラムダでPricingを実装できる。意図と契約が保たれることが大事。</p></details></div><div class="chapter-bottom"><a href="#state">← 前の章</a><label class="complete"><input type="checkbox" data-complete="strategy">この章を読了</label><a href="#template-method">次の章 →</a></div></section><section class="chapter" id="template-method" aria-labelledby="title-template-method"><div class="section-number">CHAPTER 23 / 振る舞い</div><h2 id="title-template-method">Template Method｜手順の骨格を固定し一部だけ差し替える</h2><p class="lead">手順の骨格を固定し一部だけ差し替える。</p><div class="learning"><div><span>この章の到達点</span>Template Methodの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>CSVとJSONのエクスポートで、開始・本文・終了の手順全体を複製している。</p><p><b>追加する要求：</b>手順は同じまま、本文の形式だけを変える。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="template-method">public class Main {
+    public static void main(String[] args) {
+        System.out.println(&quot;begin&quot;);
+        System.out.println(&quot;csv body&quot;);
+        System.out.println(&quot;end&quot;);
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-template-method"><div class="diagram-heading"><span>図22</span><strong>Template Methodの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Template Methodの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-template-method-title svg-template-method-desc"><title id="svg-template-method-title">Template Methodの役割</title><desc id="svg-template-method-desc">利用側は骨格メソッドexportを呼ぶ。exportが決まった順序でbodyを呼ぶ。サブクラスがbodyをオーバーライドする。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-template-method" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Exporter.export</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="65.0" text-anchor="middle" class="svg-node">bodyフック</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">JsonExporter</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-template-method)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">export</text><path d="M332.5 111 V220 H552.5 V113" class="edge" marker-end="url(#arrow-template-method)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">呼出</text><path d="M772.5 111 V285 H552.5 V113" class="edge" marker-end="url(#arrow-template-method)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">上書き</text></svg></div><figcaption>利用側は骨格メソッドexportを呼ぶ。exportが決まった順序でbodyを呼ぶ。サブクラスがbodyをオーバーライドする。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="template-method">public class Main {
+    static abstract class Exporter {
+        final void export() { begin(); body(); end(); }
+        private void begin() { System.out.println(&quot;begin&quot;); }
+        protected abstract void body();
+        private void end() { System.out.println(&quot;end&quot;); }
+    }
+    static class CsvExporter extends Exporter {
+        protected void body() { System.out.println(&quot;csv body&quot;); }
+    }
+    static class JsonExporter extends Exporter {
+        protected void body() { System.out.println(&quot;json body&quot;); }
+    }
+    public static void main(String[] args) { new JsonExporter().export(); }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>begin
+json body
+end</code></pre></div><h3>変更に強くなった場所</h3><p>共通の呼出順を親に集め、形式固有の処理だけをサブクラスへ分けられる。finalにより順序全体の上書きを防ぐ。</p><h3>コスト・前提・使わない判断</h3><p>親クラスの変更が子へ波及し、実行時の交換も合成より難しい。この例は正常系だけで、body失敗時にもendが必要ならtry/finally等を設計する。差が小さいなら関数を引数として渡す案もある。</p><h3>似たパターンとの違い</h3><p>Factory Methodは生成対象の差替えに特化したフック。Template Methodは処理手順の骨格を定義する。Strategyなら継承せず処理を委譲できる。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. exportをfinalにした意図は？</summary><p>手順全体を子が上書きして順序を壊すのを防ぎ、定めたフックだけを拡張点にするため。</p></details><details class="answer"><summary>Q2. bodyが例外を投げたらendは呼ばれる？</summary><p>この例では呼ばれない。必須の後処理ならfinallyなどで保証し、骨格の例外契約を定義する。</p></details></div><div class="chapter-bottom"><a href="#strategy">← 前の章</a><label class="complete"><input type="checkbox" data-complete="template-method">この章を読了</label><a href="#visitor">次の章 →</a></div></section><section class="chapter" id="visitor" aria-labelledby="title-visitor"><div class="section-number">CHAPTER 24 / 振る舞い</div><h2 id="title-visitor">Visitor｜安定した要素群に新しい処理を追加する</h2><p class="lead">安定した要素群に新しい処理を追加する。</p><div class="learning"><div><span>この章の到達点</span>Visitorの役割と採用条件を、変更要求から説明できる。</div><div><span>分類・前提</span>振る舞い／導入の基礎とJavaのクラス・インターフェース</div></div><h3>問題と変更要求</h3><p>図形クラスへ描画・書き出し・検査の処理を追加するたびに、全図形のコードを編集している。</p><p><b>追加する要求：</b>円と長方形の型を維持しつつ、説明文出力という操作を外へ取り出す。</p><div class="code-example"><div class="code-label">適用前：Main.java（問題を絞った正常系）</div><pre tabindex="0" role="region" aria-label="適用前：Main.java（問題を絞った正常系）"><code data-java="before" data-example="visitor">public class Main {
+    public static void main(String[] args) {
+        interface Shape {}
+        record Circle(int radius) implements Shape {}
+        record Rectangle(int width, int height) implements Shape {}
+        for (Shape s : java.util.List.of(new Circle(2), new Rectangle(3,4))) {
+            if (s instanceof Circle c) System.out.println(&quot;circle radius=&quot; + c.radius());
+            else if (s instanceof Rectangle r) System.out.println(&quot;rectangle &quot; + r.width() + &quot;x&quot; + r.height());
+        }
+        // 新しい操作を書くたびに型判定も繰り返す
+    }
+}</code></pre></div><h3>設計を変える</h3><figure class="diagram fit" id="fig-visitor"><div class="diagram-heading"><span>図23</span><strong>Visitorの役割と依存</strong></div><div class="diagram-tools"><button type="button" class="diagram-fit" aria-pressed="true">拡大して読む</button><span>実装・継承の矢印は契約側へ、呼出の矢印は呼出先へ向きます</span></div><div class="diagram-canvas" tabindex="0" role="region" aria-label="Visitorの設計図"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 335" role="img" aria-labelledby="svg-visitor-title svg-visitor-desc"><title id="svg-visitor-title">Visitorの役割</title><desc id="svg-visitor-desc">利用側が要素へVisitorを渡す。具体要素のacceptがthisの型を確定する。具体要素が対応するvisitを呼ぶ（二重ディスパッチ）。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</desc><defs><marker id="arrow-visitor" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="arrowhead"/></marker></defs><rect x="20" y="25" width="185" height="85" rx="8"/><text x="112.5" y="65.0" text-anchor="middle" class="svg-node">利用側</text><rect x="240" y="25" width="185" height="85" rx="8"/><text x="332.5" y="65.0" text-anchor="middle" class="svg-node">Shape.accept</text><rect x="460" y="25" width="185" height="85" rx="8"/><text x="552.5" y="54.0" text-anchor="middle" class="svg-node">Circle</text><text x="552.5" y="76.0" text-anchor="middle" class="svg-node">Rectangle</text><rect x="680" y="25" width="185" height="85" rx="8"/><text x="772.5" y="65.0" text-anchor="middle" class="svg-node">Visitor.visit</text><path d="M112.5 111 V155 H332.5 V113" class="edge" marker-end="url(#arrow-visitor)"/><text x="222.5" y="145" text-anchor="middle" class="svg-label">accept</text><path d="M552.5 111 V220 H332.5 V113" class="edge" marker-end="url(#arrow-visitor)"/><text x="442.5" y="210" text-anchor="middle" class="svg-label">実装</text><path d="M552.5 111 V285 H772.5 V113" class="edge" marker-end="url(#arrow-visitor)"/><text x="662.5" y="275" text-anchor="middle" class="svg-label">型に応じたvisit</text></svg></div><figcaption>利用側が要素へVisitorを渡す。具体要素のacceptがthisの型を確定する。具体要素が対応するvisitを呼ぶ（二重ディスパッチ）。矢印はラベルで示した関係であり、厳密なUML記法ではありません。</figcaption></figure><div class="code-example"><div class="code-label">適用後と使用例：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="適用後と使用例：Main.java（Java 17）"><code data-java="after" data-example="visitor">public class Main {
+    interface Shape { String accept(Visitor visitor); }
+    record Circle(int radius) implements Shape {
+        public String accept(Visitor v) { return v.visit(this); }
+    }
+    record Rectangle(int width, int height) implements Shape {
+        public String accept(Visitor v) { return v.visit(this); }
+    }
+    interface Visitor {
+        String visit(Circle c);
+        String visit(Rectangle r);
+    }
+    static class Describe implements Visitor {
+        public String visit(Circle c) { return &quot;circle radius=&quot; + c.radius(); }
+        public String visit(Rectangle r) { return &quot;rectangle &quot; + r.width() + &quot;x&quot; + r.height(); }
+    }
+    public static void main(String[] args) {
+        Visitor describe = new Describe();
+        for (Shape s : java.util.List.of(new Circle(2), new Rectangle(3,4))) {
+            System.out.println(s.accept(describe));
+        }
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>circle radius=2
+rectangle 3x4</code></pre></div><h3>変更に強くなった場所</h3><p>要素の種類が安定していれば、面積や検査など新しい操作を別Visitorとして追加できる。要素の型判定を各処理へ散らさずに済む。</p><h3>コスト・前提・使わない判断</h3><p>新しいTriangleを増やすとVisitorと全実装を変更する。外部の操作に必要な状態公開が増えることもある。型が頻繁に増える、操作が一つだけなら通常の多態メソッドが簡潔。</p><h3>似たパターンとの違い</h3><p>Iteratorは要素の列挙、Visitorは型ごとの処理を分離する。この例のList走査はIteratorであり、Visitor自体に走査機能があるわけではない。</p><div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 面積計算の追加でCircleのacceptを修正する？</summary><p>Visitor契約を実装する新しい処理を作れば、既存のacceptはそのまま使える。戻り値型はこの例ではStringに固定している。</p></details><details class="answer"><summary>Q2. Triangle追加時の影響は？</summary><p>visit(Triangle)とTriangle.acceptに加え、全Visitor実装へ対応を追加する。要素種類の安定性が採用判断になる。</p></details></div><div class="chapter-bottom"><a href="#template-method">← 前の章</a><label class="complete"><input type="checkbox" data-complete="visitor">この章を読了</label><a href="#comparison">次の章 →</a></div></section><section class="chapter" id="comparison" aria-labelledby="title-comparison"><div class="section-number">CHAPTER 25 / 応用</div><h2 id="title-comparison">類似パターンの比較と選び方</h2><p>「似た図だから同じ」ではありません。目的・変化する軸・変更時に触る場所を比べます。</p><div class="table-scroll" tabindex="0" role="region" aria-label="類似パターンの比較"><table><thead><tr><th scope="col">比較</th><th scope="col">判断の質問</th><th scope="col">具体例</th></tr></thead><tbody><tr><th scope="row"><a href="#abstract-factory">Abstract Factory</a> / <a href="#factory-method">Factory Method</a></th><td>製品群の整合性か、生成フックの差替えか</td><td>テーマ一式ならAbstract Factory。共通の読取手順から生成だけをサブクラスで変えるならFactory Method。</td></tr><tr><th scope="row"><a href="#bridge">Bridge</a> / <a href="#adapter">Adapter</a></th><td>二つの拡張軸か、既存契約の不一致か</td><td>通知種別×媒体を独立拡張するならBridge。既存postをsendとして扱うならAdapter。</td></tr><tr><th scope="row"><a href="#decorator">Decorator</a> / <a href="#proxy">Proxy</a></th><td>責務を重ねるか、実体へのアクセスを制御するか</td><td>加工とログを任意に重ねるならDecorator。読込遅延やアクセス権ならProxy。構造が似ていても意図を確認する。</td></tr><tr><th scope="row"><a href="#state">State</a> / <a href="#strategy">Strategy</a></th><td>ライフサイクル上の遷移か、同じ目的の手段の選択か</td><td>未払い→支払い済みならState。通常料金と会員料金を組立時に選ぶならStrategy。</td></tr><tr><th scope="row"><a href="#strategy">Strategy</a> / <a href="#template-method">Template Method</a></th><td>合成でアルゴリズムを交換するか、継承で手順の一部を変えるか</td><td>実行ごとの交換や独立テストを重視するならStrategy。安定した手順と自然な継承関係ならTemplate Method。</td></tr><tr><th scope="row"><a href="#composite">Composite</a> / <a href="#decorator">Decorator</a></th><td>子をまとめるか、一つの対象に責務を加えるか</td><td>フォルダーの再帰集計ならComposite。単一送信器へのログ付与ならDecorator。</td></tr><tr><th scope="row"><a href="#mediator">Mediator</a> / <a href="#observer">Observer</a></th><td>協調ルールか、変更通知の機構か</td><td>フォーム全体の整合を保つならMediator。独立した通知先への配信ならObserver。併用もできる。</td></tr><tr><th scope="row"><a href="#command">Command</a> / <a href="#memento">Memento</a></th><td>要求を記録するか、状態を保存するか</td><td>操作の再実行やキューならCommand。内部状態の保存復元ならMemento。取消処理で組合せることもある。</td></tr><tr><th scope="row"><a href="#builder">Builder</a> / <a href="#prototype">Prototype</a></th><td>段階的な組立か、既存インスタンスからの複製か</td><td>同じ生成手順で形式を変えるならBuilder。実行時に選んだひな型を複製するならPrototype。</td></tr></tbody></table></div><h3>採用前に答える五つの質問</h3><ol><li>今ある変更要求は何か。予想だけでなく実例を挙げられるか。</li><li>分離する変化軸は何か。どのクラスを変更から守りたいか。</li><li>増える型・依存・組立・デバッグのコストは許容できるか。</li><li>単純なif、関数引数、標準ライブラリで十分ではないか。</li><li>例外・並行性・寿命の契約を、追加した境界で説明できるか。</li></ol><p>Android補足：外部SDKを自アプリの契約へ合わせる場面はAdapter、画面部品の協調はMediator、イベントの購読はObserverとして考えられます。ただしAPI名にFactoryやBuilderが含まれているだけでGoFの役割に一致するとは限りません。ライフサイクルに合わせた購読解除も確認します。</p><div class="chapter-bottom"><a href="#visitor">← 前の章</a><label class="complete"><input type="checkbox" data-complete="comparison">この章を読了</label><a href="#exercise">次の章 →</a></div></section><section class="chapter" id="exercise" aria-labelledby="title-exercise"><div class="section-number">CHAPTER 26 / 応用</div><h2 id="title-exercise">総合演習：注文通知を育てる</h2><p>題材は注文確定後の通知です。完成形から逆算せず、要求が増える段階ごとに最小の変更案を比較します。</p>
+<h3>段階1：メールを一通送る</h3><p>注文確定後に一つのメール関数を呼ぶだけなら、そのままで十分です。将来必要かもしれないという理由だけで23パターンを導入しません。送信完了・失敗の意味を先に定義します。</p>
+<h3>段階2：メールとSMSを顧客ごとに選ぶ</h3><p>Channel契約へ送信処理を分け、組立側でMailかSmsを選ぶStrategyを候補にします。既存SMSの操作がpostしかないなら、その実装内にAdapterを置きます。媒体だけを交換する段階では、二つの階層を用意するBridgeや製品群のAbstract Factoryはまだ必要ありません。</p>
+<h3>段階3：一部の送信にだけログを付ける</h3><p>Logging Decoratorで選んだChannelを包みます。ログが全送信に必須で一か所だけなら通常の送信メソッド内でも十分です。ログの出力は配送成功を意味しません。本文や個人情報をログへ残す要件も検討します。</p>
+<h3>段階4：受付と実行を分ける</h3><p>宛先を表すID・本文・送信手段をSendCommandにまとめ、Dispatcherへ預けます。ここでCommandはundoを実装しません。送信済みの通知は取り消せないからです。通知方策の交換がStrategy、特定の通知要求を保持するのがCommandです。</p><div class="code-example"><div class="code-label">総合演習：Main.java（Java 17）</div><pre tabindex="0" role="region" aria-label="総合演習：Main.java（Java 17）"><code data-java="after" data-example="exercise">public class Main {
+    interface Channel { void send(String id, String text); }
+    static class Mail implements Channel {
+        public void send(String id, String text) { System.out.println(&quot;MAIL &quot; + id + &quot;: &quot; + text); }
+    }
+    static class Sms implements Channel {
+        public void send(String id, String text) { System.out.println(&quot;SMS &quot; + id + &quot;: &quot; + text); }
+    }
+    static class Logging implements Channel {
+        private final Channel next;
+        Logging(Channel next) { this.next=next; }
+        public void send(String id, String text) {
+            System.out.println(&quot;LOG &quot; + id); next.send(id, text);
+        }
+    }
+    record SendCommand(Channel channel, String id, String text) {
+        void execute() { channel.send(id, text); }
+    }
+    static class Dispatcher {
+        private final java.util.Queue&lt;SendCommand&gt; queue = new java.util.ArrayDeque&lt;&gt;();
+        void enqueue(SendCommand c) { queue.add(c); }
+        void drain() {
+            while (!queue.isEmpty()) queue.remove().execute();
+        }
+    }
+    public static void main(String[] args) {
+        Channel channel = new Logging(new Sms());
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.enqueue(new SendCommand(channel, &quot;order-7&quot;, &quot;paid&quot;));
+        System.out.println(&quot;queued&quot;);
+        dispatcher.drain();
+    }
+}</code></pre></div><div class="code-example"><div class="code-label">実行結果</div><pre tabindex="0" role="region" aria-label="実行結果"><code>queued
+LOG order-7
+SMS order-7: paid</code></pre></div><h3>段階5：本番の配送保証を要求されたら</h3><p>このキューはプロセス終了で消えます。drainは実行前に要求を取り出すため、例外時には再投入されません。永続的なキュー、再試行回数・間隔、重複抑止、送信先との冪等性を追加設計します。Commandを作っただけでは一度だけの配送は保証されません。注文確定と通知登録の整合性にはトランザクショナルアウトボックス等も検討します。</p>
+<p>監査や分析など複数の独立した反応が必要ならObserverを候補にしますが、同じ顧客への送信手段の選択とは分けます。配送の状態管理が複雑化した時点でStateも検討できます。現時点で固定のqueued / done / failedだけならenumによる状態管理も有効です。</p>
+<div class="exercise"><h3>設計を説明する演習</h3><ol><li>Push通知を追加し、注文処理へ媒体の分岐を入れずに済む変更箇所を列挙してください。</li><li>ログを送信前と成功後のどちらへ出すか決め、失敗時の観測結果を説明してください。</li><li>送信後に接続が切れた場合の再試行で、重複送信をどう扱うか設計してください。</li></ol><details class="answer"><summary>設計例と採用しなかった案を読む</summary><p>PushはChannelの実装を追加し組立側で選びます。SDKとの契約が異なるならAdapterを内側へ置きます。ログは受付と成功を分けたイベントにすると誤認を減らせます。再試行では安定した要求IDと送信先での重複抑止が必要で、IDを渡すだけでは保証になりません。相手が冪等性を提供しない場合は重複許容・照合・手動確認を含めて判断します。媒体ごとの送信しかないためAbstract Factoryは採用せず、通知の優先度も独立拡張しない段階ではBridgeも採用しません。要求の規模が小さければDecoratorやCommandを省き、一つのサービスへまとめる設計も説明可能です。</p></details></div><div class="chapter-bottom"><a href="#comparison">← 前の章</a><label class="complete"><input type="checkbox" data-complete="exercise">この章を読了</label><a href="#glossary">次の章 →</a></div></section><section class="chapter" id="glossary" aria-labelledby="title-glossary"><div class="section-number">CHAPTER 27 / 資料</div><h2 id="title-glossary">用語集</h2><p>役割名はクラス名の規則ではありません。コードでどの責任を持つかに注目してください。</p><div class="table-scroll" tabindex="0" role="region" aria-label="デザインパターン用語集"><table><thead><tr><th scope="col">用語</th><th scope="col">説明</th></tr></thead><tbody><tr><th scope="row">凝集度</th><td>部品内の責務のまとまり。単にメソッド数が少ないという意味ではない。</td></tr><tr><th scope="row">結合度</th><td>部品間の依存の強さ。型以外に意味・順序・時間への依存もある。</td></tr><tr><th scope="row">委譲</th><td>受けた仕事を別オブジェクトへ依頼すること。</td></tr><tr><th scope="row">合成</th><td>他オブジェクトを保持して振る舞いを組み立てること。</td></tr><tr><th scope="row">継承</th><td>親の型・契約・実装を受け継ぐ関係。</td></tr><tr><th scope="row">多態性</th><td>同じ契約への呼出が具体型に応じた実装へ届く性質。</td></tr><tr><th scope="row">動的ディスパッチ</th><td>実行時の受信オブジェクトに応じて呼ぶメソッドを決める仕組み。</td></tr><tr><th scope="row">二重ディスパッチ</th><td>Visitorで、要素のacceptとVisitorのvisitを介して双方の型に応じた処理を選ぶこと。</td></tr><tr><th scope="row">内在状態</th><td>Flyweightで共有対象の内部に保持できる状態。</td></tr><tr><th scope="row">外在状態</th><td>Flyweightの利用時に文脈から渡す個別状態。</td></tr><tr><th scope="row">浅いコピー</th><td>参照先のオブジェクト自体は複製せず、フィールドや要素の参照をコピーすること。</td></tr><tr><th scope="row">深いコピー</th><td>独立させる範囲の参照先も複製すること。境界を定める必要がある。</td></tr><tr><th scope="row">依存注入（DI）</th><td>必要な依存先を利用側の内部で生成せず、外から渡す方法。</td></tr><tr><th scope="row">不変オブジェクト</th><td>生成後に観測可能な状態が変わらないオブジェクト。recordも参照先が可変なら深い不変性は得られない。</td></tr><tr><th scope="row">スレッド安全</th><td>定めた並行利用の条件でも正しさを保てる性質。パターン名だけでは保証されない。</td></tr><tr><th scope="row">冪等性</th><td>同じ要求を繰り返しても、定義した効果が一回と同じになる性質。</td></tr><tr><th scope="row">補償処理</th><td>既に起きた処理を直接巻き戻せない場合に、別の処理で業務上の影響を調整すること。</td></tr><tr><th scope="row">ライフサイクル</th><td>生成・利用・状態変化・終了にわたる寿命。購読解除や資源解放と関連する。</td></tr><tr><th scope="row">Context</th><td>StrategyやStateを保持し、処理を委譲する利用側。</td></tr><tr><th scope="row">Receiver</th><td>Commandが実際の操作を依頼する対象。</td></tr><tr><th scope="row">Invoker</th><td>Commandを呼び出す役割。</td></tr><tr><th scope="row">Originator / Caretaker</th><td>Mementoを作成・復元する対象と、内容に立ち入らず保持する役割。</td></tr></tbody></table></div><div class="chapter-bottom"><a href="#exercise">← 前の章</a><label class="complete"><input type="checkbox" data-complete="glossary">この章を読了</label><a href="#references">次の章 →</a></div></section><section class="chapter" id="references" aria-labelledby="title-references"><div class="section-number">CHAPTER 28 / 資料</div><h2 id="title-references">参考資料と適用範囲</h2><p>本文・図・コードはこの教材用の独自の例です。GoFの分類と意図を確認する書籍、およびJavaの契約を確認する公式資料を挙げます。</p><ul>
+<li>Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides 著『Design Patterns: Elements of Reusable Object-Oriented Software』（Addison-Wesley, 1994）。原典はC++ / Smalltalkを中心とし、本教材はJavaへ置き換えて説明しています。<a href="https://www.pearson.com/en-us/subject-catalog/p/design-patterns-elements-of-reusable-object-oriented-software/P200000009427">出版社の書籍情報</a></li>
+<li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html">Java言語仕様17：クラス・オーバーライド・enum</a></li>
+<li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-12.html#jls-12.4.2">Java言語仕様17：クラス初期化の手順</a></li>
+<li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Iterator.html">Java 17 API：Iteratorの契約</a></li>
+<li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html#copyOf(java.util.Collection)">Java 17 API：List.copyOf</a></li>
+<li><a href="https://developer.android.com/studio/write/java8-support">Android公式：Javaの言語機能とAPIの対応</a></li></ul>
+<h3>検証と適用の範囲</h3><p>各Java例は単体で実行する学習用です。実際のネットワーク送信・決済・ファイル操作は行わず、標準出力で流れを示します。個々のパターンは性能、セキュリティ、並行性、配送保証を自動的に与えません。採用時は製品要件に沿った例外処理・寿命・永続化・テストを追加してください。</p><div class="chapter-bottom"><a href="#glossary">← 前の章</a><label class="complete"><input type="checkbox" data-complete="references">この章を読了</label><a href="#start">導入に戻る ↑</a></div></section><footer class="page-footer"><a href="../">教材ライブラリへ戻る</a> · GoFデザインパターン / Java 17</footer></main></div><script>(() => {
+  'use strict';
+  const key = 'gof-design-patterns-learning-guide-completed-v1';
+  const checks = Array.from(document.querySelectorAll('[data-complete]'));
+  const known = new Set(checks.map(x => x.dataset.complete));
+  let completed = new Set(), persistent = true;
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || '[]');
+    if (Array.isArray(saved)) completed = new Set(saved.filter(id => known.has(id)));
+  } catch (_) { persistent = false; }
+  const count = document.getElementById('reading-count');
+  const progress = document.getElementById('reading-progress');
+  const saveStatus = document.getElementById('save-status');
+  function renderProgress() {
+    progress.max = checks.length;
+    progress.value = completed.size;
+    count.textContent = completed.size + ' / ' + checks.length + ' 章を読了';
+    checks.forEach(box => {
+      box.checked = completed.has(box.dataset.complete);
+      const nav = document.querySelector('nav a[href="#' + box.dataset.complete + '"]');
+      if (nav) nav.classList.toggle('read', box.checked);
+    });
+    saveStatus.textContent = persistent ? '読了記録はこのブラウザに保存します。他の教材の記録とは別です。' : '保存機能を利用できないため、この閲覧中のみ記録します。';
+  }
+  checks.forEach(box => box.addEventListener('change', () => {
+    if (box.checked) completed.add(box.dataset.complete); else completed.delete(box.dataset.complete);
+    try { localStorage.setItem(key, JSON.stringify(Array.from(completed))); }
+    catch (_) { persistent = false; }
+    renderProgress();
+  }));
+  renderProgress();
+  document.querySelectorAll('.diagram-fit').forEach(button => {
+    button.addEventListener('click', () => {
+      const figure = button.closest('.diagram');
+      const fit = figure.classList.toggle('fit');
+      button.setAttribute('aria-pressed', String(fit));
+      button.textContent = fit ? '拡大して読む' : '全体を表示';
+    });
+  });
+  let printDetails = null;
+  window.addEventListener('beforeprint', () => {
+    if (printDetails) return;
+    printDetails = Array.from(document.querySelectorAll('details')).map(el => [el, el.open]);
+    printDetails.forEach(([el]) => { el.open = true; });
+  });
+  window.addEventListener('afterprint', () => {
+    if (!printDetails) return;
+    printDetails.forEach(([el, open]) => { el.open = open; });
+    printDetails = null;
+  });
+  document.getElementById('print-guide').addEventListener('click', () => window.print());
+  if (window.matchMedia('(max-width: 900px)').matches) document.getElementById('toc').open = false;
+})();</script></body></html>

@@ -4,11 +4,12 @@
 
 ## 公開先
 
-配置後のURLです。今回のローカル変更はまだpushしていません。
+GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPagesのビルド・公開成功が必要です。
 
 - 教材一覧: https://ta-yokoi.github.io/android-learning-guide/
 - Android: https://ta-yokoi.github.io/android-learning-guide/android/
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/
+- GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
 
 ## 構成
 
@@ -16,6 +17,7 @@
 index.html           # 教材一覧
 android/index.html   # Android（30章・図38点・78問）
 embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
+design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 .nojekyll
 ```
 
@@ -32,6 +34,7 @@ github-pagesという親フォルダ自体はアップロードしません。ZI
 ## 読了記録
 
 Androidはandroid16-learning-guide-completed-v1、組み込み開発はembedded-learning-guide-completed-v1を使います。
+GoFはgof-design-patterns-learning-guide-completed-v1を使います。
 同じブラウザ・公開元のlocalStorageに保存し、教材ごとの記録を分離します。
 端末間・ブラウザ間では同期しません。保存できない環境では閲覧中のみ保持します。
 
@@ -40,10 +43,36 @@ Androidはandroid16-learning-guide-completed-v1、組み込み開発はembedded-
 HTML構造・リンク・図・操作ロジックとPC向けコードを検証しました。
 実ブラウザ・実スマートフォンでの表示、実機・BSP・電気信号・電源・更新動作は別途確認が必要です。
 教材本文と巻末に適用条件・未検証の範囲を記載しています。
-コミット・push・公開確認は別途実施します。
+GitHub Pagesへの反映はpush後のビルド・公開結果で確認します。
 
 ## 外観の自動切替
 
-教材一覧・Android・組み込み開発は、端末／ブラウザの外観設定に応じてライト・ダークを自動切替します。
+教材一覧・Android・組み込み開発・GoFデザインパターンは、端末／ブラウザの外観設定に応じてライト・ダークを自動切替します。
 CSSのprefers-color-schemeを使い、本文・図・表・フォームを切替します。設定の保存や追加ライブラリは不要です。
 印刷では既存の明るい配色を使います。実端末での表示確認は別途必要です。
+
+## GoFデザインパターン教材
+
+生成5・構造7・振る舞い11の全23パターンを、問題、変更要求、適用前後のJavaコード、設計図、利点・コスト・不採用の判断から学びます。
+導入、類似パターンの比較、注文通知システムの総合演習、用語集22語、参考資料を含む28章です。
+クラスとインターフェースの基礎が前提です。Java 17を基準とし、各コード例は独立したMain.javaとしてJDK 17以降で実行できます。
+
+閲覧はルートのindex.htmlから教材カードを選ぶか、design-patterns/index.htmlをブラウザで開きます。
+HTTPで確認する場合はリポジトリ直下で次を実行し、http://localhost:8000/design-patterns/ を開きます。
+
+```sh
+python3 -m http.server 8000
+```
+
+目次、章間移動、解答の開閉、設計図の拡大、章ごとの読了記録に対応します。
+印刷ボタンでは解答も展開します。CSS・SVG・JavaScriptはHTML内に含め、教材自体は外部リソースに依存しません。
+実用上の例外処理・並行性・永続化・配送保証の限界は各章と巻末に明記しています。
+
+### GoF教材の検証結果
+
+- 掲載HTMLから抽出した47例（適用前23・適用後23・総合演習1）をJDK 17の`javac --release 17`でコンパイルし、実行しました。適用後23例と総合演習は掲載した出力とも照合済みです。
+- Chromiumで幅1440・390・320px、ライト／ダーク表示を確認しました。ページ全体の横はみ出しはなく、コードと拡大図は領域内で横スクロールできます。
+- 一覧との相互リンク、章内リンク、解答のキーボード開閉、図の表示切替、読了記録の再読込を確認しました。保存不可・不正な保存データの場合も操作を継続できます。
+- 既存Android／組み込み教材の表示と読了記録の分離、JavaScript無効時の閲覧、印刷時の解答展開と白背景を確認しました。教材内リンク切れ・JavaScript実行エラーはありません。ローカルサーバーのfavicon.icoは未配置で、ブラウザの自動取得のみ404になります。
+- 参考資料の外部リンクはHTTP応答を確認しました。出版社のリンクは検索ページへ転送される場合があります。
+- 実スマートフォン、Safari／Firefox、実プリンターは未確認です。公開時はGitHub Pagesのデプロイ完了と教材URLへの到達を別途確認します。
