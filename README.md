@@ -21,7 +21,7 @@ android/index.html   # Android（30章・図38点・78問）
 embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
-css-motion-gallery/index.html # HTMLだけで動くアニメーション集（8作品）
+css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
 .nojekyll
 ```
 
@@ -108,7 +108,7 @@ HTTPサーバーを利用する場合は上記の起動コマンドで http://lo
 
 ## CSS Motion Gallery — HTMLだけで動くアニメーション集
 
-`css-motion-gallery/index.html`は、8つのCSSアニメーション作品を収録した単一HTMLのギャラリーです。
+`css-motion-gallery/index.html`は、9つのCSSアニメーション作品を収録した単一HTMLのギャラリーです。
 オーロラ、軌道運動、3Dキューブ、波、液体グラデーション、動く文字、日食、無限トンネルを、外部画像や動画を使わずに描きます。各作品に遠近感、前後の層、陰影を加えています。
 CSSをHTML内に含め、JavaScript・外部ライブラリ・CDN・外部フォント・ビルド工程は不要です。
 
@@ -123,3 +123,9 @@ HTTPサーバーを利用する場合は、リポジトリ直下で`python3 -m h
 
 ChromiumでJavaScriptを無効にし、8作品すべての動き、全体／個別停止と再開、キーボード操作、幅1440・768・390・320pxでの表示、動きを減らす設定、印刷、一覧との相互リンクを確認しました。外部リソースへの通信とJavaScript実行エラーはありません。
 この環境ではfile://が管理ポリシーで制限されるため、検証はローカルHTTP経由です。直接ファイルを開く環境、実スマートフォン、Safari／Firefox、実プリンターは未確認です。
+
+### Constellation：480光点の立体変形
+
+CSS Motion Galleryに9作目を追加。480点が散開・球体・トーラス・二重らせん・立方体へ36秒周期で変形し、集合体は42秒周期で回転します。座標はHTML内に保持し、実行時JavaScriptは不要です。全体／個別停止と動きを減らす設定に対応します。端末によって描画負荷が異なります。
+
+追加後、JavaScript無効のChromiumで全9作品の動き、全体／個別停止、幅1440・768・390・320px、動きを減らす設定、印刷、一覧リンクを確認しました。実スマートフォンでのフレームレートは未測定です。
