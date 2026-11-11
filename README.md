@@ -10,6 +10,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - Android: https://ta-yokoi.github.io/android-learning-guide/android/
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
+- 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/pattern-animations/
 
 ## 構成
 
@@ -18,10 +19,11 @@ index.html           # 教材一覧
 android/index.html   # Android（30章・図38点・78問）
 embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
+pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
 .nojekyll
 ```
 
-各教材はCSS・SVG・JavaScriptを内包するHTMLです。外部のスクリプト・画像・フォントは不要です。
+各教材はCSS・SVGなどを内包するHTMLです。体系学習ガイドは操作用JavaScriptを内包し、動くGoF図解はHTMLとCSSだけで構成します。外部のスクリプト・画像・フォントは不要です。
 出典のリンク先を開く場合はインターネット接続が必要です。
 
 ## 公開と追加
@@ -47,7 +49,7 @@ GitHub Pagesへの反映はpush後のビルド・公開結果で確認します�
 
 ## 外観の自動切替
 
-教材一覧・Android・組み込み開発・GoFデザインパターンは、端末／ブラウザの外観設定に応じてライト・ダークを自動切替します。
+教材一覧・Android・組み込み開発・GoFデザインパターン・動くGoF図解は、端末／ブラウザの外観設定に応じてライト・ダークを自動切替します。
 CSSのprefers-color-schemeを使い、本文・図・表・フォームを切替します。設定の保存や追加ライブラリは不要です。
 印刷では既存の明るい配色を使います。実端末での表示確認は別途必要です。
 
@@ -76,3 +78,28 @@ python3 -m http.server 8000
 - 既存Android／組み込み教材の表示と読了記録の分離、JavaScript無効時の閲覧、印刷時の解答展開と白背景を確認しました。教材内リンク切れ・JavaScript実行エラーはありません。ローカルサーバーのfavicon.icoは未配置で、ブラウザの自動取得のみ404になります。
 - 参考資料の外部リンクはHTTP応答を確認しました。出版社のリンクは検索ページへ転送される場合があります。
 - 実スマートフォン、Safari／Firefox、実プリンターは未確認です。公開時はGitHub Pagesのデプロイ完了と教材URLへの到達を別途確認します。
+
+## 動く図で学ぶGoFデザインパターン
+
+`pattern-animations/index.html`は、JavaScriptを使わずCSSだけで要求・委譲・通知・戻りを動かす単一HTMLです。
+Strategy、Observer、Decorator、State、Factory Methodの5パターンを収録します。
+方策の選択、購読解除の有無、ラッパーの順序、CSV／JSONの生成フックを含む9つの説明シナリオがあります。
+図と番号付きの説明、役割、省略事項、誤解しやすい点、解答を開閉できる確認問題5問を備えます。
+
+ルートの教材カードを選ぶか、`pattern-animations/index.html`をブラウザで直接開きます。
+HTTPサーバーを利用する場合は上記の起動コマンドで http://localhost:8000/pattern-animations/ を開きます。
+各図は初期停止で、「再生する」のチェックを外すとその位置で一時停止します。図ごとの操作は独立し、シナリオの切替先は初めから開始します。
+動きは業務処理の実行ではなく、あらかじめ決めた説明の再生です。
+
+外部リソース・JavaScript・ビルド工程・追加パッケージは不要です。
+狭い画面では図の中だけを横スクロールできます。動きを減らす設定では静止した矢印と手順で読みます。
+ブラウザの印刷機能では全シナリオと解答を静止表示します。読了記録は保存しません。
+
+### 動くGoF図解の検証結果
+
+- ChromiumのJavaScriptを無効にして、全9シナリオの各工程で移動する印と非表示でのリセットを確認しました。初期停止、図ごとの独立再生、停止位置の保持、シナリオ切替の初期化も確認済みです。
+- キーボードでのチェックボックス・ラジオボタン・解答開閉・図の横スクロールを確認しました。
+- 幅1440・390・320pxのライト／ダークでページ全体の横はみ出しがないこと、動きを減らす設定でアニメーションがなく手順が読めることを確認しました。
+- 印刷用PDFで全9シナリオと5問の解答の表示、操作部品とアニメーションの非表示、白背景を確認しました。
+- 教材一覧との相互リンクと既存GoF教材への章リンクを確認しました。教材内にscriptや外部リソース参照はなく、閲覧時も外部への通信はありません。
+- この環境のChromeはfile://の閲覧を管理ポリシーで制限しているため、ブラウザ検証はローカルHTTP経由です。直接ファイルを開く環境、実スマートフォン、Safari／Firefox、実プリンターは未確認です。
