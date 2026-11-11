@@ -11,6 +11,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
 - 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/pattern-animations/
+- CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/css-motion-gallery/
 
 ## 構成
 
@@ -20,10 +21,11 @@ android/index.html   # Android（30章・図38点・78問）
 embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
+css-motion-gallery/index.html # HTMLだけで動くアニメーション集（8作品）
 .nojekyll
 ```
 
-各教材はCSS・SVGなどを内包するHTMLです。体系学習ガイドは操作用JavaScriptを内包し、動くGoF図解はHTMLとCSSだけで構成します。外部のスクリプト・画像・フォントは不要です。
+各教材はCSS・SVGなどを内包するHTMLです。体系学習ガイドは操作用JavaScriptを内包し、動くGoF図解とCSS Motion GalleryはHTMLとCSSだけで構成します。外部のスクリプト・画像・フォントは不要です。
 出典のリンク先を開く場合はインターネット接続が必要です。
 
 ## 公開と追加
@@ -103,3 +105,21 @@ HTTPサーバーを利用する場合は上記の起動コマンドで http://lo
 - 印刷用PDFで全9シナリオと5問の解答の表示、操作部品とアニメーションの非表示、白背景を確認しました。
 - 教材一覧との相互リンクと既存GoF教材への章リンクを確認しました。教材内にscriptや外部リソース参照はなく、閲覧時も外部への通信はありません。
 - この環境のChromeはfile://の閲覧を管理ポリシーで制限しているため、ブラウザ検証はローカルHTTP経由です。直接ファイルを開く環境、実スマートフォン、Safari／Firefox、実プリンターは未確認です。
+
+## CSS Motion Gallery — HTMLだけで動くアニメーション集
+
+`css-motion-gallery/index.html`は、8つのCSSアニメーション作品を収録した単一HTMLのギャラリーです。
+オーロラ、軌道運動、3Dキューブ、波、液体グラデーション、動く文字、日食、無限トンネルを、外部画像や動画を使わずに描きます。
+CSSをHTML内に含め、JavaScript・外部ライブラリ・CDN・外部フォント・ビルド工程は不要です。
+
+ルートの教材一覧から「CSS Motion Gallery」を選ぶか、`css-motion-gallery/index.html`をブラウザで開きます。
+HTTPサーバーを利用する場合は、リポジトリ直下で`python3 -m http.server 8000`を実行し、http://localhost:8000/css-motion-gallery/ を開きます。
+
+全体の一時停止と作品ごとの一時停止に対応します。端末の「動きを減らす」設定では静止表示になります。
+スマートフォン表示と印刷にも対応し、読了記録は保存しません。
+作品の光や色を見せるため、このギャラリーは暗い配色を基本とします。既存の教材一覧や体系学習ガイドの自動ライト／ダーク切替とは独立した外観です。
+
+### CSS Motion Galleryの検証結果
+
+ChromiumでJavaScriptを無効にし、8作品すべての動き、全体／個別停止と再開、キーボード操作、幅1440・768・390・320pxでの表示、動きを減らす設定、印刷、一覧との相互リンクを確認しました。外部リソースへの通信とJavaScript実行エラーはありません。
+この環境ではfile://が管理ポリシーで制限されるため、検証はローカルHTTP経由です。直接ファイルを開く環境、実スマートフォン、Safari／Firefox、実プリンターは未確認です。
