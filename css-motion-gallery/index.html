@@ -23,6 +23,63 @@
 @media(max-width:620px){.wrap{width:calc(100% - 32px)}.masthead{padding:23px 0}.masthead nav{gap:15px;font-size:11px}.masthead nav .secondary-nav{display:none}.brand{font-size:11px;gap:9px}.brand-mark{width:18px;height:18px}.intro{display:block;padding:44px 0 35px}.intro h1{font-size:clamp(40px,10vw,60px)}.eyebrow{font-size:9px;margin-bottom:18px}.intro-copy{margin-top:24px;max-width:430px}.intro-copy p{font-size:13px;margin-bottom:18px}.collection-heading p{font-size:10px}.collection-heading h2{font-size:10px}.gallery{grid-template-columns:1fr;gap:25px}.featured{grid-column:auto}.featured .stage{height:310px}.stage{height:310px}.featured .caption{display:block}.featured .caption>p{margin:15px 0}.featured .technique{margin-top:0}.aurora-word{font-size:clamp(55px,13vw,95px)}.aurora-ribbon{width:120%;left:-10%;filter:blur(25px)}.aurora-ribbon.second{filter:blur(24px)}.caption{padding:21px 20px}.guide{grid-template-columns:1fr;gap:18px;margin-top:42px}.guide h2{font-size:22px}.global-control{bottom:16px;padding:11px 18px;font-size:11px}.footer{flex-direction:column;gap:12px;padding-bottom:100px}.stage-meta{font-size:8px}.type-track{font-size:53px}.reduced-note{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.motion{animation:none!important}.local-control,.local-pause,.global-control,#pause-all{display:none!important}.reduced-note{display:block;background:#162820;border:1px solid #436453;border-radius:9px;padding:13px 16px;color:#d8f0dd;font-size:13px;margin:0 0 26px}.type-track{transform:translateX(-10%)}.tunnel-frame{opacity:.45}.aurora-ribbon{transform:rotate(-15deg)}.wave-bar{transform:scaleY(calc(.25 + var(--static) * .7))}}
 @media print{@page{margin:12mm}:root{color-scheme:light}.motion{animation:none!important}body{background:white;color:#17241e}.wrap{width:100%;max-width:none}.masthead,.global-control,.local-control,.local-pause,#pause-all,.skip,.technique,.reduced-note,.footer{display:none!important}.intro{padding:0 0 20px}.intro h1{font-size:30pt;color:#17241e}.intro h1 span,.eyebrow{color:#355d44}.intro-copy p,.intro-copy .index-label,.collection-heading p{color:#40534a}.gallery{gap:18pt}.exhibit{break-inside:avoid;background:white;border:1px solid #a7bbb1;border-radius:8px}.stage,.featured .stage{height:230px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.caption{padding:12pt}.caption>p,.category{color:#40534a}.number{color:#355d44}h3{font-size:16pt}.featured .caption{display:block}.featured .caption>p{margin-top:8px}.guide{display:block;margin:20pt 0}.guide h2{font-size:17pt}.guide p,.guide li{color:#40534a}.print-note{display:block;font-size:10pt}.tunnel-frame{opacity:.5}.wave-bar{transform:scaleY(calc(.25 + var(--static) * .7))}}
+/* Spatial lighting and depth. Each scene retains a useful still frame. */
+.stage{perspective:900px}
+.stage-aurora .art,.stage-orbit .art,.stage-wave .art,.stage-liquid .art,.stage-type .art,.stage-eclipse .art,.stage-tunnel .art{overflow:visible;transform-style:preserve-3d}
+.stage-aurora .art{perspective:900px}
+.starfield{transform:translateZ(-110px) scale(1.18)}
+.aurora-ribbon{--depth:15px;box-shadow:0 0 65px #84f8cc33}
+.aurora-ribbon.second{--depth:70px}
+.aurora-ribbon.third{--depth:125px}
+.aurora-word{transform:translateZ(150px);text-shadow:0 9px 45px #5cfcdf7a,0 0 2px #e9fff2}
+.mountain{transform:translateZ(135px) scale(1.12)}
+.mountain.back{transform:translateZ(45px) scaleX(-1) scale(1.05);filter:blur(1px)}
+@keyframes aurora-drift{0%,100%{transform:translate3d(-3%,-8%,var(--depth)) rotateX(13deg) rotateZ(-19deg) scaleX(.95)}50%{transform:translate3d(4%,13%,var(--depth)) rotateX(-8deg) rotateZ(-6deg) scaleX(1.12)}}
+.stage-orbit .art{perspective:800px}
+.orbital-system{transform-style:preserve-3d}
+.orbit-axis{transform:rotateX(67deg) rotateZ(-25deg) translateZ(25px)}
+.orbit-ring{box-shadow:0 0 16px #8ee0b421,inset 0 0 16px #8ee0b414}
+.satellite-orbit:before{box-shadow:0 0 18px #b0ffb2,0 7px 8px #000a}
+.orbit-core{box-shadow:inset -13px -16px 20px #071b16b5,inset 8px 8px 15px #f4fff1aa,0 20px 32px #0009,0 0 48px #b5f4a52c}
+@keyframes core-float{0%,100%{transform:translate3d(0,-5px,55px)}50%{transform:translate3d(0,5px,68px)}}
+.stage-cube{perspective:900px}
+.cube-face{background:linear-gradient(130deg,#e1dbff51 0%,#7772d929 45%,#c4a6f52a 100%);box-shadow:inset 0 0 26px #f5eaff44,0 0 10px #beb2ff27}
+.cube-face:after{content:'';position:absolute;inset:1px;border-top:1px solid #fff9;border-left:1px solid #fff6;pointer-events:none}
+.cube-shadow{background:#a9a3ff5a;filter:blur(22px)}
+.stage-wave{perspective:800px}
+.stage-wave:before{content:'';position:absolute;inset:50% -18% -35%;background:linear-gradient(#74c8db1c 1px,transparent 1px),linear-gradient(90deg,#74c8db17 1px,transparent 1px);background-size:27px 27px;transform:rotateX(62deg) translateZ(-30px);transform-origin:top;opacity:.7}
+.wave-field{transform:rotateX(55deg) rotateZ(-16deg) translateZ(72px);transform-style:preserve-3d}
+.wave-bar{position:relative;transform-origin:50% 85%;background:linear-gradient(90deg,#204456 0%,#c9f6f0 36%,#80d4ea 65%,#1b4d69 100%);box-shadow:4px 4px 8px #020b1266,0 0 13px #71e3ff18}
+.wave-bar:after{content:'';position:absolute;left:1px;right:1px;top:0;bottom:0;transform:translate3d(8px,9px,-14px);background:#48a9c052;filter:blur(3px);z-index:-1}
+@keyframes wave-pulse{0%,100%{transform:translateZ(8px) scaleY(.22)}50%{transform:translateZ(46px) scaleY(1)}}
+.stage-liquid .art{perspective:750px}
+.liquid-art{filter:none;transform-style:preserve-3d}
+.liquid-shape{--depth:55px;background:radial-gradient(circle at 30% 25%,#fff3d9ad,transparent 42%),linear-gradient(135deg,#ffd3a6,#f1a2be 45%,#a97fce);box-shadow:inset -25px -27px 35px #51295460,inset 18px 14px 24px #fff3d265,0 25px 45px #09071770}
+.liquid-shape.b{--depth:-35px;background:radial-gradient(circle at 32% 22%,#ffe4d077,transparent 44%),linear-gradient(160deg,#ab71be,#e898b7,#f4a77b)}
+.liquid-shape.c{--depth:105px;background:radial-gradient(circle at 28% 25%,#fff3daac,transparent 43%),linear-gradient(90deg,#ffc48d,#ad96f5)}
+.liquid-shape:after{content:'';position:absolute;left:19%;top:13%;width:45%;height:26%;border-radius:50%;background:#fff8e485;filter:blur(19px);transform:rotate(-26deg)}
+.liquid-outline{transform:rotateX(50deg) rotateZ(-20deg) translateZ(-35px);box-shadow:0 0 25px #f0c3dc3d}
+@keyframes liquid-morph{0%,100%{border-radius:62% 38% 52% 48% / 43% 55% 45% 57%;transform:translate3d(-15px,8px,var(--depth)) rotateY(-20deg) rotateZ(-20deg) scale(.9)}50%{border-radius:35% 65% 39% 61% / 58% 37% 63% 42%;transform:translate3d(18px,-10px,var(--depth)) rotateY(22deg) rotateZ(25deg) scale(1.05)}}
+.stage-type{perspective:760px}
+.type-art{transform:rotateY(-23deg) rotateX(16deg) rotateZ(-7deg) scale(1.11);transform-style:preserve-3d;filter:drop-shadow(17px 20px 12px #1f382f6b)}
+.type-track:not(.outlined){text-shadow:1px 1px #7b9f76,2px 2px #6a906b,3px 3px #527757,4px 4px #3f654a,6px 10px 10px #4264485e}
+.type-track.outlined{-webkit-text-stroke:1.6px #2f503a;text-shadow:2px 3px 6px #4a6e4e78}
+.stage-eclipse .art{perspective:850px}
+.eclipse-system{transform-style:preserve-3d;transform:rotateX(8deg)}
+.sun{transform:translateZ(-35px);box-shadow:0 0 22px #ffc68dcc,0 0 90px #f4aa5759,0 0 160px #f4aa5723}
+.corona{transform-style:preserve-3d}
+.moon{box-shadow:inset -22px -20px 25px #0009,inset 10px 10px 16px #70616a55,0 16px 26px #0008}
+.moon:after{content:'';position:absolute;inset:9%;border-radius:50%;background:radial-gradient(circle at 20% 42%,#6a566032 0 5%,transparent 8%),radial-gradient(circle at 64% 25%,#6a56603d 0 4%,transparent 7%),radial-gradient(circle at 68% 65%,#6a566033 0 8%,transparent 12%)}
+@keyframes moon-drift{0%,100%{transform:translate3d(-6px,-3px,70px)}50%{transform:translate3d(3px,5px,80px)}}
+.stage-tunnel .art{perspective:760px}
+.tunnel-frame{transform-style:preserve-3d;transform:translateZ(calc(var(--i) * -65px)) rotateZ(calc(var(--i) * 5deg));box-shadow:inset 0 0 15px #7eaef52e,0 0 23px #7eaef536}
+@keyframes tunnel-depth{0%{transform:translateZ(-600px) rotateZ(0deg) scale(.35);opacity:0}12%{opacity:.65}75%{opacity:.6}100%{transform:translateZ(450px) rotateZ(75deg) scale(1.3);opacity:0}}
+@media(prefers-reduced-motion:reduce){.aurora-ribbon{transform:translate3d(0,0,var(--depth)) rotateX(8deg) rotateZ(-15deg)}.wave-bar{transform:translateZ(10px) scaleY(calc(.25 + var(--static) * .7))}.liquid-shape{transform:translateZ(var(--depth))}.tunnel-frame{transform:translateZ(calc(var(--i) * -65px)) rotateZ(calc(var(--i) * 5deg));opacity:.5}}
+@media print{.wave-bar{transform:scaleY(calc(.25 + var(--static) * .7))}.tunnel-frame{transform:scale(calc(.12 + var(--i) * .14)) rotate(calc(var(--i) * 5deg));opacity:.5}}
+/* Keep the 3D scene below the artwork controls in its own stacking context. */
+.stage{z-index:0}.local-control{z-index:20}
+.stage-eclipse .moon{inset:20px}
+@media(max-width:620px){.stage-aurora .aurora-word{font-size:clamp(37px,10vw,52px);letter-spacing:.08em;transform:translateZ(35px)}}
 </style></head><body>
 <a class="skip" href="#main">作品へ移動</a>
 <input type="checkbox" id="pause-all" class="sr-only" aria-label="全作品の動きを一時停止"><label for="pause-all" class="global-control"><span aria-hidden="true">Ⅱ</span><span class="global-pause">すべての動きを止める</span><span class="global-resume">全体の停止を解除する</span></label>
@@ -32,22 +89,21 @@
 <section id="collection" aria-labelledby="collection-title"><div class="collection-heading"><h2 id="collection-title">SELECTED MOTION STUDIES</h2><p>01 — 08 &nbsp; / &nbsp; 音声なし</p></div><div class="gallery"><article class="exhibit featured" id="aurora" aria-labelledby="title-aurora">
 <input type="checkbox" class="local-pause sr-only" id="pause-aurora" aria-label="Auroraの動きを一時停止"><label class="local-control" for="pause-aurora"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-aurora" role="img" aria-label="重なり合う緑と紫の光が、夜空をゆっくり横切る。山の輪郭と星は静止し、光の層だけが呼吸するように動きます。"><div class="art" aria-hidden="true"><div class="starfield"></div><div class="aurora-ribbon motion"></div><div class="aurora-ribbon second motion"></div><div class="aurora-ribbon third motion"></div><div class="aurora-word">AURORA</div><div class="mountain back"></div><div class="mountain"></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 01</span><span>LIGHT / GRADIENT / 18–27s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">01</span><h3 id="title-aurora">Aurora</h3></div><span class="category">漂う、光の幕。</span></div><p>重なり合う緑と紫の光が、夜空をゆっくり横切る。山の輪郭と星は静止し、光の層だけが呼吸するように動きます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>半透明のグラデーションを3層重ね、ぼかしは固定したまま位置・角度・横幅を変えています。周期をずらすことで、同じ動きの繰り返しを目立たなくします。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="AuroraのCSSの抜粋"><code>.aurora-ribbon {
+<div class="caption"><div><div class="caption-title"><span class="number">01</span><h3 id="title-aurora">Aurora</h3></div><span class="category">漂う、光の幕。</span></div><p>重なり合う緑と紫の光が、夜空をゆっくり横切る。山の輪郭と星は静止し、光の層だけが呼吸するように動きます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>半透明のグラデーションを3層重ね、ぼかしは固定したまま位置・角度・横幅を変えています。周期をずらすことで、同じ動きの繰り返しを目立たなくします。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="AuroraのCSSの抜粋"><code>.stage-aurora .art { perspective: 900px; transform-style: preserve-3d; }
+.aurora-ribbon {
   filter: blur(34px);
   animation: aurora-drift 18s linear infinite;
 }
 @keyframes aurora-drift {
-  0%, 100% { transform: translate(-3%, -8%) rotate(-19deg) scaleX(.95); }
-  50% { transform: translate(4%, 13%) rotate(-6deg) scaleX(1.12); }
+  50% { transform: translate3d(4%, 13%, var(--depth)) rotateX(-8deg) rotateZ(-6deg) scaleX(1.12); }
 }</code></pre></details></div>
 </article><article class="exhibit " id="orbit" aria-labelledby="title-orbit">
 <input type="checkbox" class="local-pause sr-only" id="pause-orbit" aria-label="Orbital poetryの動きを一時停止"><label class="local-control" for="pause-orbit"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-orbit" role="img" aria-label="傾いた軌道を巡る、小さな光。中心の球体と異なる速さの衛星が、奥行きのあるリズムをつくります。"><div class="art" aria-hidden="true"><div class="orbit-coordinate"></div><div class="orbital-system"><div class="orbit-axis"><div class="orbit-ring"></div><div class="orbit-ring middle"></div><div class="orbit-ring inner"></div><div class="satellite-orbit motion"></div><div class="satellite-orbit second motion"></div></div><div class="orbit-core motion"></div></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 02</span><span>TRANSFORM / ORBIT / 9–15s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">02</span><h3 id="title-orbit">Orbital poetry</h3></div><span class="category">静かな引力。</span></div><p>傾いた軌道を巡る、小さな光。中心の球体と異なる速さの衛星が、奥行きのあるリズムをつくります。</p><details class="technique"><summary>動きのしくみを見る</summary><p>円形の要素を回転させ、その端に置いた点を公転させます。親要素をX軸方向に傾けると軌道が楕円に見えます。実際の天体運動のシミュレーションではありません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Orbital poetryのCSSの抜粋"><code>.satellite-orbit {
-  animation: orbit-spin 15s linear infinite;
-}
-.orbit-axis { transform: rotateX(61deg) rotateZ(-23deg); }
-@keyframes orbit-spin { to { transform: rotate(360deg); } }</code></pre></details></div>
+<div class="caption"><div><div class="caption-title"><span class="number">02</span><h3 id="title-orbit">Orbital poetry</h3></div><span class="category">静かな引力。</span></div><p>傾いた軌道を巡る、小さな光。中心の球体と異なる速さの衛星が、奥行きのあるリズムをつくります。</p><details class="technique"><summary>動きのしくみを見る</summary><p>円形の要素を回転させ、その端に置いた点を公転させます。親要素をX軸方向に傾けると軌道が楕円に見えます。実際の天体運動のシミュレーションではありません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Orbital poetryのCSSの抜粋"><code>.orbital-system { transform-style: preserve-3d; }
+.orbit-axis { transform: rotateX(67deg) rotateZ(-25deg) translateZ(25px); }
+.satellite-orbit { animation: orbit-spin 15s linear infinite; }
+.orbit-core { box-shadow: inset -13px -16px 20px #071b16b5, 0 20px 32px #0009; }</code></pre></details></div>
 </article><article class="exhibit " id="cube" aria-labelledby="title-cube">
 <input type="checkbox" class="local-pause sr-only" id="pause-cube" aria-label="Folded spaceの動きを一時停止"><label class="local-control" for="pause-cube"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-cube" role="img" aria-label="6枚の透明な面が組み上がり、ひとつの立方体になる。回転するたびに、線と面の重なりが新しい表情を見せます。"><div class="art" aria-hidden="true"><div class="cube-grid"></div><div class="cube-shadow motion"></div><div class="cube-scene"><div class="cube motion"><div class="cube-face front"><span>01</span></div><div class="cube-face back"><span>02</span></div><div class="cube-face right"><span>03</span></div><div class="cube-face left"><span>04</span></div><div class="cube-face top"><span>05</span></div><div class="cube-face bottom"><span>06</span></div></div></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 03</span><span>PERSPECTIVE / 3D / 24s</span></div></div>
@@ -60,50 +116,50 @@
 </article><article class="exhibit " id="wave" aria-labelledby="title-wave">
 <input type="checkbox" class="local-pause sr-only" id="pause-wave" aria-label="Wave fieldの動きを一時停止"><label class="local-control" for="pause-wave"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-wave" role="img" aria-label="同じ動きに、小さな時間差を。36本の線が伸び縮みするだけで、横へ伝わる波が生まれます。"><div class="art" aria-hidden="true"><div class="wave-baseline"></div><div class="wave-field"><i class="wave-bar motion" style="--i:0;--static:0.000"></i><i class="wave-bar motion" style="--i:1;--static:0.583"></i><i class="wave-bar motion" style="--i:2;--static:0.083"></i><i class="wave-bar motion" style="--i:3;--static:0.667"></i><i class="wave-bar motion" style="--i:4;--static:0.167"></i><i class="wave-bar motion" style="--i:5;--static:0.750"></i><i class="wave-bar motion" style="--i:6;--static:0.250"></i><i class="wave-bar motion" style="--i:7;--static:0.833"></i><i class="wave-bar motion" style="--i:8;--static:0.333"></i><i class="wave-bar motion" style="--i:9;--static:0.917"></i><i class="wave-bar motion" style="--i:10;--static:0.417"></i><i class="wave-bar motion" style="--i:11;--static:1.000"></i><i class="wave-bar motion" style="--i:12;--static:0.500"></i><i class="wave-bar motion" style="--i:13;--static:0.000"></i><i class="wave-bar motion" style="--i:14;--static:0.583"></i><i class="wave-bar motion" style="--i:15;--static:0.083"></i><i class="wave-bar motion" style="--i:16;--static:0.667"></i><i class="wave-bar motion" style="--i:17;--static:0.167"></i><i class="wave-bar motion" style="--i:18;--static:0.750"></i><i class="wave-bar motion" style="--i:19;--static:0.250"></i><i class="wave-bar motion" style="--i:20;--static:0.833"></i><i class="wave-bar motion" style="--i:21;--static:0.333"></i><i class="wave-bar motion" style="--i:22;--static:0.917"></i><i class="wave-bar motion" style="--i:23;--static:0.417"></i><i class="wave-bar motion" style="--i:24;--static:1.000"></i><i class="wave-bar motion" style="--i:25;--static:0.500"></i><i class="wave-bar motion" style="--i:26;--static:0.000"></i><i class="wave-bar motion" style="--i:27;--static:0.583"></i><i class="wave-bar motion" style="--i:28;--static:0.083"></i><i class="wave-bar motion" style="--i:29;--static:0.667"></i><i class="wave-bar motion" style="--i:30;--static:0.167"></i><i class="wave-bar motion" style="--i:31;--static:0.750"></i><i class="wave-bar motion" style="--i:32;--static:0.250"></i><i class="wave-bar motion" style="--i:33;--static:0.833"></i><i class="wave-bar motion" style="--i:34;--static:0.333"></i><i class="wave-bar motion" style="--i:35;--static:0.917"></i></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 04</span><span>PHASE / SCALE / 4.8s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">04</span><h3 id="title-wave">Wave field</h3></div><span class="category">少しずつ、ずれる。</span></div><p>同じ動きに、小さな時間差を。36本の線が伸び縮みするだけで、横へ伝わる波が生まれます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>各線は同じscaleYのキーフレームを使います。animation-delayを少しずつ負にして開始位置をずらし、画面を開いた瞬間から波形が続いている状態を作ります。音声には連動しません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Wave fieldのCSSの抜粋"><code>.wave-bar {
-  animation: wave-pulse 4.8s ease-in-out infinite;
-  animation-delay: calc(var(--i) * -.14s);
-}
+<div class="caption"><div><div class="caption-title"><span class="number">04</span><h3 id="title-wave">Wave field</h3></div><span class="category">少しずつ、ずれる。</span></div><p>同じ動きに、小さな時間差を。36本の線が伸び縮みするだけで、横へ伝わる波が生まれます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>各線は同じscaleYのキーフレームを使います。animation-delayを少しずつ負にして開始位置をずらし、画面を開いた瞬間から波形が続いている状態を作ります。音声には連動しません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Wave fieldのCSSの抜粋"><code>.stage-wave { perspective: 800px; }
+.wave-field { transform: rotateX(55deg) rotateZ(-16deg) translateZ(72px); }
+.wave-bar { animation: wave-pulse 4.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -.14s); }
 @keyframes wave-pulse {
-  0%, 100% { transform: scaleY(.22); }
-  50% { transform: scaleY(1); }
+  50% { transform: translateZ(46px) scaleY(1); }
 }</code></pre></details></div>
 </article><article class="exhibit " id="liquid" aria-labelledby="title-liquid">
 <input type="checkbox" class="local-pause sr-only" id="pause-liquid" aria-label="Liquid silkの動きを一時停止"><label class="local-control" for="pause-liquid"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-liquid" role="img" aria-label="輪郭の違う3つの色面が、重なっては離れる。半透明の膜のような、やわらかな質感を楽しめます。"><div class="art" aria-hidden="true"><div class="liquid-art art"><div class="liquid-outline"></div><div class="liquid-shape motion"></div><div class="liquid-shape b motion"></div><div class="liquid-shape c motion"></div></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 05</span><span>BORDER RADIUS / BLEND / 16–25s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">05</span><h3 id="title-liquid">Liquid silk</h3></div><span class="category">ほどける、かたち。</span></div><p>輪郭の違う3つの色面が、重なっては離れる。半透明の膜のような、やわらかな質感を楽しめます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>border-radiusの横方向・縦方向を別々に指定し、輪郭を変化させています。mix-blend-mode: screenで重なる部分を明るくし、移動と回転を添えます。流体計算は行っていません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Liquid silkのCSSの抜粋"><code>.liquid-shape {
+<div class="caption"><div><div class="caption-title"><span class="number">05</span><h3 id="title-liquid">Liquid silk</h3></div><span class="category">ほどける、かたち。</span></div><p>輪郭の違う3つの色面が、重なっては離れる。半透明の膜のような、やわらかな質感を楽しめます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>border-radiusの横方向・縦方向を別々に指定し、輪郭を変化させています。mix-blend-mode: screenで重なる部分を明るくし、移動と回転を添えます。流体計算は行っていません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Liquid silkのCSSの抜粋"><code>.liquid-art { perspective: 750px; transform-style: preserve-3d; }
+.liquid-shape {
   mix-blend-mode: screen;
-  border-radius: 62% 38% 52% 48% / 43% 55% 45% 57%;
   animation: liquid-morph 16s ease-in-out infinite;
+}
+@keyframes liquid-morph {
+  50% { transform: translate3d(18px, -10px, var(--depth)) rotateY(22deg) rotateZ(25deg) scale(1.05); }
 }</code></pre></details></div>
 </article><article class="exhibit " id="type" aria-labelledby="title-type">
 <input type="checkbox" class="local-pause sr-only" id="pause-type" aria-label="Type in motionの動きを一時停止"><label class="local-control" for="pause-type"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-type" role="img" aria-label="塗りの文字と、輪郭だけの文字。逆方向に流れる2本の帯が、言葉をグラフィックへ変えていきます。"><div class="art" aria-hidden="true"><div class="type-art art"><div class="type-rule"></div><div class="type-track motion"><span>CREATE &nbsp;·&nbsp; FLOW &nbsp;·&nbsp; REPEAT &nbsp;·&nbsp; </span><span>CREATE &nbsp;·&nbsp; FLOW &nbsp;·&nbsp; REPEAT &nbsp;·&nbsp; </span></div><div class="type-track outlined motion"><span>CREATE &nbsp;·&nbsp; FLOW &nbsp;·&nbsp; REPEAT &nbsp;·&nbsp; </span><span>CREATE &nbsp;·&nbsp; FLOW &nbsp;·&nbsp; REPEAT &nbsp;·&nbsp; </span></div><div class="type-rule"></div></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 06</span><span>TYPOGRAPHY / LOOP / 26–32s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">06</span><h3 id="title-type">Type in motion</h3></div><span class="category">文字にも、リズムを。</span></div><p>塗りの文字と、輪郭だけの文字。逆方向に流れる2本の帯が、言葉をグラフィックへ変えていきます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>同じ文字列を2回並べた帯全体を、横幅の半分だけ移動させます。終端が開始時と同じ見た目になるため、途切れないループを作れます。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Type in motionのCSSの抜粋"><code>.type-track {
-  display: flex;
-  width: max-content;
-  animation: type-slide 26s linear infinite;
-}
+<div class="caption"><div><div class="caption-title"><span class="number">06</span><h3 id="title-type">Type in motion</h3></div><span class="category">文字にも、リズムを。</span></div><p>塗りの文字と、輪郭だけの文字。逆方向に流れる2本の帯が、言葉をグラフィックへ変えていきます。</p><details class="technique"><summary>動きのしくみを見る</summary><p>同じ文字列を2回並べた帯全体を、横幅の半分だけ移動させます。終端が開始時と同じ見た目になるため、途切れないループを作れます。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Type in motionのCSSの抜粋"><code>.stage-type { perspective: 760px; }
+.type-art { transform: rotateY(-23deg) rotateX(16deg) rotateZ(-7deg); }
+.type-track { animation: type-slide 26s linear infinite; }
 @keyframes type-slide { to { transform: translateX(-50%); } }</code></pre></details></div>
 </article><article class="exhibit " id="eclipse" aria-labelledby="title-eclipse">
 <input type="checkbox" class="local-pause sr-only" id="pause-eclipse" aria-label="Quiet eclipseの動きを一時停止"><label class="local-control" for="pause-eclipse"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-eclipse" role="img" aria-label="暗い円の縁から、細い金色の光がこぼれる。ゆっくり回る光冠と、ごく小さな位置の変化で、静かな日食を表現します。"><div class="art" aria-hidden="true"><div class="eclipse-system"><div class="corona motion"></div><div class="sun"></div><div class="moon motion"></div><div class="eclipse-flare"></div></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 07</span><span>MASK / RADIAL LIGHT / 18–50s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">07</span><h3 id="title-eclipse">Quiet eclipse</h3></div><span class="category">暗さが、光を描く。</span></div><p>暗い円の縁から、細い金色の光がこぼれる。ゆっくり回る光冠と、ごく小さな位置の変化で、静かな日食を表現します。</p><details class="technique"><summary>動きのしくみを見る</summary><p>光る円の上に暗い円を重ね、数pxだけ移動させます。光冠には円すい形グラデーションと放射状マスクを使っています。天文学的な軌道や縮尺を再現したものではありません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Quiet eclipseのCSSの抜粋"><code>.corona {
-  mask-image: radial-gradient(circle, transparent 53%, #000 57%, transparent 71%);
-  animation: corona-turn 50s linear infinite;
-}
-@keyframes corona-turn { to { transform: rotate(360deg); } }</code></pre></details></div>
+<div class="caption"><div><div class="caption-title"><span class="number">07</span><h3 id="title-eclipse">Quiet eclipse</h3></div><span class="category">暗さが、光を描く。</span></div><p>暗い円の縁から、細い金色の光がこぼれる。ゆっくり回る光冠と、ごく小さな位置の変化で、静かな日食を表現します。</p><details class="technique"><summary>動きのしくみを見る</summary><p>光る円の上に暗い円を重ね、数pxだけ移動させます。光冠には円すい形グラデーションと放射状マスクを使っています。天文学的な軌道や縮尺を再現したものではありません。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Quiet eclipseのCSSの抜粋"><code>.stage-eclipse .art { perspective: 850px; }
+.sun { transform: translateZ(-35px); }
+.moon { animation: moon-drift 18s ease-in-out infinite; }
+@keyframes moon-drift {
+  50% { transform: translate3d(3px, 5px, 80px); }
+}</code></pre></details></div>
 </article><article class="exhibit finale" id="tunnel" aria-labelledby="title-tunnel">
 <input type="checkbox" class="local-pause sr-only" id="pause-tunnel" aria-label="Infinite roomの動きを一時停止"><label class="local-control" for="pause-tunnel"><span aria-hidden="true">Ⅱ</span><span class="pause">この作品を停止</span><span class="resume">この作品を再生</span></label>
 <div class="stage stage-tunnel" role="img" aria-label="ひとつの消失点から、枠が静かに広がる。回転と拡大の組み合わせが、終わりのない空間をつくります。"><div class="art" aria-hidden="true"><i class="tunnel-frame motion" style="--i:0"></i><i class="tunnel-frame motion" style="--i:1"></i><i class="tunnel-frame motion" style="--i:2"></i><i class="tunnel-frame motion" style="--i:3"></i><i class="tunnel-frame motion" style="--i:4"></i><i class="tunnel-frame motion" style="--i:5"></i><i class="tunnel-frame motion" style="--i:6"></i><i class="tunnel-frame motion" style="--i:7"></i><i class="tunnel-frame motion" style="--i:8"></i><i class="tunnel-frame motion" style="--i:9"></i><div class="tunnel-dot"></div></div><div class="stage-meta" aria-hidden="true"><span>STUDY / 08</span><span>SCALE / DEPTH / 16s</span></div></div>
-<div class="caption"><div><div class="caption-title"><span class="number">08</span><h3 id="title-tunnel">Infinite room</h3></div><span class="category">奥へ、また奥へ。</span></div><p>ひとつの消失点から、枠が静かに広がる。回転と拡大の組み合わせが、終わりのない空間をつくります。</p><details class="technique"><summary>動きのしくみを見る</summary><p>10枚の枠を同じ中心に置き、開始時刻をずらして拡大・回転させます。最初と最後で透明にすることで、ループが巻き戻る瞬間を隠しています。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Infinite roomのCSSの抜粋"><code>.tunnel-frame {
-  animation: tunnel-depth 16s linear infinite;
-  animation-delay: calc(var(--i) * -1.6s);
-}
+<div class="caption"><div><div class="caption-title"><span class="number">08</span><h3 id="title-tunnel">Infinite room</h3></div><span class="category">奥へ、また奥へ。</span></div><p>ひとつの消失点から、枠が静かに広がる。回転と拡大の組み合わせが、終わりのない空間をつくります。</p><details class="technique"><summary>動きのしくみを見る</summary><p>10枚の枠を同じ中心に置き、開始時刻をずらして拡大・回転させます。最初と最後で透明にすることで、ループが巻き戻る瞬間を隠しています。</p><p>CSSの抜粋。ページ全体は1つのHTMLで完結しています。</p><pre tabindex="0" aria-label="Infinite roomのCSSの抜粋"><code>.stage-tunnel .art { perspective: 760px; }
+.tunnel-frame { animation: tunnel-depth 16s linear infinite;
+  animation-delay: calc(var(--i) * -1.6s); }
 @keyframes tunnel-depth {
-  0% { transform: scale(.05) rotate(0deg); opacity: 0; }
+  0% { transform: translateZ(-600px) scale(.35); opacity: 0; }
   12%, 75% { opacity: .6; }
-  100% { transform: scale(2.8) rotate(75deg); opacity: 0; }
+  100% { transform: translateZ(450px) rotateZ(75deg) scale(1.3); opacity: 0; }
 }</code></pre></details></div>
 </article></div></section>
 <section class="guide" id="about" aria-labelledby="about-title"><h2 id="about-title">動きを眺める。<br>しくみをほどく。</h2><div><p>右上のボタンで作品ごとに一時停止できます。画面下のボタンは全体の停止・解除です。全体の停止を解除しても、個別に停止した作品は止まったままになります。</p><p>「動きのしくみを見る」を開くと、表現の仕組みとCSSの抜粋を読めます。作品はCSSの決められた動きで構成しており、物理シミュレーションや音声解析は行っていません。</p><ul><li>キーボードのTabで操作部品へ移動し、Spaceで停止・解除できます。</li><li>端末の「動きを減らす」設定では静止表示になります。</li><li>外部の画像・フォント・動画やJavaScriptを使わず、HTML内のCSSだけで描画しています。</li><li>印刷時は全作品を静止表示します。色はブラウザの背景印刷設定に従います。</li></ul><p class="print-note">印刷版：すべてのアニメーションを静止しています。</p><p><a href="../pattern-animations/index.html">動きで仕組みを学ぶ：GoFデザインパターンの図解 →</a></p></div></section>
