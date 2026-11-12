@@ -12,6 +12,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
 - 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/pattern-animations/
 - CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/css-motion-gallery/
+- Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/kinetic-observatory/
 
 ## 構成
 
@@ -22,10 +23,12 @@ embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85�
 design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
 css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
+kinetic-observatory/index.html # 光の構造体：4D投影と粒子流の立体作品
+tools/generate_kinetic_observatory.py # 新作の座標とHTMLを再生成する開発用スクリプト（閲覧時は不要）
 .nojekyll
 ```
 
-各教材はCSS・SVGなどを内包するHTMLです。体系学習ガイドは操作用JavaScriptを内包し、動くGoF図解とCSS Motion GalleryはHTMLとCSSだけで構成します。外部のスクリプト・画像・フォントは不要です。
+各教材はCSS・SVGなどを内包するHTMLです。体系学習ガイドは操作用JavaScriptを内包し、動くGoF図解・CSS Motion Gallery・Kinetic ObservatoryはHTMLとCSSだけで構成します。外部のスクリプト・画像・フォントは不要です。
 出典のリンク先を開く場合はインターネット接続が必要です。
 
 ## 公開と追加
@@ -141,3 +144,30 @@ ChromiumでJavaScriptを無効にし、9作品すべての動き、全体／個�
 Constellationに加え、オーロラ・軌道・キューブ・波面・流体・日食・トンネルの光粒子に、作品の配色に合わせた緩やかな色変化、粒径の違い、拡縮、中間点を経由する動きを追加しました。粒数は増やしていません。文字の作品は読みやすい濃色を維持します。
 
 調整後、JavaScript無効のChromiumで7形状の座標・配色の違い、粒径のばらつき、ループ境界の一致を確認しました。全9作品の動き・キーボードでの個別／全体停止・再開、幅1440・768・390・320px、動きを減らす設定、印刷、教材一覧との相互リンクも確認済みです。ページ全体の横はみ出し、外部リソース通信、JavaScript実行エラーはありません。実スマートフォンのフレームレート、Safari／Firefoxは未確認です。
+
+## Kinetic Observatory — 光の構造体
+
+`kinetic-observatory/index.html`は、4次元の超立方体（テッセラクト）を3次元へ投影した骨組みに、結び目を巡る粒子流を重ねる独立した作品です。既存の9作品と同時描画しないよう、別ページで開きます。教材一覧とCSS Motion Galleryの「立体実験室」から移動できます。
+
+中心の骨組みは16頂点・32辺。4次元の回転と透視投影を事前に計算し、線分の両端と頂点が補間中も一致するようにCSSの変換行列を作ります。結び目の粒子流432点、軌道上の96点、骨組みの16頂点を合わせた544点が、異なる周期で動きます。
+
+一時停止、視点、骨組み／粒子流の表示、粒子密度を標準のチェックボックス・ラジオボタンで切り替えます。端末の「動きを減らす」設定と印刷では静止表示します。座標をCSSで補間する作品であり、実行中の物理シミュレーションや4次元レンダラーではありません。
+
+HTMLにCSSと全座標を含めており、JavaScript・外部素材・外部ライブラリ・追加パッケージは不要です。閲覧は `kinetic-observatory/index.html` をブラウザで開くか、リポジトリ直下で `python3 -m http.server 8000` を実行して http://localhost:8000/kinetic-observatory/ を開きます。
+
+### 座標・HTMLの再生成
+
+開発用の `tools/generate_kinetic_observatory.py` はPython標準ライブラリだけで動作します。
+
+```sh
+python3 tools/generate_kinetic_observatory.py
+```
+
+形状や周期を変更したい場合だけ実行します。生成済みHTMLの閲覧・配信にはPythonもビルド工程も不要です。
+
+### Kinetic Observatoryの検証結果
+
+- 生成器で16頂点・32辺・各頂点の接続数4、周期の始終点、丸め後の辺の両端を検証しました。再生成したHTMLのSHA-256が一致することも確認済みです。
+- JavaScript無効のChromiumで全粒子群の動きを確認しました。変形中を含む7時点で、辺の両端と頂点の算出座標を照合し、最大差は約0.001pxでした。辺は型付きCSSカスタムプロパティの数値を補間します。
+- キーボードでの一時停止・再開、視点・表示層・粒子密度の切替、幅1440・768・390・320px、動きを減らす設定、印刷用PDF、教材一覧・既存ギャラリーとの相互リンクを確認しました。外部通信・ページ全体の横はみ出し・JavaScript実行エラーはありません。
+- ブラウザ検証はローカルHTTP経由です。この環境のChromeではfile://の閲覧が管理ポリシーで制限されています。直接ファイルを開く環境、実スマートフォンのフレームレート、Safari／Firefox、実プリンターは未確認です。
