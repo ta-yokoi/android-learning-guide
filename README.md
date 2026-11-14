@@ -11,21 +11,23 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
 - 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/pattern-animations/
-- CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/css-motion-gallery/
-- 光の潮汐: https://ta-yokoi.github.io/android-learning-guide/luminous-tides/
-- Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/kinetic-observatory/
+- CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/works/css-motion-gallery/
+- 光の潮汐: https://ta-yokoi.github.io/android-learning-guide/works/luminous-tides/
+- Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/works/kinetic-observatory/
+- 作品一覧: https://ta-yokoi.github.io/android-learning-guide/works/
 
 ## 構成
 
 ```
-index.html           # 教材一覧
+index.html           # 教材と作品集の入口
+works/index.html     # 作品一覧（各作品への親ページ）
 android/index.html   # Android（30章・図38点・78問）
 embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
-css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
-luminous-tides/index.html # 光の潮汐：三層の光の流れの独立作品
-kinetic-observatory/index.html # 光粒子だけで描く12種類の立体変形
+works/css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
+works/luminous-tides/index.html # 光の潮汐：三層の光の流れの独立作品
+works/kinetic-observatory/index.html # 光粒子だけで描く12種類の立体変形
 tools/generate_kinetic_observatory.py # 新作の座標とHTMLを再生成する開発用スクリプト（閲覧時は不要）
 .nojekyll
 ```
@@ -113,12 +115,12 @@ HTTPサーバーを利用する場合は上記の起動コマンドで http://lo
 
 ## CSS Motion Gallery — HTMLだけで動くアニメーション集
 
-`css-motion-gallery/index.html`は、9つのCSSアニメーション作品を収録した単一HTMLのギャラリーです。
+`works/css-motion-gallery/index.html`は、9つのCSSアニメーション作品を収録した単一HTMLのギャラリーです。
 光粒子の立体変形、オーロラ、軌道運動、3Dキューブ、波、液体グラデーション、動く文字、日食、無限トンネルを、外部画像や動画を使わずに描きます。各作品に遠近感、前後の層、陰影を加えています。
 CSSをHTML内に含め、JavaScript・外部ライブラリ・CDN・外部フォント・ビルド工程は不要です。
 
-ルートの教材一覧から「CSS Motion Gallery」を選ぶか、`css-motion-gallery/index.html`をブラウザで開きます。
-HTTPサーバーを利用する場合は、リポジトリ直下で`python3 -m http.server 8000`を実行し、http://localhost:8000/css-motion-gallery/ を開きます。
+トップの「作品集」から作品一覧を開き、「CSS Motion Gallery」を選ぶか、`works/css-motion-gallery/index.html`をブラウザで開きます。
+HTTPサーバーを利用する場合は、リポジトリ直下で`python3 -m http.server 8000`を実行し、http://localhost:8000/works/css-motion-gallery/ を開きます。
 
 全体の一時停止と作品ごとの一時停止に対応します。端末の「動きを減らす」設定では静止表示になります。
 スマートフォン表示と印刷にも対応し、読了記録は保存しません。
@@ -149,13 +151,13 @@ Constellationに加え、オーロラ・軌道・キューブ・波面・流体�
 
 ## Kinetic Observatory — 光の粒子の立体変形
 
-`kinetic-observatory/index.html`は、1,440個の丸い光粒子だけで立体を描く単一HTML作品です。球体・六弁花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体・五重結び目・四次元トーラスの投影・絡み合う二重環・ローレンツ軌道の12形状へ96秒で変形します。各形を約4秒保ち、次の形へ約4秒で移動します。形を保つ間も全体が12秒で1回転し、前後の傾きが連動します。変形区間には2つの中間座標を追加し、粒子が3つの流れに分かれて広がり、ねじれて再集合します。粒の大きさ・色・輝きの違いと遠近感で形を見せます。
+`works/kinetic-observatory/index.html`は、1,440個の丸い光粒子だけで立体を描く単一HTML作品です。球体・六弁花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体・五重結び目・四次元トーラスの投影・絡み合う二重環・ローレンツ軌道の12形状へ96秒で変形します。各形を約4秒保ち、次の形へ約4秒で移動します。形を保つ間も全体が12秒で1回転し、前後の傾きが連動します。変形区間には2つの中間座標を追加し、粒子が3つの流れに分かれて広がり、ねじれて再集合します。粒の大きさ・色・輝きの違いと遠近感で形を見せます。
 
-教材一覧とCSS Motion Galleryの「立体実験室」から開けます。一時停止・視点・粒子密度の切替、キーボード操作、動きを減らす設定と印刷に対応します。粒子密度を戻しても時間は保たれます。JavaScript・外部素材・追加パッケージは不要です。
+トップの「作品集」から作品一覧を開いて選ぶか、CSS Motion Galleryの「立体実験室」から開けます。一時停止・視点・粒子密度の切替、キーボード操作、動きを減らす設定と印刷に対応します。粒子密度を戻しても時間は保たれます。JavaScript・外部素材・追加パッケージは不要です。
 
 開発時は `python3 tools/generate_kinetic_observatory.py` で座標とHTMLを再生成できます。Pythonは標準ライブラリのみ使用し、閲覧時は不要です。生成時に各形の座標の有限性・重複・半径の上限を検証します。
 
-閲覧はHTMLを直接開くか、リポジトリ直下で `python3 -m http.server 8000` を実行し http://localhost:8000/kinetic-observatory/ を開きます。
+閲覧はHTMLを直接開くか、リポジトリ直下で `python3 -m http.server 8000` を実行し http://localhost:8000/works/kinetic-observatory/ を開きます。
 
 ブラウザ検証はローカルHTTP経由です。この環境のChromeではfile://が管理ポリシーで制限されています。実スマートフォンのフレームレート、Safari／Firefox、実プリンターは未確認です。
 
@@ -163,10 +165,16 @@ ChromiumでJavaScriptを無効にし、12形状の違い・ループの始終点
 
 ## 光の潮汐 / Luminous Tides
 
-`luminous-tides/index.html`は既存作品と独立した新作です。1,536個の丸い光粒子が、青緑・琥珀・菫色の三本の幅を持つ帯を描きます。粒子は23秒・29秒・37秒の周期で軌道を巡り、琥珀の流れだけが逆方向へ進みます。帯の膨張・収縮は11秒・13秒・17秒、全体の回転は36秒。異なる周期の重なりで、奥行きと隙間が変わり続けます。
+`works/luminous-tides/index.html`は既存作品と独立した新作です。1,536個の丸い光粒子が、青緑・琥珀・菫色の三本の幅を持つ帯を描きます。粒子は23秒・29秒・37秒の周期で軌道を巡り、琥珀の流れだけが逆方向へ進みます。帯の膨張・収縮は11秒・13秒・17秒、全体の回転は36秒。異なる周期の重なりで、奥行きと隙間が変わり続けます。
 
-教材一覧から開くか、HTMLを直接開きます。HTTPではリポジトリ直下で `python3 -m http.server 8000` を実行し http://localhost:8000/luminous-tides/ を開きます。各色の帯の表示、粒子の間引き（768粒）、一時停止に対応します。切替時も時間を保ちます。動きを減らす設定と印刷では静止します。
+トップの「作品集」から作品一覧を開いて選ぶか、HTMLを直接開きます。HTTPではリポジトリ直下で `python3 -m http.server 8000` を実行し http://localhost:8000/works/luminous-tides/ を開きます。各色の帯の表示、粒子の間引き（768粒）、一時停止に対応します。切替時も時間を保ちます。動きを減らす設定と印刷では静止します。
 
 JavaScript・外部素材・追加パッケージは使いません。開発用の `python3 tools/generate_luminous_tides.py` で座標とHTMLを再生成できます。生成時に12本の閉じた軌道の始終点と粒数を検証します。Pythonは閲覧時には不要です。
 
 ChromiumでJavaScriptを無効にし、全1,536粒の移動、各色512粒の表示、間引き時768粒、停止・再開、切替による時間の保持、幅1440・768・390・320px、動きを減らす設定、印刷用PDFを確認しました。外部通信とJavaScript実行エラーはありません。生成HTMLの再現性と、既存のKinetic Observatory・CSS Motion GalleryのHTMLおよび既存生成器が変更されていないことも確認済みです。実スマートフォンのフレームレート、Safari／Firefox、直接ファイルを開く環境、実プリンターは未確認です。
+
+## 作品ページの階層
+
+トップの `index.html` → `works/index.html`（作品一覧）→ `works/<作品名>/index.html` の三層構成です。学習教材は従来の位置に置き、アニメーション作品3ページを `works/` 以下へまとめています。各作品の戻るリンクは作品一覧へ、作品一覧からはトップへ戻ります。従来の作品URLには、公開済みリンクを引き継ぐためのHTML転送ページを置いています。開発用生成スクリプトも新しい作品フォルダへ出力します。
+
+階層変更後、全12ページのローカルリンクと章内リンクを検査しました。JavaScript無効のChromiumで、トップ→作品一覧→各作品の往復、旧URL3件の自動転送、幅1440・390・320pxとライト／ダークを確認済みです。移動した作品のアニメーションCSSが変更前と一致すること、粒子の動作とキーボードでの停止も確認しました。ブラウザの実行エラーとHTTPエラーはありません。

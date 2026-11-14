@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="HTMLとCSSで描く光と動きの作品一覧。アニメーション集、光粒子の立体変形、光の潮汐を鑑賞できます。">
+<title>作品一覧｜光と動きのギャラリー</title>
+<style>
+:root{color-scheme:light;--ink:#18313e;--muted:#536d79;--teal:#0d796e;--line:#d5e3df}*{box-sizing:border-box}body{margin:0;color:var(--ink);background:#f5f7f5;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}a{color:var(--teal);text-underline-offset:4px}:focus-visible{outline:3px solid #bc8d2d;outline-offset:5px}.skip{position:absolute;top:-100px;left:12px;z-index:5;background:white;padding:12px}.skip:focus{top:12px}.wrap{width:min(1080px,100% - 64px);margin:auto}.site-header{padding:23px 0;border-bottom:1px solid var(--line)}.header-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{font-weight:750;letter-spacing:.035em;font-size:17px;text-decoration:none;color:var(--ink)}.header-label{font-size:11px;color:var(--muted);letter-spacing:.12em}.hero{padding:64px 0 45px}.eyebrow{font-size:11px;letter-spacing:.15em;font-weight:750;color:var(--teal)}h1{font-size:clamp(31px,5vw,49px);line-height:1.5;letter-spacing:.02em;margin:14px 0 20px}.lead{font-size:17px;color:var(--muted);max-width:670px;margin:0}.section-heading{display:flex;justify-content:space-between;gap:18px;align-items:baseline;margin-bottom:20px}h2{font-size:22px;margin:0}.count{font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.card{display:flex;flex-direction:column;position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:29px 30px;box-shadow:0 8px 28px #173f2f05}.card-top{display:flex;justify-content:space-between;align-items:center;gap:18px}.subject-icon{height:48px;width:48px;background:#e3f3ec;border-radius:12px;display:grid;place-items:center;font-size:21px;font-weight:750;color:var(--teal)}.category{font-size:11px;font-weight:700;letter-spacing:.09em;color:var(--teal)}h3{font-size:27px;line-height:1.5;margin:24px 0 10px}.description{font-size:14px;color:var(--muted);margin:0 0 21px}.tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}.tag{font-size:11px;color:#40645b;border:1px solid #d5e9e0;background:#f3faf6;padding:3px 9px;border-radius:20px}.facts{display:flex;gap:21px;flex-wrap:wrap;border-top:1px solid #e7efec;padding-top:17px;margin-bottom:25px;font-size:12px;color:var(--muted)}.facts strong{font-size:17px;color:#284d44;margin-right:3px}.open-guide{display:flex;justify-content:space-between;align-items:center;gap:14px;border-radius:7px;background:var(--teal);color:#fff;text-decoration:none;font-size:14px;font-weight:650;padding:12px 16px;margin-top:auto}.open-guide:hover{background:#08685e}.reading-note{margin:35px 0 60px;padding:20px 23px;border-left:3px solid #97bfb1;background:#eaf2ee;color:#456457;font-size:13px}.reading-note p{margin:0}.site-footer{border-top:1px solid var(--line);padding:23px 0 31px;color:var(--muted);font-size:11px}.site-footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}@media(max-width:700px){.wrap{width:calc(100% - 36px)}.site-header{padding:18px 0}.header-label{display:none}.hero{padding:39px 0 32px}.lead{font-size:15px}.grid{grid-template-columns:1fr}.card{padding:24px}.section-heading{margin-bottom:15px}h2{font-size:20px}.reading-note{margin:26px 0 40px;padding:17px}.site-footer{padding:20px 0}}@media(prefers-reduced-motion:no-preference){.open-guide{transition:background .15s}}@media print{body{background:#fff}.hero{padding:25px 0}.grid{display:block}.card{box-shadow:none;break-inside:avoid}.reading-note{margin:20px 0}.skip{display:none}.open-guide{background:white;color:#0d796e;border:1px solid var(--line)}}
+</style>
+<style id="automatic-dark-mode">
+/* Follow the browser/OS appearance on screen; keep the existing light print palette. */
+:root{color-scheme:light}
+@media screen and (prefers-color-scheme: dark){
+  :root{color-scheme:dark;--ink:#e1e9ef;--muted:#b1c3cf;--nav:#102432;--line:#48606f;--blue:#8bd0f0;--teal:#8bdfc3;--paper:#18242f;--bg:#101820;--gold:#e4c489;--link:#8bd0f0}
+  body{background:var(--bg);color:var(--ink)}
+  a{color:var(--link)}a:hover{color:#b8e6fa}
+  h2{color:#d1e6f4}h3{color:#a4dcd1}
+  button,select,input[type="search"],.search-input,.glossary-search input{background:#233b4a;color:var(--ink);border-color:#7693a4}
+  button:hover{background:#2c4c5c}input::placeholder{color:#b1c3cf;opacity:1}
+  .skip{background:#233b4a;color:#e1e9ef}
+  .chapter{background:var(--paper);border-color:var(--line)}
+  .hero{background:linear-gradient(115deg,#19352f,#1c2a36)}
+  .hero .subtitle,.lead,.learning,.learning span{color:var(--muted)}
+  .chips span,.hero .chips span{background:#203c35;border-color:#628d7d;color:#b8edda}
+  .learning,.quiz,.chapter-bottom,.chapter-supplement,.source-links{border-color:var(--line)}
+  .source-links{color:var(--muted)}
+  th,td{border-color:#3f5564}thead th{background:#223745;color:#d4e6f0}
+  tbody tr:nth-child(even){background:#1d2d39}tbody th{background:#1c2c38}
+  .note,.exercise{background:#1c342d;border-color:#7ebba5;color:var(--ink)}
+  .example{background:#3a3021;border-color:#a98c58;color:var(--ink)}.example>b{color:#f0d6a5}
+  .advanced,.answer{background:#20323f;border-color:#577383}
+  .advanced summary,.answer summary{color:#b3d9e9}
+  .pill{background:#203e54;color:#b9e0fa}.pill.car{background:#372e4c;color:#ddcaf5}
+  .pill.design{background:#203e31;color:#bce8c8}.pill.internal{background:#423421;color:#f0d3a6}
+  .complete,.supplement-label,.diagram-number{color:var(--teal)}
+  .node{background:#223541;border-color:#81b9bd;color:var(--ink)}.arrow{color:#aad3e1}
+  .trace-step{background:#22333f;border-color:#6d8797;color:#c8d9e3}
+  .trace-step.active{background:#204237;border-color:#8cdbb9;color:#c3f4df}
+  .trace-description{background:#1c342d;color:var(--ink);border-color:var(--teal)}
+  code{background:#263d4b;color:#e1edf4}.code-example{background:#101e29;border-color:#567180;color:#e3edf4}
+  .code-label{background:#223b4b;color:#e3edf4}.code-example pre{color:#e3edf4}
+  .code-example code{background:transparent;color:inherit}
+  figure,.android-diagram,.diagram{background:#192b36;border-color:#5a7888}
+  .diagram-heading{background:#203c35;color:var(--ink)}.diagram-heading span{color:#b8edda}
+  .diagram-tools,.diagram-tools span,.diagram-limit,figcaption,footer{color:var(--muted)}
+  .diagram-tools{border-color:#48606f}.diagram-index{background:#1d3230;border-color:#557c70}
+  .diagram-canvas{background:#14232f;border-color:#48606f}
+  .diagram-canvas svg text,.diagram-canvas svg tspan{fill:#e1e9ef}
+  .diagram-canvas svg rect:not([fill="none"]){fill:#233642;stroke:#7693a4}
+  .diagram-canvas svg path[stroke]:not([stroke="none"]),.diagram-canvas svg polyline[stroke]:not([stroke="none"]){stroke:#a5cfdf}
+  .diagram-canvas svg path[fill]:not([fill="none"]),.diagram-canvas svg polyline[fill]:not([fill="none"]){fill:#a5cfdf}
+  .diagram-canvas svg rect[fill="#e5f5ec"],.diagram-canvas svg rect[fill="#edf6f1"],.diagram-canvas svg rect[fill="#edf8f2"],.diagram-canvas svg rect[fill="#e4f2e9"],.diagram-canvas svg rect[fill="#deefe3"],.diagram-canvas svg rect[fill="#e4f1ed"],.diagram-canvas svg rect[fill="#e5f2ec"]{fill:#193a30}
+  .diagram-canvas svg rect[fill="#e8f2fc"],.diagram-canvas svg rect[fill="#eef4fa"],.diagram-canvas svg rect[fill="#f0f6fb"],.diagram-canvas svg rect[fill="#e5f0fa"],.diagram-canvas svg rect[fill="#dcecf6"],.diagram-canvas svg rect[fill="#eef4f7"],.diagram-canvas svg rect[fill="#e8f0fa"]{fill:#20394f}
+  .diagram-canvas svg rect[fill="#fff3db"],.diagram-canvas svg rect[fill="#fdf7ed"],.diagram-canvas svg rect[fill="#f5eedf"],.diagram-canvas svg rect[fill="#f8f1e6"],.diagram-canvas svg rect[fill="#f8edda"],.diagram-canvas svg rect[fill="#fbf0df"]{fill:#423522}
+  .diagram-canvas svg rect[fill="#f0e8fa"],.diagram-canvas svg rect[fill="#ece9f5"],.diagram-canvas svg rect[fill="#ece5f5"],.diagram-canvas svg rect[fill="#f5f1fa"],.diagram-canvas svg rect[fill="#edeaf6"]{fill:#372d48}
+  .state-lab{background:#19352d;border-color:#7ebba5}.lab-status>div{background:#1c2f3c;border-color:#658493}.lab-status dt{color:var(--muted)}
+}
+
+@media screen and (prefers-color-scheme: dark){
+  .card{background:#18242f;border-color:var(--line);box-shadow:none}
+  .subject-icon,.tag{background:#203c35;color:#b8edda;border-color:#628d7d}
+  .facts{border-color:var(--line)}.facts strong{color:#c8f0e1}
+  .open-guide{background:#8bdfc3;color:#102b24}.open-guide:hover{background:#b0efd8;color:#102b24}
+  .reading-note{background:#1c342d;color:#c3dfd2;border-color:#7ebba5}
+}
+</style></head>
+<body><a class="skip" href="#main">作品一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← 教材ライブラリ</a><span class="header-label">WORKS / LIGHT &amp; MOTION</span></div></header><main id="main" class="wrap"><section class="hero" aria-labelledby="hero-title"><div class="eyebrow">EXPLORE LIGHT &amp; MOTION</div><h1 id="hero-title">光と動きを、<br>かたちにする。</h1><p class="lead">HTMLとCSSで描くアニメーション作品。<br>作品を選んで、光の流れと立体の変化を楽しめます。</p></section><section aria-labelledby="works-title"><div class="section-heading"><h2 id="works-title">作品一覧</h2><span class="count">3 作品・作品集</span></div><div class="grid"><article class="card" aria-labelledby="motion-gallery-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">M</div><span class="category">CREATIVE / CSS MOTION</span></div><h3 id="motion-gallery-title">CSS Motion Gallery</h3><p class="description">HTMLだけで動く9つの作品。480粒の光が色を変え、球体・結び目・花冠へと変形。オーロラ、軌道、キューブ、波、流体、文字、日食、トンネルとともに、光と奥行き、動きのリズムを楽しめます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">再生・一時停止</span><span class="tag">スマートフォン対応</span></div><div class="facts"><span><strong>9</strong>つの作品</span><span><strong>1</strong>つのHTML</span><span>JavaScript不要</span></div><a class="open-guide" href="./css-motion-gallery/index.html" aria-label="CSS Motion Galleryのアニメーション集を開く">アニメーション集を開く<span aria-hidden="true">→</span></a></article>
+<article class="card" aria-labelledby="observatory-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">K</div><span class="category">EXPERIMENT / SPATIAL MOTION</span></div><h3 id="observatory-title">Kinetic Observatory</h3><p class="description">1,440個の光粒子だけで描く立体作品。球体・花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体、五重結び目・四次元トーラス・二重環・ローレンツ軌道へ、色を変えながら変形します。12秒で1回転し、変形時は粒子が渦を巻いて再集合。視点や粒子密度も切り替えられます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">視点・密度の切替</span><span class="tag">動きの数理</span></div><div class="facts"><span><strong>12</strong>つの立体</span><span><strong>1</strong>つのHTML</span><span>JavaScript不要</span></div><a class="open-guide" href="./kinetic-observatory/index.html" aria-label="Kinetic Observatoryの立体作品を開く">光の構造体を観察する<span aria-hidden="true">→</span></a></article>
+<article class="card" aria-labelledby="tides-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">L</div><span class="category">ART / LUMINOUS CURRENTS</span></div><h3 id="tides-title">光の潮汐</h3><p class="description">青緑・琥珀・菫色の光が、三つの立体的な帯を編む独立した作品。1,536粒が異なる方向と速さで流れ、帯の膨張・収縮と回転が重なります。光の層を一つずつ選んで観察できます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">三層の光の流れ</span><span class="tag">一時停止・密度切替</span></div><div class="facts"><span><strong>1,536</strong>個の光</span><span><strong>3</strong>本の帯</span><span>JavaScript不要</span></div><a class="open-guide" href="./luminous-tides/index.html" aria-label="光の潮汐の作品を開く">光の潮汐を鑑賞する<span aria-hidden="true">→</span></a></article></div></section><aside class="reading-note"><p>各作品で一時停止や表示の切替ができます。端末の「動きを減らす」設定では静止表示になります。</p></aside></main><footer class="site-footer"><div class="wrap"><a href="../index.html">← トップページへ戻る</a><span>Light, shape &amp; motion</span></div></footer></body></html>

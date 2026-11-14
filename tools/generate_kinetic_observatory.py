@@ -94,7 +94,7 @@ PARTICLE_CSS = r"""
 @media print{.stage{height:450px}.scale{transform:scale(.65)}.assembly{transform:rotateX(-8deg) rotateY(-20deg)}.particle{transform:var(--rest);color:#335e75!important;box-shadow:none;background:currentColor}.phase-list li{color:#335e75!important;border-color:#aab9b8!important}.viewport{top:40%}}
 """
 BODY = r"""<body><a class="skip" href="#observatory">作品へ移動</a>
-<header class="masthead wrap"><a class="brand" href="../index.html">教材ライブラリ</a><nav aria-label="ページの案内"><a href="../css-motion-gallery/index.html">動く作品集 ↗</a><a href="#structure">構造を読む</a></nav></header>
+<header class="masthead wrap"><a class="brand" href="../index.html">作品一覧</a><nav aria-label="ページの案内"><a href="../css-motion-gallery/index.html">動く作品集 ↗</a><a href="#structure">構造を読む</a></nav></header>
 <main class="wrap"><section class="intro" aria-labelledby="title"><div><p class="eyebrow">PARTICLE MORPH / 光の粒子だけで描く</p><h1 id="title">光が、<span>かたちになる。</span></h1></div><p class="intro-copy">1440個の光が、球から花冠へ、結び目かららせんへ。<br>回転する12のの立体がほどけ、渦を巻いて次の形へ集まる粒子の彫刻。</p></section>
 <p class="reduced-note">「動きを減らす」設定に合わせて球体を静止表示しています。視点と粒子密度は切り替えられます。</p>
 <section class="observatory" id="observatory" aria-label="光の粒子の観察と操作">
@@ -110,7 +110,7 @@ BODY = r"""<body><a class="skip" href="#observatory">作品へ移動</a>
 <div class="caption"><p>形を保つ間も12秒で1回転。約4秒ごとに、保持と渦状の変形を交互に繰り返します。</p><span class="serial">HTML + CSS / 音声なし</span></div></section>
 <section class="notes" id="structure" aria-label="動きのしくみ"><article><span class="note-number">01 / 形</span><h2>粒子だけで、12のの立体。</h2><p>球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体。同じ1440粒が、それぞれの数式で求めた位置へ移ります。メビウスの帯は半ひねりした曲面、結び目は太さを持つ閉じた軌道です。</p></article><article><span class="note-number">02 / 色と奥行き</span><h2>光の密度が、面をつくる。</h2><p>粒ごとの大きさ・色・明るさの違いと、前後の距離による遠近感で立体を見せます。全体は12秒で1回転し、前後の傾きも同時に変化します。変形中は粒子が3つの流れに分かれてねじれ、広がりながら次の形へ集まります。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、かたちを観察する。</h2><p>Tabで操作を選び、Spaceで停止や粒子密度を切り替えます。視点の選択は矢印キーでも操作できます。粒子を半分にしても時間は保たれます。設定は保存しません。</p></article></section>
 <details><summary>座標とアニメーションのしくみ</summary><p>12種類のXYZ座標と、各変形をねじる2組の中間座標をHTML内に持たせ、CSSのtranslate3d・scale・色・不透明度を補間します。数式の計算は作成時にPython標準ライブラリで行い、閲覧時はHTML内のCSSだけで動作します。生成コマンドは <code>python3 tools/generate_kinetic_observatory.py</code> です。</p><p>端末の「動きを減らす」設定と印刷では球体を静止表示します。JavaScript・外部素材・追加パッケージは不要です。滑らかさは端末により異なります。</p></details>
-<section class="notes" id="structure" aria-label="作品のしくみ"><article><span class="note-number">01 / 光の密度</span><h2>1,440粒が描く12の立体。</h2><p>球体・花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体に、五重結び目、四次元トーラスの投影、絡み合う二重環、ローレンツ軌道を追加しています。</p></article><article><span class="note-number">02 / 動き</span><h2>回転し、ほどけ、再集合する。</h2><p>12秒で1回転し、形の保持と渦を巻く変形を4秒ずつ繰り返します。全体は96秒周期。作成時に数式から求めた座標をCSSで補間し、ローレンツ軌道も計算済みの形へ集合する表現です。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、密度を変える。</h2><p>Tabで操作を選び、Spaceで停止・再開・粒子の間引きを切り替えます。間引くと720粒になります。視点は矢印キーでも変更できます。「動きを減らす」設定と印刷では球体を静止表示します。閲覧時はHTML内のCSSだけで動作します。</p></article></section></main><footer class="footer wrap"><span>Kinetic Observatory / Particle Morph</span><a href="../css-motion-gallery/index.html">9つの作品へ戻る ↗</a><a href="../index.html">教材一覧へ ↗</a></footer></body></html>"""
+<section class="notes" id="structure" aria-label="作品のしくみ"><article><span class="note-number">01 / 光の密度</span><h2>1,440粒が描く12の立体。</h2><p>球体・花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体に、五重結び目、四次元トーラスの投影、絡み合う二重環、ローレンツ軌道を追加しています。</p></article><article><span class="note-number">02 / 動き</span><h2>回転し、ほどけ、再集合する。</h2><p>12秒で1回転し、形の保持と渦を巻く変形を4秒ずつ繰り返します。全体は96秒周期。作成時に数式から求めた座標をCSSで補間し、ローレンツ軌道も計算済みの形へ集合する表現です。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、密度を変える。</h2><p>Tabで操作を選び、Spaceで停止・再開・粒子の間引きを切り替えます。間引くと720粒になります。視点は矢印キーでも変更できます。「動きを減らす」設定と印刷では球体を静止表示します。閲覧時はHTML内のCSSだけで動作します。</p></article></section></main><footer class="footer wrap"><span>Kinetic Observatory / Particle Morph</span><a href="../css-motion-gallery/index.html">9つの作品へ戻る ↗</a><a href="../index.html">作品一覧へ ↗</a></footer></body></html>"""
 def build():
     pts=verify(); dots=[]
     frames=[]
@@ -133,7 +133,7 @@ def build():
         dots.append(f'<i class="particle shell-point motion {"secondary" if i%2 else "fine"}" style="{props}"></i>')
     phases=''.join(f'<li class="motion" style="--delay:{-96+k*8 if k else 0}s">{name}</li>' for k,name in enumerate(LABELS))
     html='<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="1440個の光粒子が12種類の複雑な立体へ変形する、HTMLとCSSだけの作品。"><title>Kinetic Observatory｜光の粒子の立体変形</title><style>'+BASE_CSS+PARTICLE_CSS+'@keyframes particle-morph{'+''.join(frames)+'}</style></head>'+BODY.replace('__POINTS__','\n'.join(dots)).replace('__PHASES__',phases)
-    target=Path(__file__).resolve().parent.parent/'kinetic-observatory/index.html'
+    target=Path(__file__).resolve().parent.parent/'works'/'kinetic-observatory/index.html'
     target.write_text(html,encoding='utf-8')
     print(f'Verified {COUNT} particles, twelve distinct finite formations. Wrote {len(html.encode()):,} bytes.')
 if __name__=='__main__': build()
