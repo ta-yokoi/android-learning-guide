@@ -12,6 +12,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
 - 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/pattern-animations/
 - CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/css-motion-gallery/
+- 光の潮汐: https://ta-yokoi.github.io/android-learning-guide/luminous-tides/
 - Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/kinetic-observatory/
 
 ## 構成
@@ -23,6 +24,7 @@ embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85�
 design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
 css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
+luminous-tides/index.html # 光の潮汐：三層の光の流れの独立作品
 kinetic-observatory/index.html # 光粒子だけで描く12種類の立体変形
 tools/generate_kinetic_observatory.py # 新作の座標とHTMLを再生成する開発用スクリプト（閲覧時は不要）
 .nojekyll
@@ -158,3 +160,13 @@ Constellationに加え、オーロラ・軌道・キューブ・波面・流体�
 ブラウザ検証はローカルHTTP経由です。この環境のChromeではfile://が管理ポリシーで制限されています。実スマートフォンのフレームレート、Safari／Firefox、実プリンターは未確認です。
 
 ChromiumでJavaScriptを無効にし、12形状の違い・ループの始終点一致、1,440粒／間引き時720粒、一時停止・再開、視点のキーボード切替、幅1440・768・390・320px、動きを減らす設定、印刷用PDFを確認しました。作品のDOMに線・面・リング・画像・スクリプトはなく、JavaScript実行エラーはありません。再生成後のHTMLが一致することも確認済みです。
+
+## 光の潮汐 / Luminous Tides
+
+`luminous-tides/index.html`は既存作品と独立した新作です。1,536個の丸い光粒子が、青緑・琥珀・菫色の三本の幅を持つ帯を描きます。粒子は23秒・29秒・37秒の周期で軌道を巡り、琥珀の流れだけが逆方向へ進みます。帯の膨張・収縮は11秒・13秒・17秒、全体の回転は36秒。異なる周期の重なりで、奥行きと隙間が変わり続けます。
+
+教材一覧から開くか、HTMLを直接開きます。HTTPではリポジトリ直下で `python3 -m http.server 8000` を実行し http://localhost:8000/luminous-tides/ を開きます。各色の帯の表示、粒子の間引き（768粒）、一時停止に対応します。切替時も時間を保ちます。動きを減らす設定と印刷では静止します。
+
+JavaScript・外部素材・追加パッケージは使いません。開発用の `python3 tools/generate_luminous_tides.py` で座標とHTMLを再生成できます。生成時に12本の閉じた軌道の始終点と粒数を検証します。Pythonは閲覧時には不要です。
+
+ChromiumでJavaScriptを無効にし、全1,536粒の移動、各色512粒の表示、間引き時768粒、停止・再開、切替による時間の保持、幅1440・768・390・320px、動きを減らす設定、印刷用PDFを確認しました。外部通信とJavaScript実行エラーはありません。生成HTMLの再現性と、既存のKinetic Observatory・CSS Motion GalleryのHTMLおよび既存生成器が変更されていないことも確認済みです。実スマートフォンのフレームレート、Safari／Firefox、直接ファイルを開く環境、実プリンターは未確認です。
