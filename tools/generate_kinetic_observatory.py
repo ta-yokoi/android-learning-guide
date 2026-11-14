@@ -46,19 +46,6 @@ def poses(i):
     radius=139+12*cos(v)
     linked=((radius*cos(t)-65,radius*sin(t),12*sin(v)),(12*sin(v)+65,radius*cos(t),radius*sin(t)))[lane]
     return (sphere,flower,torus,knot,mobius,helix,star,cube,cinquefoil,clifford,linked,lorenz_points()[i])
-def transit(p, q, index, stage, step):
-    f=step/3
-    xyz=[a*(1-f)+b*f for a,b in zip(p,q)]
-    angle=(.85 if step==1 else -.65)+(index%3-1)*.45
-    x,y,z=xyz
-    x,y=x*cos(angle)-y*sin(angle),x*sin(angle)+y*cos(angle)
-    phase=TAU*index/COUNT*3+stage*.7
-    x+=55*cos(phase);y+=55*sin(phase);z+=65*sin(phase+step)
-    radius=sqrt(x*x+y*y+z*z);scale=min(1,280/max(radius,1))
-    result=tuple(v*scale for v in (x,y,z))
-    assert all(isfinite(v) for v in result)
-    return result
-
 def verify():
     pts=[poses(i) for i in range(COUNT)]
     for k in range(len(LABELS)):
@@ -84,7 +71,7 @@ PARTICLE_CSS = r"""
 /* The sculpture contains only circular light particles. */
 .stage{height:680px;background:radial-gradient(ellipse at center,#14243d,#060b15 72%)}
 .stage:before,.stage:after{display:none!important}.viewport{top:46%}.assembly{animation:particle-camera 12s linear infinite}.sheath{animation:none;transform:none}
-.particle{width:var(--size);height:var(--size);margin:calc(var(--size) / -2);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 12%,currentColor 52%,transparent 80%);color:hsl(var(--hue) 95% 75%);box-shadow:0 0 6px currentColor;opacity:var(--alpha);animation:particle-morph 96s ease-in-out infinite;animation-delay:0s;transform:var(--rest)}
+.particle{width:var(--size);height:var(--size);margin:calc(var(--size) / -2);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 12%,currentColor 52%,transparent 80%);color:hsl(var(--hue) 95% 75%);box-shadow:0 0 6px currentColor;opacity:var(--alpha);animation:particle-morph 96s linear infinite;animation-delay:0s;transform:var(--rest)}
 .particle.fine{box-shadow:0 0 3px currentColor}.particle.spark{border-radius:50%;box-shadow:0 0 9px currentColor}.phase-list{position:absolute;left:20px;right:20px;bottom:23px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:0;margin:0;list-style:none}.phase-list li{text-align:center;font-size:10px;padding-top:8px;border-top:1px solid #34495e;color:#8096ac;animation:phase-active 96s linear infinite;animation-delay:var(--delay)}
 @keyframes phase-active{0%,8.332%{color:#e0fff2;border-color:#9ef1d8}8.333333%,100%{color:#8096ac;border-color:#34495e}}
 @keyframes particle-camera{0%{transform:rotateZ(0deg)}100%{transform:rotateZ(360deg)}}
@@ -96,7 +83,7 @@ PARTICLE_CSS = r"""
 """
 BODY = r"""<body><a class="skip" href="#observatory">作品へ移動</a>
 <header class="masthead wrap"><a class="brand" href="../index.html">作品一覧</a><nav aria-label="ページの案内"><a href="../css-motion-gallery/index.html">動く作品集 ↗</a><a href="#structure">構造を読む</a></nav></header>
-<main class="wrap"><section class="intro" aria-labelledby="title"><div><p class="eyebrow">PARTICLE MORPH / 光の粒子だけで描く</p><h1 id="title">光が、<span>かたちになる。</span></h1></div><p class="intro-copy">360個の光が、球から花冠へ、結び目かららせんへ。<br>回転する12の立体がほどけ、渦を巻いて次の形へ集まる粒子の彫刻。</p></section>
+<main class="wrap"><section class="intro" aria-labelledby="title"><div><p class="eyebrow">PARTICLE MORPH / 光の粒子だけで描く</p><h1 id="title">光が、<span>かたちになる。</span></h1></div><p class="intro-copy">360個の光が、球から花冠へ、結び目かららせんへ。<br>回転する12の立体が、滑らかにつながる光の彫刻。</p></section>
 <p class="reduced-note">「動きを減らす」設定に合わせて球体を静止表示しています。視点と粒子密度は切り替えられます。</p>
 <section class="observatory" id="observatory" aria-label="光の粒子の観察と操作">
 <input class="control-input" type="checkbox" id="pause" aria-label="すべての動きを一時停止">
@@ -108,32 +95,48 @@ BODY = r"""<body><a class="skip" href="#observatory">作品へ移動</a>
 <div class="stage-meta" aria-hidden="true"><p>PARTICLE SCULPTURE<small><span class="full-count">360 LIGHTS</span><span class="light-count">180 LIGHTS / LITE</span> / 12 FORMATIONS</small></p><p class="right"><span class="status-running">再生中</span><span class="status-paused">一時停止</span><span class="status-static">静止表示</span></p></div>
 <div class="viewport" aria-hidden="true"><div class="scale"><div class="camera"><div class="assembly motion"><div class="sheath">__POINTS__</div></div></div></div></div>
 <ol class="phase-list" aria-label="変形する12の形">__PHASES__</ol></div>
-<div class="caption"><p>形を保つ間も12秒で1回転。約4秒ごとに、保持と渦状の変形を交互に繰り返します。</p><span class="serial">HTML + CSS / 音声なし</span></div></section>
-<section class="notes" id="structure" aria-label="動きのしくみ"><article><span class="note-number">01 / 形</span><h2>粒子だけで、12の立体。</h2><p>球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体。同じ360粒が、それぞれの数式で求めた位置へ移ります。メビウスの帯は半ひねりした曲面、結び目は太さを持つ閉じた軌道です。</p></article><article><span class="note-number">02 / 色と奥行き</span><h2>光の密度が、面をつくる。</h2><p>粒ごとの大きさ・色・明るさの違いと、前後の距離による遠近感で立体を見せます。全体は12秒で1回転し、奥行きの計算はHTML生成時に行います。視点からの奥行きに合わせて、手前は大きく濃く、奥は小さく薄く描きます。変形中は粒子が3つの流れに分かれてねじれ、広がりながら次の形へ集まります。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、かたちを観察する。</h2><p>Tabで操作を選び、Spaceで停止や粒子密度を切り替えます。視点の選択は矢印キーでも操作できます。視点を切り替えると粒子は初期位相から再開します。間引いた粒子のアニメーションは停止し、戻すと初期位相から再開します。設定は保存しません。</p></article></section>
-<details><summary>座標とアニメーションのしくみ</summary><p>12種類のXYZ座標と、各変形をねじる2組の中間座標をHTML内に持たせ、CSSのtranslate3d・scale・色・不透明度を補間します。数式の計算は作成時にPython標準ライブラリで行い、閲覧時はHTML内のCSSだけで動作します。生成コマンドは <code>python3 tools/generate_kinetic_observatory.py</code> です。</p><p>端末の「動きを減らす」設定と印刷では球体を静止表示します。JavaScript・外部素材・追加パッケージは不要です。滑らかさは端末により異なります。</p></details>
+<div class="caption"><p>形を保つ間も12秒で1回転。約4秒ごとに、保持と滑らかな変形を交互に繰り返します。</p><span class="serial">HTML + CSS / 音声なし</span></div></section>
+<section class="notes" id="structure" aria-label="動きのしくみ"><article><span class="note-number">01 / 形</span><h2>粒子だけで、12の立体。</h2><p>球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体。同じ360粒が、それぞれの数式で求めた位置へ移ります。メビウスの帯は半ひねりした曲面、結び目は太さを持つ閉じた軌道です。</p></article><article><span class="note-number">02 / 色と奥行き</span><h2>光の密度が、面をつくる。</h2><p>粒ごとの大きさ・色・明るさの違いと、前後の距離による遠近感で立体を見せます。全体は12秒で1回転し、奥行きの計算はHTML生成時に行います。視点からの奥行きに合わせて、手前は大きく濃く、奥は小さく薄く描きます。形どうしの粒子の対応を空間的に近づけ、加速と減速を滑らかにつなぎます。画面の前後への小さな揺れも重ねています。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、かたちを観察する。</h2><p>Tabで操作を選び、Spaceで停止や粒子密度を切り替えます。視点の選択は矢印キーでも操作できます。視点を切り替えると粒子は初期位相から再開します。間引いた粒子のアニメーションは停止し、戻すと初期位相から再開します。設定は保存しません。</p></article></section>
+<details><summary>座標とアニメーションのしくみ</summary><p>12種類のXYZ座標を空間位置が近い粒どうしで対応づけ、形の保持と変形を滑らかな加減速で接続します。CSSの移動・拡縮・不透明度をアニメーションします。数式の計算は作成時にPython標準ライブラリで行い、閲覧時はHTML内のCSSだけで動作します。生成コマンドは <code>python3 tools/generate_kinetic_observatory.py</code> です。</p><p>端末の「動きを減らす」設定と印刷では球体を静止表示します。JavaScript・外部素材・追加パッケージは不要です。滑らかさは端末により異なります。</p></details>
 </main><footer class="footer wrap"><span>Kinetic Observatory / Particle Morph</span><a href="../css-motion-gallery/index.html">9つの作品へ戻る ↗</a><a href="../index.html">作品一覧へ ↗</a></footer></body></html>"""
+def matched_tracks(points):
+    reference=[p[0] for p in points]; tracks=[[p] for p in reference];count=len(points)
+    for stage in range(1,len(LABELS)):
+        targets=[p[stage] for p in points]
+        costs=[[sum((a-b)**2 for a,b in zip(source,target)) for target in targets] for source in reference]
+        edges=sorted((costs[i][j],i,j) for i in range(count) for j in range(count))
+        assignment=[-1]*count;used=set()
+        for _,i,j in edges:
+            if assignment[i]<0 and j not in used:assignment[i]=j;used.add(j)
+        for _ in range(2):
+            for i in range(count):
+                for j in range(i):
+                    a,b=assignment[i],assignment[j]
+                    if costs[i][b]+costs[j][a]<costs[i][a]+costs[j][b]:assignment[i],assignment[j]=b,a
+        assert len(set(assignment))==count
+        for i,j in enumerate(assignment):tracks[i].append(targets[j])
+    return tracks
+
 def build():
-    pts=verify()[::4];dots=[];css=[]
+    pts=matched_tracks(verify()[::4]);dots=[];css=[]
     for j,p in enumerate(pts):
         timeline=[]
         for k in range(len(LABELS)):
-            timeline.extend([(k*100/len(LABELS),p[k],.9),((k+.5)*100/len(LABELS),p[k],1.1)])
-            for step,f in ((1,2/3),(2,5/6)):
-                timeline.append(((k+f)*100/len(LABELS),transit(p[k],p[(k+1)%len(LABELS)],j*4,k,step),1.15))
-        timeline.append((100,p[0],.9))
+            timeline.extend([(k*100/len(LABELS),p[k],False),((k+.5)*100/len(LABELS),p[k],True)])
+        timeline.append((100,p[0],False))
         rests=[]
         for suffix,front in (('',False),('-front',True)):
             frames=[]
-            for percent,xyz,pulse in timeline:
+            for percent,xyz,transition in timeline:
                 x,y,z=projected(xyz,front);size,alpha=sample_depth(z)
-                frames.append(f'{percent:.6f}%{{transform:translate3d({x:.3f}px,{y:.3f}px,{z:.3f}px) scale({size*pulse:.4f});opacity:{alpha:.4f}}}')
+                frames.append(f'{percent:.6f}%{{transform:translate3d({x:.3f}px,{y:.3f}px,{z:.3f}px) scale({size:.4f});opacity:{alpha:.4f};animation-timing-function:{"cubic-bezier(.45,0,.55,1)" if transition else "linear"}}}')
             assert frames[0].split('{',1)[1] == frames[-1].split('{',1)[1], 'Loop seam must match'
             css.append(f'@keyframes point-{j}{suffix}'+ '{'+''.join(frames)+'}')
             x,y,z=projected(p[0],front);size,alpha=sample_depth(z)
             rests.append(f'translate3d({x:.3f}px,{y:.3f}px,{z:.3f}px) scale({size:.4f})')
         dots.append(f'<i class="particle motion {"secondary" if j%2 else "fine"}" style="--path:point-{j};--front-path:point-{j}-front;--size:{3+(j%5)*.3}px;--hue:{175+j%60*1.4};--alpha:.7;--rest:{rests[0]};--front-rest:{rests[1]}"></i>')
     phases=''.join(f'<li class="motion" style="--delay:{-96+k*8 if k else 0}s">{name}</li>' for k,name in enumerate(LABELS))
-    light='.camera{transform:none!important}.particle{animation-name:var(--path);background:currentColor;box-shadow:none!important}#view-front:checked~.stage .particle{animation-name:var(--front-path);--rest:var(--front-rest)!important}#sparse:checked~.stage .secondary{display:none}'
+    light='.camera{transform:none;animation:camera-sway 16s ease-in-out infinite}#view-front:checked~.stage .camera{animation:none;transform:none!important}.particle{animation-name:var(--path);width:calc(var(--size)*2.6);height:calc(var(--size)*2.6);margin:calc(var(--size)*-1.3);background:radial-gradient(circle,#fff 0 8%,currentColor 16% 27%,transparent 72%);box-shadow:none!important}#view-front:checked~.stage .particle{animation-name:var(--front-path);--rest:var(--front-rest)!important}#sparse:checked~.stage .secondary{display:none}'
     import re
     for original,alias in [('phase-active','phase-front'),('particle-camera','particle-camera-front')]:
         match=re.search(r'@keyframes '+original+r'\{.*?\}\}',PARTICLE_CSS)
@@ -141,6 +144,7 @@ def build():
         css.append(match.group(0).replace('@keyframes '+original,'@keyframes '+alias))
     light+='#view-front:checked~.stage .phase-list li{animation-name:phase-front}#view-front:checked~.stage .assembly{animation-name:particle-camera-front}'
     light+='.light-count{display:none}#sparse:checked~.stage .light-count{display:inline}#sparse:checked~.stage .full-count{display:none}'
+    light+='@keyframes camera-sway{0%,100%{transform:rotateY(-14deg) rotateX(-5deg)}50%{transform:rotateY(14deg) rotateX(5deg)}}@media(prefers-reduced-motion:reduce){.camera{transform:none}}@media print{.camera{transform:none}.particle{background:currentColor}}'
     html='<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kinetic Observatory｜光の粒子の立体変形</title><style>'+BASE_CSS+PARTICLE_CSS+light+'\n'.join(css)+'</style></head>'+BODY.replace('__POINTS__','\n'.join(dots)).replace('__PHASES__',phases)
     target=Path(__file__).resolve().parent.parent/'works/kinetic-observatory/index.html';target.write_text(html)
     assert '@property' not in html and '<script' not in html

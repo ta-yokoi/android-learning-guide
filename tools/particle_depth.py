@@ -11,4 +11,4 @@ def projected(xyz, front=False):
 
 def sample_depth(z):
     near=max(0,min(1,(z+230)/460))
-    return .5+1.25*near,.16+.84*near
+    return .38+1.72*near,.10+.90*near
