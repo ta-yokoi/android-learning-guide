@@ -2,29 +2,49 @@
 """Generate the standalone CSS-only particle sculpture. Python is authoring-only."""
 from math import sin, cos, sqrt, pi, isfinite
 from pathlib import Path
+from functools import lru_cache
 TAU=2*pi
-COUNT=720
-LABELS=('球体','六弁花冠','トーラス','三葉結び目','メビウスの帯','二重らせん','星芒','立方体')
+COUNT=1440
+LABELS=('球体','六弁花冠','トーラス','三葉結び目','メビウスの帯','二重らせん','星芒','立方体','五重結び目','四次元トーラス','絡み合う二重環','ローレンツ軌道')
+@lru_cache(maxsize=1)
+def lorenz_points():
+    x,y,z=.1,0.,0.; out=[]
+    def f(x,y,z): return (10*(y-x),x*(28-z)-y,x*y-8*z/3)
+    for j in range(1000+COUNT*5):
+        h=.008; a=f(x,y,z); b=f(*(v+h*d/2 for v,d in zip((x,y,z),a))); c=f(*(v+h*d/2 for v,d in zip((x,y,z),b))); d=f(*(v+h*t for v,t in zip((x,y,z),c)))
+        x,y,z=(v+h*(aa+2*bb+2*cc+dd)/6 for v,aa,bb,cc,dd in zip((x,y,z),a,b,c,d))
+        if j>=1000 and (j-1000)%5==0:out.append((x,y,z))
+    centers=[(max(p[k] for p in out)+min(p[k] for p in out))/2 for k in range(3)]
+    scale=240/max(sqrt(sum((v-c)**2 for v,c in zip(p,centers))) for p in out)
+    return [tuple((v-c)*scale for v,c in zip(p,centers)) for p in out]
 def poses(i):
-    a=TAU*(i%60)/60; b=TAU*(i//60)/12
+    a=TAU*(i%80)/80; b=TAU*(i//80)/18
     y=1-2*(i+.5)/COUNT; phi=i*pi*(3-sqrt(5)); r=sqrt(1-y*y)
     sphere=(215*r*cos(phi),215*y,215*r*sin(phi))
     radius=153+68*cos(6*a)+22*cos(b)
     flower=(radius*cos(a),radius*sin(a),48*sin(b)+30*sin(6*a))
     radius=164+64*cos(b)
     torus=(radius*cos(a),radius*sin(a),64*sin(b))
-    t=TAU*(i//6)/120; v=TAU*(i%6)/6
+    t=TAU*(i//6)/240; v=TAU*(i%6)/6
     radius=138+46*cos(3*t)+9*cos(v)
     knot=(radius*cos(2*t),radius*sin(2*t),46*sin(3*t)+9*sin(v))
-    t=TAU*(i%120)/120; w=((i//120)/5-.5)*105
+    t=TAU*(i%240)/240; w=((i//240)/5-.5)*105
     mobius=((170+w*cos(t/2))*cos(t),(170+w*cos(t/2))*sin(t),w*sin(t/2))
-    t=(i//2)/359; angle=t*TAU*3+(i%2)*pi
+    t=(i//2)/719; angle=t*TAU*3+(i%2)*pi
     helix=(100*cos(angle),(t-.5)*420,100*sin(angle))
     radius=115+115*((.5+.5*cos(8*a))**3)+18*cos(b)
     star=(radius*cos(a),radius*sin(a),60*sin(b)+30*cos(4*a))
-    face=i//120; j=i%120; u=((j%12+.5)/12-.5)*290;v=((j//12+.5)/10-.5)*290
+    face=i//240; j=i%240; u=((j%20+.5)/20-.5)*290;v=((j//20+.5)/12-.5)*290
     cube=((145,u,v),(-145,u,v),(u,145,v),(u,-145,v),(u,v,145),(u,v,-145))[face]
-    return (sphere,flower,torus,knot,mobius,helix,star,cube)
+    t=TAU*(i//6)/240; v=TAU*(i%6)/6
+    radius=143+50*cos(5*t)+10*cos(v)
+    cinquefoil=(radius*cos(2*t),radius*sin(2*t),50*sin(5*t)+10*sin(v))
+    factor=100/(1-.60*sin(b))
+    clifford=(factor*cos(a),factor*sin(a),factor*cos(b))
+    lane=i%2; t=TAU*((i//2)%120)/120; v=TAU*(i//240)/6
+    radius=139+12*cos(v)
+    linked=((radius*cos(t)-65,radius*sin(t),12*sin(v)),(12*sin(v)+65,radius*cos(t),radius*sin(t)))[lane]
+    return (sphere,flower,torus,knot,mobius,helix,star,cube,cinquefoil,clifford,linked,lorenz_points()[i])
 def transit(p, q, index, stage, step):
     f=step/3
     xyz=[a*(1-f)+b*f for a,b in zip(p,q)]
@@ -40,7 +60,7 @@ def transit(p, q, index, stage, step):
 
 def verify():
     pts=[poses(i) for i in range(COUNT)]
-    for k in range(8):
+    for k in range(len(LABELS)):
         assert len({tuple(round(v,4) for v in p[k]) for p in pts})==COUNT
     assert all(isfinite(v) for p in pts for xyz in p for v in xyz)
     assert max(sqrt(sum(v*v for v in xyz)) for p in pts for xyz in p)<310
@@ -63,19 +83,19 @@ PARTICLE_CSS = r"""
 /* The sculpture contains only circular light particles. */
 .stage{height:680px;background:radial-gradient(ellipse at center,#14243d,#060b15 72%)}
 .stage:before,.stage:after{display:none!important}.viewport{top:46%}.assembly{animation:particle-camera 12s linear infinite}.sheath{animation:none;transform:none}
-.particle{width:var(--size);height:var(--size);margin:calc(var(--size) / -2);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 12%,currentColor 52%,transparent 80%);color:hsl(var(--hue) 95% 75%);box-shadow:0 0 6px currentColor;opacity:var(--alpha);animation:particle-morph 64s ease-in-out infinite;animation-delay:0s;transform:var(--rest)}
-.particle.fine{box-shadow:0 0 3px currentColor}.particle.spark{border-radius:50%;box-shadow:0 0 9px currentColor}.phase-list{position:absolute;left:20px;right:20px;bottom:23px;display:grid;grid-template-columns:repeat(8,1fr);gap:8px;padding:0;margin:0;list-style:none}.phase-list li{text-align:center;font-size:10px;padding-top:8px;border-top:1px solid #34495e;color:#8096ac;animation:phase-active 64s linear infinite;animation-delay:var(--delay)}
-@keyframes phase-active{0%,12.499%{color:#e0fff2;border-color:#9ef1d8}12.5%,100%{color:#8096ac;border-color:#34495e}}
+.particle{width:var(--size);height:var(--size);margin:calc(var(--size) / -2);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 12%,currentColor 52%,transparent 80%);color:hsl(var(--hue) 95% 75%);box-shadow:0 0 6px currentColor;opacity:var(--alpha);animation:particle-morph 96s ease-in-out infinite;animation-delay:0s;transform:var(--rest)}
+.particle.fine{box-shadow:0 0 3px currentColor}.particle.spark{border-radius:50%;box-shadow:0 0 9px currentColor}.phase-list{position:absolute;left:20px;right:20px;bottom:23px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:0;margin:0;list-style:none}.phase-list li{text-align:center;font-size:10px;padding-top:8px;border-top:1px solid #34495e;color:#8096ac;animation:phase-active 96s linear infinite;animation-delay:var(--delay)}
+@keyframes phase-active{0%,8.332%{color:#e0fff2;border-color:#9ef1d8}8.333333%,100%{color:#8096ac;border-color:#34495e}}
 @keyframes particle-camera{0%{transform:rotateX(-15deg) rotateY(-25deg) rotateZ(0deg)}25%{transform:rotateX(10deg) rotateY(25deg) rotateZ(90deg)}50%{transform:rotateX(20deg) rotateY(-15deg) rotateZ(180deg)}75%{transform:rotateX(-10deg) rotateY(30deg) rotateZ(270deg)}100%{transform:rotateX(-15deg) rotateY(-25deg) rotateZ(360deg)}}
-@media(max-width:650px){.intro{padding:22px 0 18px;gap:10px}.intro-copy{font-size:11px;line-height:1.8}.masthead{padding:13px 0}.toolbar{padding:11px 12px;gap:8px}.control-title{width:auto}.stage{height:480px}.scale{transform:scale(.65)}.particle{width:calc(var(--size)*1.25);height:calc(var(--size)*1.25);margin:calc(var(--size)*-.625)}.phase-list{grid-template-columns:repeat(4,1fr);font-size:9px;row-gap:10px}.phase-list li{font-size:9px;padding-top:5px}.viewport{top:43%}}
+@media(max-width:650px){.intro{padding:22px 0 18px;gap:10px}.intro-copy{font-size:11px;line-height:1.8}.masthead{padding:13px 0}.toolbar{padding:11px 12px;gap:8px}.control-title{width:auto}.stage{height:480px}.scale{transform:scale(.65)}.particle{width:calc(var(--size)*1.25);height:calc(var(--size)*1.25);margin:calc(var(--size)*-.625)}.phase-list{grid-template-columns:repeat(4,1fr);font-size:9px;row-gap:10px}.phase-list li{font-size:9px;padding-top:5px}.viewport{top:40%}}
 @media(max-width:420px){.stage{height:450px}.scale{transform:scale(.54)}.intro h1{font-size:34px}.intro-copy{font-size:10px}.toolbar .pause-control{margin-left:auto}}
 @media(max-width:350px){.scale{transform:scale(.44)}.stage{height:420px}.toolbar label{font-size:9px;padding:6px 7px}.control-title{display:none}}
 @media(prefers-reduced-motion:reduce){.assembly{transform:rotateX(-8deg) rotateY(-20deg)}.particle{transform:var(--rest);opacity:var(--alpha)}.phase-list li{color:#8096ac;border-color:#34495e}.phase-list li:first-child{color:#e0fff2;border-color:#9ef1d8}}
-@media print{.stage{height:450px}.scale{transform:scale(.65)}.assembly{transform:rotateX(-8deg) rotateY(-20deg)}.particle{transform:var(--rest);color:#335e75!important;box-shadow:none;background:currentColor}.phase-list li{color:#335e75!important;border-color:#aab9b8!important}.viewport{top:43%}}
+@media print{.stage{height:450px}.scale{transform:scale(.65)}.assembly{transform:rotateX(-8deg) rotateY(-20deg)}.particle{transform:var(--rest);color:#335e75!important;box-shadow:none;background:currentColor}.phase-list li{color:#335e75!important;border-color:#aab9b8!important}.viewport{top:40%}}
 """
 BODY = r"""<body><a class="skip" href="#observatory">作品へ移動</a>
 <header class="masthead wrap"><a class="brand" href="../index.html">教材ライブラリ</a><nav aria-label="ページの案内"><a href="../css-motion-gallery/index.html">動く作品集 ↗</a><a href="#structure">構造を読む</a></nav></header>
-<main class="wrap"><section class="intro" aria-labelledby="title"><div><p class="eyebrow">PARTICLE MORPH / 光の粒子だけで描く</p><h1 id="title">光が、<span>かたちになる。</span></h1></div><p class="intro-copy">720個の光が、球から花冠へ、結び目かららせんへ。<br>回転する8つの立体がほどけ、渦を巻いて次の形へ集まる粒子の彫刻。</p></section>
+<main class="wrap"><section class="intro" aria-labelledby="title"><div><p class="eyebrow">PARTICLE MORPH / 光の粒子だけで描く</p><h1 id="title">光が、<span>かたちになる。</span></h1></div><p class="intro-copy">1440個の光が、球から花冠へ、結び目かららせんへ。<br>回転する12のの立体がほどけ、渦を巻いて次の形へ集まる粒子の彫刻。</p></section>
 <p class="reduced-note">「動きを減らす」設定に合わせて球体を静止表示しています。視点と粒子密度は切り替えられます。</p>
 <section class="observatory" id="observatory" aria-label="光の粒子の観察と操作">
 <input class="control-input" type="checkbox" id="pause" aria-label="すべての動きを一時停止">
@@ -83,37 +103,37 @@ BODY = r"""<body><a class="skip" href="#observatory">作品へ移動</a>
 <input class="control-input" type="radio" name="view" id="view-front" aria-label="正面から見る">
 <input class="control-input" type="checkbox" id="sparse" aria-label="粒子を半分にする">
 <div class="toolbar"><div class="control-group" role="group" aria-label="視点"><span class="control-title">視点</span><label for="view-oblique">斜め</label><label for="view-front">正面</label></div><label for="sparse">粒子を半分に</label><label for="pause" class="pause-control"><span class="playing">Ⅱ 動きを止める</span><span class="resume">▷ 動きを再開</span></label></div>
-<div class="stage" role="img" aria-label="720個の丸い光粒子が、球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体へ64秒で変形する立体作品。">
-<div class="stage-meta" aria-hidden="true"><p>PARTICLE SCULPTURE<small>720 LIGHTS / 8 FORMATIONS</small></p><p class="right"><span class="status-running">再生中</span><span class="status-paused">一時停止</span><span class="status-static">静止表示</span></p></div>
+<div class="stage" role="img" aria-label="1440個の丸い光粒子が、球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体、五重結び目、四次元トーラス、絡み合う二重環、ローレンツ軌道へ96秒で変形する立体作品。">
+<div class="stage-meta" aria-hidden="true"><p>PARTICLE SCULPTURE<small>1440 LIGHTS / 12 FORMATIONS</small></p><p class="right"><span class="status-running">再生中</span><span class="status-paused">一時停止</span><span class="status-static">静止表示</span></p></div>
 <div class="viewport" aria-hidden="true"><div class="scale"><div class="camera"><div class="assembly motion"><div class="sheath">__POINTS__</div></div></div></div></div>
-<ol class="phase-list" aria-label="変形する8つの形">__PHASES__</ol></div>
+<ol class="phase-list" aria-label="変形する12のの形">__PHASES__</ol></div>
 <div class="caption"><p>形を保つ間も12秒で1回転。約4秒ごとに、保持と渦状の変形を交互に繰り返します。</p><span class="serial">HTML + CSS / 音声なし</span></div></section>
-<section class="notes" id="structure" aria-label="動きのしくみ"><article><span class="note-number">01 / 形</span><h2>粒子だけで、8つの立体。</h2><p>球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体。同じ720粒が、それぞれの数式で求めた位置へ移ります。メビウスの帯は半ひねりした曲面、結び目は太さを持つ閉じた軌道です。</p></article><article><span class="note-number">02 / 色と奥行き</span><h2>光の密度が、面をつくる。</h2><p>粒ごとの大きさ・色・明るさの違いと、前後の距離による遠近感で立体を見せます。全体は12秒で1回転し、前後の傾きも同時に変化します。変形中は粒子が3つの流れに分かれてねじれ、広がりながら次の形へ集まります。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、かたちを観察する。</h2><p>Tabで操作を選び、Spaceで停止や粒子密度を切り替えます。視点の選択は矢印キーでも操作できます。粒子を半分にしても時間は保たれます。設定は保存しません。</p></article></section>
-<details><summary>座標とアニメーションのしくみ</summary><p>8種類のXYZ座標と、各変形をねじる2組の中間座標をHTML内に持たせ、CSSのtranslate3d・scale・色・不透明度を補間します。数式の計算は作成時にPython標準ライブラリで行い、閲覧時はHTML内のCSSだけで動作します。生成コマンドは <code>python3 tools/generate_kinetic_observatory.py</code> です。</p><p>端末の「動きを減らす」設定と印刷では球体を静止表示します。JavaScript・外部素材・追加パッケージは不要です。滑らかさは端末により異なります。</p></details>
-</main><footer class="footer wrap"><span>Kinetic Observatory / Particle Morph</span><a href="../css-motion-gallery/index.html">9つの作品へ戻る ↗</a><a href="../index.html">教材一覧へ ↗</a></footer></body></html>"""
+<section class="notes" id="structure" aria-label="動きのしくみ"><article><span class="note-number">01 / 形</span><h2>粒子だけで、12のの立体。</h2><p>球体、六弁花冠、トーラス、三葉結び目、メビウスの帯、二重らせん、星芒、立方体。同じ1440粒が、それぞれの数式で求めた位置へ移ります。メビウスの帯は半ひねりした曲面、結び目は太さを持つ閉じた軌道です。</p></article><article><span class="note-number">02 / 色と奥行き</span><h2>光の密度が、面をつくる。</h2><p>粒ごとの大きさ・色・明るさの違いと、前後の距離による遠近感で立体を見せます。全体は12秒で1回転し、前後の傾きも同時に変化します。変形中は粒子が3つの流れに分かれてねじれ、広がりながら次の形へ集まります。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、かたちを観察する。</h2><p>Tabで操作を選び、Spaceで停止や粒子密度を切り替えます。視点の選択は矢印キーでも操作できます。粒子を半分にしても時間は保たれます。設定は保存しません。</p></article></section>
+<details><summary>座標とアニメーションのしくみ</summary><p>12種類のXYZ座標と、各変形をねじる2組の中間座標をHTML内に持たせ、CSSのtranslate3d・scale・色・不透明度を補間します。数式の計算は作成時にPython標準ライブラリで行い、閲覧時はHTML内のCSSだけで動作します。生成コマンドは <code>python3 tools/generate_kinetic_observatory.py</code> です。</p><p>端末の「動きを減らす」設定と印刷では球体を静止表示します。JavaScript・外部素材・追加パッケージは不要です。滑らかさは端末により異なります。</p></details>
+<section class="notes" id="structure" aria-label="作品のしくみ"><article><span class="note-number">01 / 光の密度</span><h2>1,440粒が描く12の立体。</h2><p>球体・花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体に、五重結び目、四次元トーラスの投影、絡み合う二重環、ローレンツ軌道を追加しています。</p></article><article><span class="note-number">02 / 動き</span><h2>回転し、ほどけ、再集合する。</h2><p>12秒で1回転し、形の保持と渦を巻く変形を4秒ずつ繰り返します。全体は96秒周期。作成時に数式から求めた座標をCSSで補間し、ローレンツ軌道も計算済みの形へ集合する表現です。</p></article><article><span class="note-number">03 / 操作</span><h2>止めて、密度を変える。</h2><p>Tabで操作を選び、Spaceで停止・再開・粒子の間引きを切り替えます。間引くと720粒になります。視点は矢印キーでも変更できます。「動きを減らす」設定と印刷では球体を静止表示します。閲覧時はHTML内のCSSだけで動作します。</p></article></section></main><footer class="footer wrap"><span>Kinetic Observatory / Particle Morph</span><a href="../css-motion-gallery/index.html">9つの作品へ戻る ↗</a><a href="../index.html">教材一覧へ ↗</a></footer></body></html>"""
 def build():
     pts=verify(); dots=[]
     frames=[]
-    for k in range(8):
-        for offset in (0,6.25):
-            pct=k*12.5+offset
+    for k in range(len(LABELS)):
+        for offset in (0,50/len(LABELS)):
+            pct=k*100/len(LABELS)+offset
             frames.append(f'{pct}%{{transform:translate3d(var(--x{k}),var(--y{k}),var(--z{k})) scale({.9 if offset==0 else 1.1});color:hsl(calc(var(--hue) + {k*17}) 95% 77%);opacity:{.78 if offset==0 else .95}}}')
         # Two spatial waypoints turn the four-second transition into a braided swirl.
-        for step,offset in ((1,8.333333),(2,10.416667)):
-            frames.append(f'{k*12.5+offset}%{{transform:translate3d(var(--bx{k}-{step}),var(--by{k}-{step}),var(--bz{k}-{step})) scale(1.15);color:hsl(calc(var(--hue) + {k*17+35}) 100% 80%);opacity:.9}}')
+        for step,offset in ((1,100/len(LABELS)*2/3),(2,100/len(LABELS)*5/6)):
+            frames.append(f'{k*100/len(LABELS)+offset}%{{transform:translate3d(var(--bx{k}-{step}),var(--by{k}-{step}),var(--bz{k}-{step})) scale(1.15);color:hsl(calc(var(--hue) + {k*17+35}) 100% 80%);opacity:.9}}')
     frames.append('100%{transform:translate3d(var(--x0),var(--y0),var(--z0)) scale(.9);color:hsl(var(--hue) 95% 77%);opacity:.78}')
     for i,p in enumerate(pts):
         props=';'.join(f'--{axis}{k}:{value:.3f}px' for k,xyz in enumerate(p) for axis,value in zip('xyz',xyz))
-        for k in range(8):
+        for k in range(len(LABELS)):
             for step in (1,2):
-                xyz=transit(p[k],p[(k+1)%8],i,k,step)
+                xyz=transit(p[k],p[(k+1)%len(LABELS)],i,k,step)
                 props+=';'+ ';'.join(f'--b{axis}{k}-{step}:{value:.3f}px' for axis,value in zip('xyz',xyz))
         size=2.1+(i*17%23)/12; hue=175+(i%60)*1.4
         props+=f';--size:{size:.2f}px;--hue:{hue:.1f};--alpha:.85;--rest:translate3d({p[0][0]:.3f}px,{p[0][1]:.3f}px,{p[0][2]:.3f}px)'
         dots.append(f'<i class="particle shell-point motion {"secondary" if i%2 else "fine"}" style="{props}"></i>')
-    phases=''.join(f'<li class="motion" style="--delay:{-64+k*8 if k else 0}s">{name}</li>' for k,name in enumerate(LABELS))
-    html='<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="720個の光粒子が8種類の複雑な立体へ変形する、HTMLとCSSだけの作品。"><title>Kinetic Observatory｜光の粒子の立体変形</title><style>'+BASE_CSS+PARTICLE_CSS+'@keyframes particle-morph{'+''.join(frames)+'}</style></head>'+BODY.replace('__POINTS__','\n'.join(dots)).replace('__PHASES__',phases)
+    phases=''.join(f'<li class="motion" style="--delay:{-96+k*8 if k else 0}s">{name}</li>' for k,name in enumerate(LABELS))
+    html='<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="1440個の光粒子が12種類の複雑な立体へ変形する、HTMLとCSSだけの作品。"><title>Kinetic Observatory｜光の粒子の立体変形</title><style>'+BASE_CSS+PARTICLE_CSS+'@keyframes particle-morph{'+''.join(frames)+'}</style></head>'+BODY.replace('__POINTS__','\n'.join(dots)).replace('__PHASES__',phases)
     target=Path(__file__).resolve().parent.parent/'kinetic-observatory/index.html'
     target.write_text(html,encoding='utf-8')
-    print(f'Verified {COUNT} particles, eight distinct finite formations. Wrote {len(html.encode()):,} bytes.')
+    print(f'Verified {COUNT} particles, twelve distinct finite formations. Wrote {len(html.encode()):,} bytes.')
 if __name__=='__main__': build()
