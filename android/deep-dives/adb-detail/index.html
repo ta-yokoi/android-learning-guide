@@ -214,10 +214,10 @@ adb -s SERIAL shell pidof PACKAGE</code></pre><h3>元の章と参考資料</h3><
  function speakChunk(record){
   if(!recordIsCurrent(record))return;clearSpeechTimers();const text=record.chunks[record.chunk];if(!text){finishSpeech(record);return}
   let utterance;try{utterance=new window.SpeechSynthesisUtterance(text);utterance.lang='ja-JP';const voice=selectedVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}utterance.rate=rate;utterance.pitch=1;utterance.volume=1}catch(_){speechFailure(record);return}
-  record.utterance=utterance;utterance.onstart=()=>{if(!recordIsCurrent(record))return;clearTimeout(speechStartTimer);speechNotice(record.preview?'声を確認しています':'読み上げ中：読み終わると次の説明へ進みます')};
-  utterance.onend=()=>{if(!recordIsCurrent(record))return;clearSpeechTimers();record.chunk++;if(record.chunk<record.chunks.length)speakChunk(record);else speechGapTimer=setTimeout(()=>finishSpeech(record),450)};
-  utterance.onerror=e=>{if(!recordIsCurrent(record))return;if(e.error==='interrupted'||e.error==='canceled'){pause();speechNotice('読み上げが中断されました。再生すると現在の説明を読み直します')}else speechFailure(record)};
-  speechStartTimer=setTimeout(()=>speechFailure(record),6000);speechEndTimer=setTimeout(()=>speechFailure(record),Math.min(180000,Math.max(18000,text.length*450/rate+10000)));
+  record.utterance=utterance;utterance.onstart=()=>{if(!recordIsCurrent(record)||record.utterance!==utterance)return;clearTimeout(speechStartTimer);speechNotice(record.preview?'声を確認しています':'読み上げ中：読み終わると次の説明へ進みます')};
+  utterance.onend=()=>{if(!recordIsCurrent(record)||record.utterance!==utterance)return;record.utterance=null;clearSpeechTimers();record.chunk++;if(record.chunk<record.chunks.length)speakChunk(record);else speechGapTimer=setTimeout(()=>finishSpeech(record),450)};
+  utterance.onerror=e=>{if(!recordIsCurrent(record)||record.utterance!==utterance)return;if(e.error==='interrupted'||e.error==='canceled'){pause();speechNotice('読み上げが中断されました。再生すると現在の説明を読み直します')}else speechFailure(record)};
+  const failIfCurrent=()=>{if(record.utterance===utterance)speechFailure(record)};speechStartTimer=setTimeout(failIfCurrent,6000);speechEndTimer=setTimeout(failIfCurrent,Math.min(180000,Math.max(18000,text.length*450/rate+10000)));
   try{if(synth.paused)synth.resume();synth.speak(utterance)}catch(_){speechFailure(record)}
  }
  function speechSync(){if(!playing||!speechDrivesClock()||elapsed>=TOTAL)return;const key=index*4+step;if(speechRecord&&!speechRecord.preview&&speechRecord.key===key)return;if(speechRecord)speechStop();else{speechEpoch++;clearSpeechTimers()}const chunks=speechChunks(currentNarration());if(!chunks.length){speechFailed=true;return}const record={key,epoch:speechEpoch,chunks,chunk:0,preview:false};speechRecord=record;speakChunk(record)}
