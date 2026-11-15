@@ -7,29 +7,34 @@
 GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPagesのビルド・公開成功が必要です。
 
 - 教材一覧: https://ta-yokoi.github.io/android-learning-guide/
-- Androidスライド: https://ta-yokoi.github.io/android-learning-guide/guides/android-slides/
-- Android: https://ta-yokoi.github.io/android-learning-guide/guides/android/
-- 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/guides/embedded/
-- GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/guides/design-patterns/
-- 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/guides/pattern-animations/
+- Androidスライド: https://ta-yokoi.github.io/android-learning-guide/android/slides/
+- Android: https://ta-yokoi.github.io/android-learning-guide/android/guide/
+- 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/guide/
+- GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/gof/guide/
+- 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/gof/animations/
 - CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/works/css-motion-gallery/
 - 光の潮汐: https://ta-yokoi.github.io/android-learning-guide/works/luminous-tides/
 - Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/works/kinetic-observatory/
 - 作品一覧: https://ta-yokoi.github.io/android-learning-guide/works/
 
-- 教材一覧: https://ta-yokoi.github.io/android-learning-guide/guides/
+- Androidの入口: https://ta-yokoi.github.io/android-learning-guide/android/
+- GoFの入口: https://ta-yokoi.github.io/android-learning-guide/gof/
+- 組み込み開発の入口: https://ta-yokoi.github.io/android-learning-guide/embedded/
 
 ## 構成
 
 ```
-index.html           # 学習教材／作品集の入口
-guides/index.html    # 教材一覧（各教材への親ページ）
+index.html           # Android／GoF／組み込み開発／作品集の入口
+android/index.html   # Android：通常の教材・スライドを選ぶ
+gof/index.html       # GoF：通常の教材・アニメーションを選ぶ
+embedded/index.html  # 組み込み開発：通常の教材を選ぶ
+guides/index.html    # 旧教材一覧からトップへの転送
 works/index.html     # 作品一覧（各作品への親ページ）
-guides/android-slides/index.html # Androidの動くスライド（32枚・16:9）
-guides/android/index.html   # Android（30章・図38点・78問）
-guides/embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
-guides/design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
-guides/pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
+android/slides/index.html # Androidの動くスライド（32枚・16:9）
+android/guide/index.html   # Android（30章・図38点・78問）
+embedded/guide/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
+gof/guide/index.html # GoF（28章・23パターン・図23点・確認問題46問）
+gof/animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
 works/css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
 works/luminous-tides/index.html # 光の潮汐：三層の光の流れの独立作品
 works/kinetic-observatory/index.html # 光粒子だけで描く12種類の立体変形
@@ -45,7 +50,7 @@ tools/generate_kinetic_observatory.py # 新作の座標とHTMLを再生成する
 GitHub Pagesの公開元がmainブランチの/(root)なら、この構成をリポジトリ直下へ配置してpushします。
 Pagesのビルド・公開に成功した後にサイトへ反映されます。
 github-pagesという親フォルダ自体はアップロードしません。ZIPを使う場合は中身を配置します。
-教材はguides/<genre>/index.htmlを追加し、guides/index.htmlへカードを追加します。作品はworks/<name>/index.htmlを追加し、works/index.htmlへカードを追加します。
+教材は<分野>/<形式>/index.htmlを追加し、<分野>/index.htmlへカードを追加します。新しい分野はトップにも入口を追加します。作品はworks/<name>/index.htmlを追加し、works/index.htmlへカードを追加します。
 
 ## 読了記録
 
@@ -73,8 +78,8 @@ CSSのprefers-color-schemeを使い、本文・図・表・フォームを切替
 導入、類似パターンの比較、注文通知システムの総合演習、用語集22語、参考資料を含む28章です。
 クラスとインターフェースの基礎が前提です。Java 17を基準とし、各コード例は独立したMain.javaとしてJDK 17以降で実行できます。
 
-閲覧はトップの「学習教材」から教材一覧を開いて選ぶか、guides/design-patterns/index.htmlをブラウザで開きます。
-HTTPで確認する場合はリポジトリ直下で次を実行し、http://localhost:8000/guides/design-patterns/ を開きます。
+閲覧はトップの「GoFデザインパターン」から教材形式を選ぶか、gof/guide/index.htmlをブラウザで開きます。
+HTTPで確認する場合はリポジトリ直下で次を実行し、http://localhost:8000/gof/guide/ を開きます。
 
 ```sh
 python3 -m http.server 8000
@@ -95,13 +100,13 @@ python3 -m http.server 8000
 
 ## 動く図で学ぶGoFデザインパターン
 
-`guides/pattern-animations/index.html`は、JavaScriptを使わずCSSだけで要求・委譲・通知・戻りを動かす単一HTMLです。
+`gof/animations/index.html`は、JavaScriptを使わずCSSだけで要求・委譲・通知・戻りを動かす単一HTMLです。
 Strategy、Observer、Decorator、State、Factory Methodの5パターンを収録します。
 方策の選択、購読解除の有無、ラッパーの順序、CSV／JSONの生成フックを含む9つの説明シナリオがあります。
 図と番号付きの説明、役割、省略事項、誤解しやすい点、解答を開閉できる確認問題5問を備えます。
 
-トップの「学習教材」から教材一覧を開いて選ぶか、`guides/pattern-animations/index.html`をブラウザで直接開きます。
-HTTPサーバーを利用する場合は上記の起動コマンドで http://localhost:8000/guides/pattern-animations/ を開きます。
+トップの「GoFデザインパターン」から教材形式を選ぶか、`gof/animations/index.html`をブラウザで直接開きます。
+HTTPサーバーを利用する場合は上記の起動コマンドで http://localhost:8000/gof/animations/ を開きます。
 各図は初期停止で、「再生する」のチェックを外すとその位置で一時停止します。図ごとの操作は独立し、シナリオの切替先は初めから開始します。
 動きは業務処理の実行ではなく、あらかじめ決めた説明の再生です。
 
@@ -180,7 +185,7 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 
 ## 作品ページの階層
 
-トップの `index.html` → `works/index.html`（作品一覧）→ `works/<作品名>/index.html` の三層構成です。学習教材は `guides/`、アニメーション作品は `works/` 以下へまとめています。各作品の戻るリンクは作品一覧へ、作品一覧からはトップへ戻ります。従来の作品URLには、公開済みリンクを引き継ぐためのHTML転送ページを置いています。開発用生成スクリプトも新しい作品フォルダへ出力します。
+トップの `index.html` → `works/index.html`（作品一覧）→ `works/<作品名>/index.html` の三層構成です。学習教材は分野ごとのフォルダ、アニメーション作品は `works/` 以下へまとめています。各作品の戻るリンクは作品一覧へ、作品一覧からはトップへ戻ります。従来の作品URLには、公開済みリンクを引き継ぐためのHTML転送ページを置いています。開発用生成スクリプトも新しい作品フォルダへ出力します。
 
 階層変更後、全12ページのローカルリンクと章内リンクを検査しました。JavaScript無効のChromiumで、トップ→作品一覧→各作品の往復、旧URL3件の自動転送、幅1440・390・320pxとライト／ダークを確認済みです。移動した作品のアニメーションCSSが変更前と一致すること、粒子の動作とキーボードでの停止も確認しました。ブラウザの実行エラーとHTTPエラーはありません。
 
@@ -202,13 +207,13 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 
 ## 教材ページの階層
 
-トップの `index.html` は「学習教材」と「作品集」の2つの入口です。教材は `guides/index.html` → `guides/<教材名>/index.html`、作品は `works/index.html` → `works/<作品名>/index.html` の同じ三層構成にそろえています。旧教材URLは新しい教材へ転送し、JavaScriptが使える環境ではクエリと章のハッシュも引き継ぎます。JavaScript無効時はHTMLの自動転送と手動リンクで開けます。転送ページ以外の教材のJavaScript・localStorageキーは変更していません。
+トップから分野を選び、その一覧から教材形式を選ぶ三層構成です。現在のパスは末尾の「分野別の入口と教材形式」を参照してください。旧URLは転送ページで引き継ぎ、JavaScriptが使える環境ではクエリと章ハッシュも保持します。
 
-教材の階層変更後、全17ページのローカルリンクと章内リンクを検査しました。Chromiumでトップ→教材一覧→4教材の往復、教材／作品間リンク、旧教材URL4件の転送（JavaScript有効・無効）、有効時のクエリ・章ハッシュの継承、3教材の読了記録の読み込み・更新・再読み込みを確認しました。教材一覧は幅1440・390・320pxのライト／ダークでページの横はみ出しがなく、教材本文のCSSとJavaScriptは移動前と一致します。ブラウザの実行エラーとHTTPエラーはありません。実スマートフォン、Safari／Firefox、直接ファイルを開く環境は未確認です。
+以前の階層変更時には、全17ページのローカルリンクと章内リンクを検査しました。Chromiumでトップ→教材一覧→4教材の往復、教材／作品間リンク、旧教材URL4件の転送（JavaScript有効・無効）、有効時のクエリ・章ハッシュの継承、3教材の読了記録の読み込み・更新・再読み込みを確認しました。教材一覧は幅1440・390・320pxのライト／ダークでページの横はみ出しがなく、教材本文のCSSとJavaScriptは移動前と一致します。ブラウザの実行エラーとHTTPエラーはありません。実スマートフォン、Safari／Firefox、直接ファイルを開く環境は未確認です。
 
 ## Androidを動く図で学ぶ / スライド教材
 
-`guides/android-slides/index.html` は、既存のAndroid 16教材30章の中心となる見方を、導入・まとめを含む32枚のスライドで振り返る新しい教材です。既存Android本文は変更していません。各枚に4段階の説明、図、字幕、補足、確認問題、元の章へのリンクがあります。詳しいコードや実習は元の教材へ進んで確認します。自動再生は標準で12分48秒、音声はありません。
+`android/slides/index.html` は、既存のAndroid 16教材30章の中心となる見方を、導入・まとめを含む32枚のスライドで振り返る新しい教材です。既存Android本文は変更していません。各枚に4段階の説明、図、字幕、補足、確認問題、元の章へのリンクがあります。詳しいコードや実習は元の教材へ進んで確認します。自動再生は標準で12分48秒、音声はありません。
 
 16:9のスライド、再生／停止、前後移動、4段階の説明の選択、全体のシーク、0.75〜2倍速、スライドの選択に対応します。スマートフォンは横向きの全画面表示を推奨します。Fullscreen APIが使えない場合は、ブラウザ内で最大化します。縦向きでも16:9を保ち、通常表示の下には読みやすい解説を載せます。端末の回転固定は、ブラウザが許可した場合だけ利用します。
 
@@ -216,10 +221,24 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 
 再生位置のスライド番号と速度は専用キー `android-animated-slides-player-v1` に保存します。既存教材の読了記録とは分離し、保存できない環境でも再生できます。動きを減らす設定では移動する印を止め、番号と文章で追います。JavaScript無効時と印刷時は全32枚の静止版を表示します。
 
-単一HTMLにCSS・JavaScript・教材データを内包し、外部画像・フォント・動画・ライブラリは不要です。作成用の `python3 tools/generate_android_slides.py` で再生成できます。Pythonは閲覧時には不要です。教材一覧から選ぶか、HTTPサーバーの http://localhost:8000/guides/android-slides/ で開きます。
+単一HTMLにCSS・JavaScript・教材データを内包し、外部画像・フォント・動画・ライブラリは不要です。作成用の `python3 tools/generate_android_slides.py` で再生成できます。Pythonは閲覧時には不要です。教材一覧から選ぶか、HTTPサーバーの http://localhost:8000/android/slides/ で開きます。
 
 スライド教材はChromiumで、全32枚・各4段階の表示、幅1440・844・390・320pxのライト／ダーク、16:9比率と横はみ出し、キーボード、再生／停止・自動送り・シーク・速度変更・終端・再開位置、確認問題を開いた際の停止を確認しました。スマートフォン相当の390×844・844×390・568×320・480×320・320×700では、ブラウザ内全画面の全128段階、画面回転後の配置、タップ・スワイプも確認しています。通常のFullscreen API、APIが使えない場合、保存拒否、動きを減らす設定、JavaScript無効時の32枚表示、32ページの印刷PDF、教材一覧・元の章との往復、全18ページのローカルリンクと章リンクも確認済みです。外部リソース通信、JavaScript実行エラー、HTTPエラーはありません。元のAndroid HTMLが変更されていないことと、生成HTMLの再現性を検査しました。
 
 実スマートフォン、Safari／Firefox、端末の向き固定、直接ファイルを開く環境、読み上げソフトと実プリンターは未確認です。スマートフォンの確認はChromiumの画面サイズ・タッチエミュレーションで行っています。
 
 120秒の連続再生では、クラッシュ・実行エラーがなく、終了後の停止操作も正常でした。24秒ごとのJavaScriptヒープ使用量は約2MBで、表示用のノードは4個、移動する印は1個のままです。別画面へ移る際の停止処理と、専用キーへの保存が既存Android教材の読了記録を変更しないことも検証しました。この値は検証環境での結果で、実端末でのメモリ使用量を保証するものではありません。
+
+
+## 分野別の入口と教材形式
+
+トップは「Android」「GoFデザインパターン」「組み込み開発」「作品集」の入口です。「学習教材」という共通の中間ページは設けず、各分野で学び方を選びます。
+
+- `android/index.html` → `android/guide/index.html`（通常の教材）、`android/slides/index.html`（スライド）
+- `gof/index.html` → `gof/guide/index.html`（通常の教材）、`gof/animations/index.html`（アニメーション）
+- `embedded/index.html` → `embedded/guide/index.html`（通常の教材）
+- `works/index.html` → 各作品（変更なし）
+
+各教材からは自分の分野の一覧へ戻れます。従来の `guides/` 以下とGoFの旧URLは、クエリ・章ハッシュを引き継いで新しい教材へ転送します。旧 `guides/index.html` はトップへ移動します。Android／組み込みの旧入口URLに章ハッシュがある場合も本文へ引き継ぎます。JavaScript無効時は転送先の手動リンクを利用できますが、章ハッシュの自動継承は行いません。本文のCSS・再生処理・読了記録のキーは変更していません。
+
+今回の分野別構成では、全24ページのローカルリンク・章リンクを検査しました。Chromiumでトップの4入口、Android・GoF・組み込みの各一覧から5教材への往復、幅1440・390・320pxのライト／ダークと横はみ出し、9件の旧URLのクエリ・ハッシュ継承、旧教材一覧からトップへの移動、JavaScript無効時の旧URL7件の転送と分野カードを確認しました。3教材の読了記録の読み込み・更新・再読み込み、スライドの再生・停止と元の章へのリンクも確認済みで、実行エラーとHTTPエラーはありません。5教材のCSSは移動前と一致し、JavaScriptの差分はスライドの章参照パスだけです。実スマートフォン、Safari／Firefox、直接ファイルを開く環境は今回未確認です。
