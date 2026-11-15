@@ -7,24 +7,27 @@
 GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPagesのビルド・公開成功が必要です。
 
 - 教材一覧: https://ta-yokoi.github.io/android-learning-guide/
-- Android: https://ta-yokoi.github.io/android-learning-guide/android/
-- 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/
-- GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/design-patterns/
-- 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/pattern-animations/
+- Android: https://ta-yokoi.github.io/android-learning-guide/guides/android/
+- 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/guides/embedded/
+- GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/guides/design-patterns/
+- 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/guides/pattern-animations/
 - CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/works/css-motion-gallery/
 - 光の潮汐: https://ta-yokoi.github.io/android-learning-guide/works/luminous-tides/
 - Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/works/kinetic-observatory/
 - 作品一覧: https://ta-yokoi.github.io/android-learning-guide/works/
 
+- 教材一覧: https://ta-yokoi.github.io/android-learning-guide/guides/
+
 ## 構成
 
 ```
-index.html           # 教材と作品集の入口
+index.html           # 学習教材／作品集の入口
+guides/index.html    # 教材一覧（各教材への親ページ）
 works/index.html     # 作品一覧（各作品への親ページ）
-android/index.html   # Android（30章・図38点・78問）
-embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
-design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
-pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
+guides/android/index.html   # Android（30章・図38点・78問）
+guides/embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
+guides/design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
+guides/pattern-animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
 works/css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
 works/luminous-tides/index.html # 光の潮汐：三層の光の流れの独立作品
 works/kinetic-observatory/index.html # 光粒子だけで描く12種類の立体変形
@@ -40,7 +43,7 @@ tools/generate_kinetic_observatory.py # 新作の座標とHTMLを再生成する
 GitHub Pagesの公開元がmainブランチの/(root)なら、この構成をリポジトリ直下へ配置してpushします。
 Pagesのビルド・公開に成功した後にサイトへ反映されます。
 github-pagesという親フォルダ自体はアップロードしません。ZIPを使う場合は中身を配置します。
-新ジャンルは<genre>/index.htmlを追加し、教材一覧へ相対リンクのカードを追加します。
+教材はguides/<genre>/index.htmlを追加し、guides/index.htmlへカードを追加します。作品はworks/<name>/index.htmlを追加し、works/index.htmlへカードを追加します。
 
 ## 読了記録
 
@@ -68,8 +71,8 @@ CSSのprefers-color-schemeを使い、本文・図・表・フォームを切替
 導入、類似パターンの比較、注文通知システムの総合演習、用語集22語、参考資料を含む28章です。
 クラスとインターフェースの基礎が前提です。Java 17を基準とし、各コード例は独立したMain.javaとしてJDK 17以降で実行できます。
 
-閲覧はルートのindex.htmlから教材カードを選ぶか、design-patterns/index.htmlをブラウザで開きます。
-HTTPで確認する場合はリポジトリ直下で次を実行し、http://localhost:8000/design-patterns/ を開きます。
+閲覧はトップの「学習教材」から教材一覧を開いて選ぶか、guides/design-patterns/index.htmlをブラウザで開きます。
+HTTPで確認する場合はリポジトリ直下で次を実行し、http://localhost:8000/guides/design-patterns/ を開きます。
 
 ```sh
 python3 -m http.server 8000
@@ -90,13 +93,13 @@ python3 -m http.server 8000
 
 ## 動く図で学ぶGoFデザインパターン
 
-`pattern-animations/index.html`は、JavaScriptを使わずCSSだけで要求・委譲・通知・戻りを動かす単一HTMLです。
+`guides/pattern-animations/index.html`は、JavaScriptを使わずCSSだけで要求・委譲・通知・戻りを動かす単一HTMLです。
 Strategy、Observer、Decorator、State、Factory Methodの5パターンを収録します。
 方策の選択、購読解除の有無、ラッパーの順序、CSV／JSONの生成フックを含む9つの説明シナリオがあります。
 図と番号付きの説明、役割、省略事項、誤解しやすい点、解答を開閉できる確認問題5問を備えます。
 
-ルートの教材カードを選ぶか、`pattern-animations/index.html`をブラウザで直接開きます。
-HTTPサーバーを利用する場合は上記の起動コマンドで http://localhost:8000/pattern-animations/ を開きます。
+トップの「学習教材」から教材一覧を開いて選ぶか、`guides/pattern-animations/index.html`をブラウザで直接開きます。
+HTTPサーバーを利用する場合は上記の起動コマンドで http://localhost:8000/guides/pattern-animations/ を開きます。
 各図は初期停止で、「再生する」のチェックを外すとその位置で一時停止します。図ごとの操作は独立し、シナリオの切替先は初めから開始します。
 動きは業務処理の実行ではなく、あらかじめ決めた説明の再生です。
 
@@ -175,7 +178,7 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 
 ## 作品ページの階層
 
-トップの `index.html` → `works/index.html`（作品一覧）→ `works/<作品名>/index.html` の三層構成です。学習教材は従来の位置に置き、アニメーション作品3ページを `works/` 以下へまとめています。各作品の戻るリンクは作品一覧へ、作品一覧からはトップへ戻ります。従来の作品URLには、公開済みリンクを引き継ぐためのHTML転送ページを置いています。開発用生成スクリプトも新しい作品フォルダへ出力します。
+トップの `index.html` → `works/index.html`（作品一覧）→ `works/<作品名>/index.html` の三層構成です。学習教材は `guides/`、アニメーション作品は `works/` 以下へまとめています。各作品の戻るリンクは作品一覧へ、作品一覧からはトップへ戻ります。従来の作品URLには、公開済みリンクを引き継ぐためのHTML転送ページを置いています。開発用生成スクリプトも新しい作品フォルダへ出力します。
 
 階層変更後、全12ページのローカルリンクと章内リンクを検査しました。JavaScript無効のChromiumで、トップ→作品一覧→各作品の往復、旧URL3件の自動転送、幅1440・390・320pxとライト／ダークを確認済みです。移動した作品のアニメーションCSSが変更前と一致すること、粒子の動作とキーボードでの停止も確認しました。ブラウザの実行エラーとHTTPエラーはありません。
 
@@ -194,3 +197,9 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 粒子の立体変形では、全12形状を同じ空間基準で対応づけ、粒どうしの移動距離を抑えます。形を約4秒保った後、開始・終了時の速度がゼロになる加減速で次の形へ移動します。途中で粒子を散らす中間位置を取り除き、保持と変形を連続して接続しています。全体の周期は96秒で変わりません。初期の軽量表示（180粒／192粒）も維持しています。
 
 発光調整後、JavaScript無効のChromiumで両作品を同時に120秒再生し、クラッシュ・ページエラーがないことを確認しました。描画プロセスのRSSは最大約231MBでした。12形状の切替境界の前後1msを比較し、粒子位置の不連続がないこと、ループの始終点が一致すること、粒径・不透明度に奥行き差があることを確認しました。軽量／高密度、停止・再開、色の層・視点の切替、幅1440・390・320px、動きを減らす設定・印刷の停止も確認済みです。実際の報告端末とSafari／Firefoxは未確認です。
+
+## 教材ページの階層
+
+トップの `index.html` は「学習教材」と「作品集」の2つの入口です。教材は `guides/index.html` → `guides/<教材名>/index.html`、作品は `works/index.html` → `works/<作品名>/index.html` の同じ三層構成にそろえています。旧教材URLは新しい教材へ転送し、JavaScriptが使える環境ではクエリと章のハッシュも引き継ぎます。JavaScript無効時はHTMLの自動転送と手動リンクで開けます。転送ページ以外の教材のJavaScript・localStorageキーは変更していません。
+
+教材の階層変更後、全17ページのローカルリンクと章内リンクを検査しました。Chromiumでトップ→教材一覧→4教材の往復、教材／作品間リンク、旧教材URL4件の転送（JavaScript有効・無効）、有効時のクエリ・章ハッシュの継承、3教材の読了記録の読み込み・更新・再読み込みを確認しました。教材一覧は幅1440・390・320pxのライト／ダークでページの横はみ出しがなく、教材本文のCSSとJavaScriptは移動前と一致します。ブラウザの実行エラーとHTTPエラーはありません。実スマートフォン、Safari／Firefox、直接ファイルを開く環境は未確認です。
