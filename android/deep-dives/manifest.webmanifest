@@ -1,0 +1,27 @@
+{
+  "id": "/android-learning-guide/android/deep-dives/",
+  "name": "Android 項目別・深掘り動画",
+  "short_name": "Android深掘り",
+  "description": "30項目の内部構造・実装・失敗例・調査を、独立した動画風スライドで深く学ぶ。",
+  "lang": "ja",
+  "start_url": "./?source=homescreen",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a1521",
+  "theme_color": "#0a1521",
+  "icons": [
+    {
+      "src": "../slides/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../slides/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

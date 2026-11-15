@@ -7,6 +7,7 @@
 GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPagesのビルド・公開成功が必要です。
 
 - 教材一覧: https://ta-yokoi.github.io/android-learning-guide/
+- Androidの項目別深掘り動画: https://ta-yokoi.github.io/android-learning-guide/android/deep-dives/
 - Androidスライド: https://ta-yokoi.github.io/android-learning-guide/android/slides/
 - Android: https://ta-yokoi.github.io/android-learning-guide/android/guide/
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/guide/
@@ -25,12 +26,14 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 
 ```
 index.html           # Android／GoF／組み込み開発／作品集の入口
-android/index.html   # Android：通常の教材・スライドを選ぶ
+android/index.html   # Android：通常教材・概要版・項目別深掘りを選ぶ
 gof/index.html       # GoF：通常の教材・アニメーションを選ぶ
 embedded/index.html  # 組み込み開発：通常の教材を選ぶ
 guides/index.html    # 旧教材一覧からトップへの転送
 works/index.html     # 作品一覧（各作品への親ページ）
-android/slides/index.html # Androidの動くスライド（32枚・16:9）
+android/slides/index.html # Androidの概要版スライド（32枚・16:9）
+android/deep-dives/index.html # 30項目の深掘り講座一覧
+android/deep-dives/<項目>/index.html # 各6場面・約4分の独立した講座
 android/guide/index.html   # Android（30章・図38点・78問）
 embedded/guide/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 gof/guide/index.html # GoF（28章・23パターン・図23点・確認問題46問）
@@ -293,3 +296,26 @@ Androidスライドに `android/slides/manifest.webmanifest`、Appleのホーム
 再生成は本文が `python3 tools/generate_android_slides.py`、manifestとアイコンが `python3 tools/generate_android_app_assets.py` です。どちらもPython標準ライブラリだけを使い、閲覧・登録時のビルドは不要です。
 
 Chromiumでmanifestのブラウザ解析、GitHub Pagesと同じプロジェクトパスでの起動先・scope・アプリID、180／192／512px PNGの取得と寸法、Apple用metaを確認しました。iOSの `navigator.standalone` とstandaloneのdisplay-modeをそれぞれ模擬し、起動時にFullscreen APIを要求しないこと、停止状態での全画面起動、縦横4サイズの配置、再生／停止、全画面から解説へ戻る操作、再読み込み時の再開位置を確認しています。通常ブラウザ表示、JavaScript無効時の追加手順と32枚の静止版も確認済みです。既存プレイヤーの4幅・ライト／ダーク・保存拒否・印刷を含む確認も通り、実行エラーとHTTPエラーはありません。HTML・manifest・アイコンの再生成が一致することも検査しています。iPhone実機でのホーム画面への追加、Safariの実際のバー表示、OSのセーフエリアはこの環境では未確認です。
+
+
+## Android 項目別・深掘り動画
+
+既存の概要版を残し、通常教材の30項目に対応する独立した動画風HTML講座を追加しました。トップ → Android →「項目別・深掘り動画」から選べます。各講座は課題・内部構造・実装・失敗例・調査・総合演習の6場面、各場面4段階で進みます。標準速度は1段階10秒、1講座約4分、全講座で約120分です。全180場面・720段階、固有の確認問題は各4問、合計120問です。音声はありません。
+
+AOSPと製品構成、実行環境、Binder、Activityと保存、起動、電源、描画、音声、通信、調査、アプリ設計、AAOS、テスト、OS組込み、Ethernet、録音、機器制御、ADB、bugreport、パーティションまで、各項目固有の問題を取り上げます。たとえばBinderはonewayと結果通知、音声はFocusとPCM・経路・実出力、保存はローカル保存とサーバー反映の違いを扱います。
+
+コードとコマンドは、前提を明記した説明用の断片です。Kotlinは1.9以上の構文を含み、Android SDK・AndroidXなど必要なプロジェクト環境を別途前提にします。AIDL定義やShellの例もあります。これらは単独で完成したAndroidアプリではなく、教材のブラウザ上から端末操作・実機測定・ビルドを実行するものでもありません。コマンドの利用可否や出力は製品・権限・ビルドで異なります。調査用の出力例は実測ログと区別して掲載しています。
+
+各講座はCSS・JavaScript・図・本文を一つのHTMLへ内包します。機構は役割に応じたSVG図、コード・観測手掛かりは全体と現在の部分を追えるスクロール表示です。全画面の操作バー自動非表示、速度変更、字幕、確認問題、静止版・印刷に対応します。詳細の演習解答を開くと再生を止めます。再生位置の保存キーは `android-deep-dive-<項目>-v1` で、講座同士と既存教材から分離しています。
+
+深掘り教材は概要版と別のmanifest・アプリID・起動先を持ち、「Android深掘り」としてホーム画面へ追加できます。起動すると講座一覧を開き、講座を選ぶと停止状態の全画面表示になります。アイコンは既存のローカルPNGを参照します。オフラインキャッシュは導入していません。iPhoneではSafariとホーム画面版で記録が共有されない場合があります。
+
+本文と演習は `tools/android_deep_courses.py`、生成処理は `tools/generate_android_deep_dives.py` にあります。再生成は `python3 tools/generate_android_deep_dives.py` だけで、既存の通常教材・概要版は書き換えません。Pythonや追加パッケージは閲覧時に不要です。
+
+深掘り版はChromiumで全30講座・180場面・720段階を幅1440・390・320pxで表示確認しました。最小幅で見つかった通信図3件の見出し位置を修正し、対象を再検査しています。コードと観測の表示は全30講座で狭い幅のダーク表示も確認しました。開始画面は全30講座・3幅で再生ボタンが枠内に収まります。トップ→Android→講座一覧の導線、講座間・概要版・通常教材の保存キーの分離、自動送り、終端、解答の開閉と講座一覧への復帰を確認しました。
+
+代表6講座はスマートフォン相当の844×390・390×844・480×320、図／実例の両モード・全24段階で、全画面表示と文字のはみ出しを確認しています。ホーム画面版の起動判定を模擬した全画面、深掘り版manifestの解析、保存拒否、動きを減らす設定、JavaScript無効時の6場面表示、印刷PDF（Binder講座の例で9ページ）も確認しました。参考資料42 URLはHTTP 200で取得でき、全55ページのローカルリンク・章リンクも検査済みです。既存5教材のHTMLが変更されていないことと、新規ページの生成の再現性を確認しています。
+
+Androidアプリのビルド・実機でのコードやコマンドの実行、実iPhoneのホーム画面への登録、Safari／Firefox、読み上げソフト、実プリンターは今回未確認です。
+
+Binder講座の全6場面を2倍速で120秒通し再生し、正常な終端、再生後の操作、演習解答を開いた際の停止を確認しました。クラッシュ・JavaScript実行エラーはありませんでした。
