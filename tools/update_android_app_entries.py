@@ -18,6 +18,14 @@ def upsert(text,name,content,before):
 
 def build():
     hub=ROOT/'android/index.html';s=hub.read_text().replace('<h3 id="android-slides-title">概要版スライド</h3>','<h3 id="android-slides-title">簡易版スライド</h3>').replace('<h3 id="android-deep-title">項目別・深掘り動画</h3>','<h3 id="android-deep-title">詳細版・深掘り動画</h3>')
+    s=s.replace('約13分・音声なし','字幕のみ約13分・読み上げ対応').replace('<span>全約120分</span>','<span>字幕のみ全約120分</span>')
+    for card_id in ('android-slides-title','android-deep-title'):
+        pattern=r'<article class="card" aria-labelledby="'+card_id+r'">.*?</article>'
+        def add_speech_tag(match):
+            part=match[0]
+            if '<span class="tag">読み上げ対応</span>' not in part:part=part.replace('</div><div class="facts">','<span class="tag">読み上げ対応</span></div><div class="facts">',1)
+            return part
+        s=re.sub(pattern,add_speech_tag,s,flags=re.S)
     s=upsert(s,'android-home-app-assets',head_for('.',False)+'<style>'+CSS+'</style>','</head>')
     s=upsert(s,'android-home-install-guide',guide_for('.'),'<section aria-labelledby="formats-title">')
     s=upsert(s,'android-progress-transfer',HTML,'</main>')

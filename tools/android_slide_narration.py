@@ -1,0 +1,55 @@
+"""Browser/OS speech synthesis, synchronized by completed explanation, no audio assets."""
+CONTROLS='''<label class="narration-toggle"><input id="narration" type="checkbox" checked>読み上げ</label>'''
+SETTINGS='''<details class="speech-settings" id="speech-settings"><summary>読み上げの声・使い方</summary><p>「読み上げ」をオンにして再生すると、端末の日本語音声で説明を読みます。読み終わってから次の説明へ進むため、所要時間は声や速度によって変わります。</p><div class="speech-options"><label for="speech-voice">日本語の声</label><select id="speech-voice"><option value="">端末の標準音声</option></select><button id="speech-preview" type="button">声を試す</button></div><p>停止・再開では、現在の説明を先頭から読み直します。速度は再生速度の設定と連動します。声や速度を変えた場合も現在の説明を読み直します。画面を離れると停止します。音が出ない場合は端末の音量と日本語音声を確認してください。音声が利用できない場合は字幕で閲覧を続けられます。</p><p>録音ファイルは使いません。日本語音声は端末内のものを優先しますが、利用できる声や通信の有無はOS・ブラウザに依存します。読み上げのオン／オフと声の選択は、このブラウザに保存します。</p></details>'''
+CSS=r'''
+.narration-toggle{display:inline-flex;align-items:center;gap:5px;color:#e0eedf;font-size:11px;white-space:nowrap;min-height:34px;padding:3px 6px;border:1px solid #536e78;border-radius:6px}.narration-toggle input{accent-color:#c4ef9b;width:16px;height:16px;margin:0}.speech-status{margin:5px 0 0;font-size:10px;line-height:1.45;color:#bfdae0;min-height:1.45em}.speech-settings{display:none;margin:15px 0;padding:13px 16px;border:1px solid var(--line,#b9ccc4);border-radius:9px;color:var(--muted,#496472);font-size:12px;line-height:1.8}.scripted .speech-settings{display:block}.speech-settings summary{font-weight:600;color:var(--accent,var(--teal,#176f64));cursor:pointer}.speech-options{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.speech-options select{font:inherit;max-width:100%;min-width:0;width:min(400px,100%);padding:8px}.speech-options button{font:inherit;background:#235a49;color:#fff;border:1px solid #658a7b;border-radius:6px;padding:9px 12px;cursor:pointer}.speech-settings :focus-visible{outline:3px solid #bc8d2d;outline-offset:3px}@media(max-width:650px){.narration-toggle{font-size:10px;padding:3px 5px}.speech-status{font-size:9px}}@media print{.speech-settings{display:none!important}}
+'''
+JS=r'''
+ const speechToggle=$('narration'),voiceSelect=$('speech-voice'),speechStatus=$('speech-status'),previewButton=$('speech-preview'),SPEECH_KEY='android-narration-preferences-v1';
+ let synth=null,speechSupported=false;try{synth=window.speechSynthesis;speechSupported=!!synth&&typeof synth.speak==='function'&&typeof window.SpeechSynthesisUtterance==='function'}catch(_){}
+ let speechRecord=null,speechEpoch=0,speechFailed=false,japaneseVoices=[],knownNoJapanese=false,speechVoiceURI='',speechStartTimer=0,speechEndTimer=0,speechGapTimer=0;
+ try{const p=JSON.parse(localStorage.getItem(SPEECH_KEY)||'null');if(p&&typeof p.enabled==='boolean')speechToggle.checked=p.enabled;if(p&&typeof p.voiceURI==='string'&&p.voiceURI.length<256)speechVoiceURI=p.voiceURI}catch(_){}
+ function speechNotice(text){if(speechStatus.textContent!==text)speechStatus.textContent=text}
+ function saveSpeechPrefs(){try{localStorage.setItem(SPEECH_KEY,JSON.stringify({enabled:speechToggle.checked,voiceURI:speechVoiceURI}))}catch(_){}}
+ function speechDrivesClock(){return speechSupported&&speechToggle.checked&&!speechFailed&&!knownNoJapanese}
+ function clearSpeechTimers(){clearTimeout(speechStartTimer);clearTimeout(speechEndTimer);clearTimeout(speechGapTimer);speechStartTimer=speechEndTimer=speechGapTimer=0}
+ function speechStop(){speechEpoch++;speechRecord=null;clearSpeechTimers();try{synth?.cancel()}catch(_){}}
+ function speechPause(){const hadSpeech=!!speechRecord;speechStop();if(hadSpeech)speechNotice('一時停止：再開時は現在の説明を先頭から読みます')}
+ function selectedVoice(){return japaneseVoices.find(v=>v.voiceURI===speechVoiceURI)||japaneseVoices.find(v=>v.localService&&v.default)||japaneseVoices.find(v=>v.localService)||japaneseVoices.find(v=>v.default)||japaneseVoices[0]||null}
+ function refreshSpeechVoices(userAction=false){
+  if(!speechSupported)return;let list=[];try{list=synth.getVoices()||[]}catch(_){}
+  const before=knownNoJapanese;japaneseVoices=list.filter(v=>/^ja(?:[-_]|$)/i.test(v.lang||''));japaneseVoices.sort((a,b)=>Number(!!b.localService)-Number(!!a.localService)||a.name.localeCompare(b.name,'ja'));knownNoJapanese=list.length>0&&japaneseVoices.length===0;
+  voiceSelect.replaceChildren();const auto=document.createElement('option');auto.value='';auto.textContent='日本語の標準音声（端末内を優先）';voiceSelect.append(auto);japaneseVoices.forEach(v=>{const o=document.createElement('option');o.value=v.voiceURI;o.textContent=v.name+' / '+v.lang+(v.localService?'（端末内）':'');voiceSelect.append(o)});voiceSelect.value=japaneseVoices.some(v=>v.voiceURI===speechVoiceURI)?speechVoiceURI:'';
+  if(knownNoJapanese){speechStop();speechNotice('日本語音声が見つかりません。端末の音声設定を確認するか、字幕でご利用ください')}
+  else if(before&&playing&&!userAction){speechFailed=true;speechNotice('日本語音声を検出しました。一度停止して再生すると読み上げます')}
+  else if(!speechRecord&&!playing)speechNotice(speechToggle.checked?'再生すると日本語で読み上げます':'読み上げオフ：字幕で再生します');
+ }
+ const pronunciations=[['AudioFlinger','オーディオフリンガー'],['SurfaceFlinger','サーフェスフリンガー'],['ViewModel','ビューモデル'],['StateFlow','ステートフロー'],['DataStore','データストア'],['Verified Boot','ベリファイドブート'],['Direct Boot','ダイレクトブート'],['onCreate','オン クリエイト'],['onStart','オン スタート'],['onResume','オン レジューム'],['onPause','オン ポーズ'],['onStop','オン ストップ'],['onDestroy','オン デストロイ'],['WakeLock','ウェイクロック'],['Android','アンドロイド'],['Zygote','ザイゴート'],['Binder','バインダー'],['Compose','コンポーズ'],['AOSP','エーオーエスピー'],['AAOS','エーエーオーエス'],['AIDL','エーアイディーエル'],['ART','アート'],['HAL','ハル'],['PCM','ピーシーエム'],['Focus','フォーカス'],['Doze','ドーズ'],['Room','ルーム'],['SDK','エスディーケー'],['API','エーピーアイ'],['ADB','エーディービー'],['PID','ピーアイディー'],['DNS','ディーエヌエス'],['TLS','ティーエルエス'],['UI','ユーアイ'],['IP','アイピー']];
+ function spokenText(text){let result=text;for(const [word,reading]of pronunciations)result=result.replace(new RegExp('\\b'+word+'\\b','g'),reading);return result.replace(/\s+/g,' ').trim()}
+ function speechChunks(text){const sentences=spokenText(text).match(/[^。！？!?]+[。！？!?]?/gu)||[];const chunks=[];for(const sentence of sentences){const chars=Array.from(sentence);for(let i=0;i<chars.length;i+=90){const value=chars.slice(i,i+90).join('').trim();if(value)chunks.push(value)}}return chunks}
+ function currentNarration(){const slide=DATA[index],parts=[];if(step===0)parts.push(slide.direction.hook);parts.push(slide.steps[step]);if(step===3&&slide.direction.takeaway!==slide.steps[step])parts.push('要点。'+slide.direction.takeaway);return parts.join('。')}
+ function recordIsCurrent(record){return speechRecord===record&&record.epoch===speechEpoch&&(record.preview||(playing&&speechDrivesClock()))}
+ function speechFailure(record){if(!recordIsCurrent(record))return;speechStop();speechFailed=true;speechNotice(record.preview?'音声を開始できませんでした。端末の日本語音声と音量を確認してください':'音声を利用できないため、字幕のみで再生を続けます。一度停止して再生すると再試行します');last=0}
+ function finishSpeech(record){if(!recordIsCurrent(record))return;clearSpeechTimers();if(record.preview){speechRecord=null;speechNotice('声を確認しました。再生ボタンで教材を開始できます');return}speechRecord=null;elapsed=Math.min(TOTAL,(record.key+1)*STEP);render();if(elapsed>=TOTAL){pause();speechNotice('最後まで読み上げました');message('最後まで再生しました。元の教材で理解を深められます。')}}
+ function speakChunk(record){
+  if(!recordIsCurrent(record))return;clearSpeechTimers();const text=record.chunks[record.chunk];if(!text){finishSpeech(record);return}
+  let utterance;try{utterance=new window.SpeechSynthesisUtterance(text);utterance.lang='ja-JP';const voice=selectedVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}utterance.rate=rate;utterance.pitch=1;utterance.volume=1}catch(_){speechFailure(record);return}
+  record.utterance=utterance;utterance.onstart=()=>{if(!recordIsCurrent(record))return;clearTimeout(speechStartTimer);speechNotice(record.preview?'声を確認しています':'読み上げ中：読み終わると次の説明へ進みます')};
+  utterance.onend=()=>{if(!recordIsCurrent(record))return;clearSpeechTimers();record.chunk++;if(record.chunk<record.chunks.length)speakChunk(record);else speechGapTimer=setTimeout(()=>finishSpeech(record),450)};
+  utterance.onerror=e=>{if(!recordIsCurrent(record))return;if(e.error==='interrupted'||e.error==='canceled'){pause();speechNotice('読み上げが中断されました。再生すると現在の説明を読み直します')}else speechFailure(record)};
+  speechStartTimer=setTimeout(()=>speechFailure(record),6000);speechEndTimer=setTimeout(()=>speechFailure(record),Math.min(180000,Math.max(18000,text.length*450/rate+10000)));
+  try{if(synth.paused)synth.resume();synth.speak(utterance)}catch(_){speechFailure(record)}
+ }
+ function speechSync(){if(!playing||!speechDrivesClock()||elapsed>=TOTAL)return;const key=index*4+step;if(speechRecord&&!speechRecord.preview&&speechRecord.key===key)return;if(speechRecord)speechStop();else{speechEpoch++;clearSpeechTimers()}const chunks=speechChunks(currentNarration());if(!chunks.length){speechFailed=true;return}const record={key,epoch:speechEpoch,chunks,chunk:0,preview:false};speechRecord=record;speakChunk(record)}
+ function speechBegin(){speechFailed=false;if(!speechToggle.checked){speechNotice('読み上げオフ：字幕で再生します');return}if(!speechSupported)return;refreshSpeechVoices(true);speechSync()}
+ function speechClock(dt){if(speechDrivesClock()){const end=Math.min(TOTAL,(index*4+step+1)*STEP);elapsed=Math.min(end-.02,elapsed+dt*rate)}else elapsed=Math.min(TOTAL,elapsed+dt*rate)}
+ function speechProgress(){if(speechDrivesClock()){const number=Math.min(DATA.length*4,index*4+step+1);$('time').textContent=number+' / '+DATA.length*4+' 説明';range.setAttribute('aria-valuetext','説明'+number+'、全'+DATA.length*4+'段階。音声に合わせて進行')}}
+ speechToggle.addEventListener('change',()=>{speechStop();speechFailed=false;saveSpeechPrefs();speechNotice(speechToggle.checked?'読み上げオン：再生で開始します':'読み上げオフ：字幕で再生します');if(speechToggle.checked)refreshSpeechVoices(true);if(playing)speechSync();render()});
+ voiceSelect.addEventListener('change',()=>{const previewing=!!speechRecord?.preview;speechVoiceURI=voiceSelect.value;speechStop();speechFailed=false;saveSpeechPrefs();if(previewing)previewNarration();else if(playing)speechSync()});
+ $('speed').addEventListener('change',()=>{if(speechRecord){const previewing=!!speechRecord.preview;speechStop();speechFailed=false;if(previewing)previewNarration();else if(playing)speechSync()}});
+ function previewNarration(){pause();speechFailed=false;if(!speechSupported)return;refreshSpeechVoices(true);const record={key:null,epoch:speechEpoch,chunks:speechChunks('Androidの仕組みを、音声と図で学びます。'),chunk:0,preview:true};speechRecord=record;speakChunk(record)}
+ previewButton.addEventListener('click',previewNarration);
+ if(!speechSupported){speechToggle.checked=false;speechToggle.disabled=true;voiceSelect.disabled=true;previewButton.disabled=true;speechNotice('このブラウザでは読み上げを利用できません。字幕でご利用ください')}else{refreshSpeechVoices();synth.addEventListener?.('voiceschanged',()=>refreshSpeechVoices())}
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&speechRecord?.preview)speechPause()});
+ window.addEventListener('pagehide',speechStop);
+'''
