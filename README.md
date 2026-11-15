@@ -7,6 +7,7 @@
 GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPagesのビルド・公開成功が必要です。
 
 - 教材一覧: https://ta-yokoi.github.io/android-learning-guide/
+- Androidスライド: https://ta-yokoi.github.io/android-learning-guide/guides/android-slides/
 - Android: https://ta-yokoi.github.io/android-learning-guide/guides/android/
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/guides/embedded/
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/guides/design-patterns/
@@ -24,6 +25,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 index.html           # 学習教材／作品集の入口
 guides/index.html    # 教材一覧（各教材への親ページ）
 works/index.html     # 作品一覧（各作品への親ページ）
+guides/android-slides/index.html # Androidの動くスライド（32枚・16:9）
 guides/android/index.html   # Android（30章・図38点・78問）
 guides/embedded/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 guides/design-patterns/index.html # GoF（28章・23パターン・図23点・確認問題46問）
@@ -203,3 +205,21 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 トップの `index.html` は「学習教材」と「作品集」の2つの入口です。教材は `guides/index.html` → `guides/<教材名>/index.html`、作品は `works/index.html` → `works/<作品名>/index.html` の同じ三層構成にそろえています。旧教材URLは新しい教材へ転送し、JavaScriptが使える環境ではクエリと章のハッシュも引き継ぎます。JavaScript無効時はHTMLの自動転送と手動リンクで開けます。転送ページ以外の教材のJavaScript・localStorageキーは変更していません。
 
 教材の階層変更後、全17ページのローカルリンクと章内リンクを検査しました。Chromiumでトップ→教材一覧→4教材の往復、教材／作品間リンク、旧教材URL4件の転送（JavaScript有効・無効）、有効時のクエリ・章ハッシュの継承、3教材の読了記録の読み込み・更新・再読み込みを確認しました。教材一覧は幅1440・390・320pxのライト／ダークでページの横はみ出しがなく、教材本文のCSSとJavaScriptは移動前と一致します。ブラウザの実行エラーとHTTPエラーはありません。実スマートフォン、Safari／Firefox、直接ファイルを開く環境は未確認です。
+
+## Androidを動く図で学ぶ / スライド教材
+
+`guides/android-slides/index.html` は、既存のAndroid 16教材30章の中心となる見方を、導入・まとめを含む32枚のスライドで振り返る新しい教材です。既存Android本文は変更していません。各枚に4段階の説明、図、字幕、補足、確認問題、元の章へのリンクがあります。詳しいコードや実習は元の教材へ進んで確認します。自動再生は標準で12分48秒、音声はありません。
+
+16:9のスライド、再生／停止、前後移動、4段階の説明の選択、全体のシーク、0.75〜2倍速、スライドの選択に対応します。スマートフォンは横向きの全画面表示を推奨します。Fullscreen APIが使えない場合は、ブラウザ内で最大化します。縦向きでも16:9を保ち、通常表示の下には読みやすい解説を載せます。端末の回転固定は、ブラウザが許可した場合だけ利用します。
+
+初期停止です。図のタップで再生／停止、左右スワイプで前後へ移動できます。図へフォーカスした状態でSpaceは再生／停止、左右キーは説明単位、PageUp／PageDownはスライド単位、Home／Endは最初／最後、Fは全画面、Escapeは最大化の終了です。別タブへ移った時や確認問題を開いた時は自動停止します。
+
+再生位置のスライド番号と速度は専用キー `android-animated-slides-player-v1` に保存します。既存教材の読了記録とは分離し、保存できない環境でも再生できます。動きを減らす設定では移動する印を止め、番号と文章で追います。JavaScript無効時と印刷時は全32枚の静止版を表示します。
+
+単一HTMLにCSS・JavaScript・教材データを内包し、外部画像・フォント・動画・ライブラリは不要です。作成用の `python3 tools/generate_android_slides.py` で再生成できます。Pythonは閲覧時には不要です。教材一覧から選ぶか、HTTPサーバーの http://localhost:8000/guides/android-slides/ で開きます。
+
+スライド教材はChromiumで、全32枚・各4段階の表示、幅1440・844・390・320pxのライト／ダーク、16:9比率と横はみ出し、キーボード、再生／停止・自動送り・シーク・速度変更・終端・再開位置、確認問題を開いた際の停止を確認しました。スマートフォン相当の390×844・844×390・568×320・480×320・320×700では、ブラウザ内全画面の全128段階、画面回転後の配置、タップ・スワイプも確認しています。通常のFullscreen API、APIが使えない場合、保存拒否、動きを減らす設定、JavaScript無効時の32枚表示、32ページの印刷PDF、教材一覧・元の章との往復、全18ページのローカルリンクと章リンクも確認済みです。外部リソース通信、JavaScript実行エラー、HTTPエラーはありません。元のAndroid HTMLが変更されていないことと、生成HTMLの再現性を検査しました。
+
+実スマートフォン、Safari／Firefox、端末の向き固定、直接ファイルを開く環境、読み上げソフトと実プリンターは未確認です。スマートフォンの確認はChromiumの画面サイズ・タッチエミュレーションで行っています。
+
+120秒の連続再生では、クラッシュ・実行エラーがなく、終了後の停止操作も正常でした。24秒ごとのJavaScriptヒープ使用量は約2MBで、表示用のノードは4個、移動する印は1個のままです。別画面へ移る際の停止処理と、専用キーへの保存が既存Android教材の読了記録を変更しないことも検証しました。この値は検証環境での結果で、実端末でのメモリ使用量を保証するものではありません。
