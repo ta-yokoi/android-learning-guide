@@ -7,7 +7,10 @@ from android_deep_courses import COURSES
 from android_slide_diagrams import SVG
 from android_slide_presentation import CASE_HTML,OPENING,RECAP,JS as DIRECTION_JS
 from android_slide_fullscreen import JS as FULLSCREEN_JS
-from android_slide_home_app import HEAD,GUIDE,JS as HOME_JS
+from android_slide_home_app import HEAD,GUIDE,JS as HOME_JS,head_for,guide_for
+from android_progress_transfer import HTML as TRANSFER_HTML,JS as TRANSFER_JS
+from generate_android_app_assets import manifest_for
+from update_android_app_entries import strip_managed_head
 ROOT=Path(__file__).resolve().parent.parent
 OUT=ROOT/'android/deep-dives'
 E=lambda s:html.escape(str(s),quote=True)
@@ -130,21 +133,21 @@ def player(c):
     script=script.replace('directCase(slide,s);', "directCase(slide,s);const story=$('diagram').querySelector('.spotlight-story');if(story){const part=story.querySelector('.focus');story.scrollTop=part?Math.max(0,part.offsetTop-8):0}")
     script=script.replace(' DATA.forEach', " $('deep-detail').addEventListener('toggle',e=>{if(e.target.tagName==='DETAILS'&&e.target.open)pause()},true);\n DATA.forEach",1)
     script=script.replace('__HOME_JS__',HOME_JS).replace('__FULLSCREEN_JS__',FULLSCREEN_JS).replace('__DIRECTION_JS__',DIRECTION_JS.replace('__MODULES__',json.dumps(modules,ensure_ascii=False))).replace('__DATA__',json.dumps(data,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c'))
-    head=HEAD.replace('href="./manifest','href="../manifest').replace('href="./icons/','href="../../slides/icons/').replace('Android学習','Android深掘り')
-    guide=GUIDE.replace('Android学習','Android深掘り').replace('この教材ページ','この講座ページ').replace('アイコンから起動します。','アイコンから起動し、講座を選びます。')
+    head=head_for('../..')
+    guide=guide_for('../..')
     opening=OPENING.replace('Androidを、<br><em>仕組み</em>で理解する。',E(c['title'])+'<br><em>狭く、深く。</em>').replace('32 LESSONS · 約13分','6 SCENES · 約4分')
     template=base.TEMPLATE.replace('<body>','<body class="deep-course">').replace('../guide/index.html','../../guide/index.html').replace('← Androidの教材一覧','← 深掘り講座一覧').replace('Androidの教材一覧へ戻る','深掘り講座一覧へ戻る').replace('<ol id="explanation"></ol>','<ol id="explanation"></ol><div id="deep-detail"></div>')
     template=template.replace('Androidを動く図で学ぶ｜スライド教材',E(c['title'])+'｜Android深掘り動画').replace('Androidを、<br>動く図で学ぶ。',E(c['title'])).replace('身近な疑問から、図と実例で仕組みを追う32レッスン。',E(c['goal'])).replace('標準速度で約13分','6場面・標準速度で約4分').replace('Android 16の30章を動く図と字幕で振り返る、16:9のスライド教材。全32枚、自動再生とスマートフォン全画面に対応。',E(c['title'])+'を、内部構造・実装・失敗例・調査・演習から深く学ぶ動画風HTML。')
     # Additional excerpt styling is included in the same self-contained document.
-    return template.replace('__CSS__',base.CSS+EXTRA_CSS).replace('__FALLBACK__','\n'.join(static)).replace('__STEP_BUTTONS__',''.join(f'<button type="button" data-step="{i}" aria-label="説明{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4))).replace('__JS__',script).replace('__CASE_HTML__',CASE_HTML).replace('__OPENING__',opening).replace('__RECAP__',RECAP).replace('__HOME_HEAD__',head).replace('__HOME_GUIDE__',guide)
+    return template.replace('__CSS__',base.CSS+EXTRA_CSS).replace('__FALLBACK__','\n'.join(static)).replace('__STEP_BUTTONS__',''.join(f'<button type="button" data-step="{i}" aria-label="説明{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4))).replace('__JS__',script).replace('__CASE_HTML__',CASE_HTML).replace('__OPENING__',opening).replace('__RECAP__',RECAP).replace('__HOME_HEAD__',head).replace('__HOME_GUIDE__',guide).replace('__TRANSFER_HTML__',TRANSFER_HTML)
 
 def catalog():
-    old=(ROOT/'android/index.html').read_text();head=old.split('<body>')[0].replace('</head>', '<style>'+base.HOME_CSS+'@media(display-mode:standalone){.home-install{display:none}}</style></head>')
-    head=head.replace('Androidの教材｜教材ライブラリ','Android 項目別・深掘り動画｜教材ライブラリ').replace('</head>',HEAD.replace('href="./icons/','href="../slides/icons/').replace('Android学習','Android深掘り')+'</head>')
+    old=(ROOT/'android/index.html').read_text();head=strip_managed_head(old.split('<body>')[0]).replace('</head>', '<style>'+base.HOME_CSS+'@media(display-mode:standalone){.home-install{display:none}}</style></head>')
+    head=head.replace('Androidの教材｜教材ライブラリ','Android 項目別・深掘り動画｜教材ライブラリ').replace('</head>',head_for('..',False)+'</head>')
     cards=[]
     for i,c in enumerate(COURSES,1):
         cards.append(f'<article class="card" aria-labelledby="course-{c["id"]}"><div class="card-top"><span class="subject-icon" aria-hidden="true">{i:02d}</span><span class="category">DEEP DIVE / 4 MIN</span></div><h3 id="course-{c["id"]}">{E(c["title"])}</h3><p class="description">{E(c["problem"])}</p><p class="description"><b>到達点：</b>{E(c["goal"])}</p><div class="tags"><span class="tag">内部構造</span><span class="tag">実装と失敗例</span><span class="tag">調査・演習</span></div><div class="facts"><span>6場面・24段階</span><span>約4分・音声なし</span><span>確認問題4問</span></div><a class="open-guide" href="./{c["id"]}/index.html">この講座を開く<span aria-hidden="true">→</span></a><p style="font-size:12px;margin-bottom:0"><a href="../guide/index.html#{c["id"]}">元の章を読む</a></p></article>')
-    return head+'''<body><a class="skip" href="#courses">講座一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド →</a></div></header><main class="wrap"><section class="hero"><div class="eyebrow">ANDROID / FOCUSED VIDEO LESSONS</div><h1>ひとつの項目を、<br>狭く、深く。</h1><p class="lead">概要を知った次は、設計と証拠を自分の言葉で。<br>30項目を、それぞれ独立した動画風スライドで学びます。</p></section>'''+GUIDE.replace('Android学習','Android深掘り').replace('この教材ページ','この講座一覧').replace('アイコンから起動します。','アイコンから起動し、講座を選びます。')+'''<aside class="reading-note"><p>各講座は「課題 → 内部構造 → 実装 → 失敗例 → 調査 → 演習」の6場面・約4分です。図と字幕で進み、コードと解説は停止して読めます。実機の計測動画ではなく説明用の図解で、コードは前提を伴う断片です。再生位置は講座ごとに保存します。</p></aside><section id="courses" aria-labelledby="courses-title"><div class="section-heading"><h2 id="courses-title">深掘り講座</h2><span class="count">30 講座 / 全約120分</span></div><div class="grid">'''+''.join(cards)+'''</div></section></main><footer class="site-footer"><div class="wrap"><a href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド</a></div></footer></body></html>'''
+    return head+'''<body><a class="skip" href="#courses">講座一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド →</a></div></header><main class="wrap"><section class="hero"><div class="eyebrow">ANDROID / FOCUSED VIDEO LESSONS</div><h1>ひとつの項目を、<br>狭く、深く。</h1><p class="lead">概要を知った次は、設計と証拠を自分の言葉で。<br>30項目を、それぞれ独立した動画風スライドで学びます。</p></section>'''+guide_for('..')+'''<aside class="reading-note"><p>各講座は「課題 → 内部構造 → 実装 → 失敗例 → 調査 → 演習」の6場面・約4分です。図と字幕で進み、コードと解説は停止して読めます。実機の計測動画ではなく説明用の図解で、コードは前提を伴う断片です。再生位置は講座ごとに保存します。</p></aside><section id="courses" aria-labelledby="courses-title"><div class="section-heading"><h2 id="courses-title">深掘り講座</h2><span class="count">30 講座 / 全約120分</span></div><div class="grid">'''+''.join(cards)+'''</div></section>'''+TRANSFER_HTML+'''</main><footer class="site-footer"><div class="wrap"><a href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド</a></div></footer><script>'''+TRANSFER_JS+'''</script></body></html>'''
 
 def build():
     expected={s['chapter'] for s in base.SLIDES[1:-1]};assert expected=={c['id'] for c in COURSES}
@@ -154,9 +157,7 @@ def build():
         assert '__DATA__' not in result and '__HOME_' not in result and '__JS__' not in result
         target.write_text(result)
     (OUT/'index.html').write_text(catalog())
-    manifest=json.loads((ROOT/'android/slides/manifest.webmanifest').read_text())
-    manifest.update(id='/android-learning-guide/android/deep-dives/',name='Android 項目別・深掘り動画',short_name='Android深掘り',description='30項目の内部構造・実装・失敗例・調査を、独立した動画風スライドで深く学ぶ。')
-    for icon in manifest['icons']:icon['src']='../slides/'+icon['src']
+    manifest=manifest_for('..')
     (OUT/'manifest.webmanifest').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     print('Generated 30 deep-dive courses / 180 scenes / 720 explanation steps / 120 unique questions.')
 if __name__=='__main__':build()

@@ -5,7 +5,7 @@ Assets are committed; this tool is not required to view or install the course.
 """
 import json, math, struct, zlib
 from pathlib import Path
-ROOT=Path(__file__).resolve().parent.parent/'android/slides'
+ROOT=Path(__file__).resolve().parent.parent/'android'
 
 def rounded(x,y,rx,ry,w,h,r):
     if not (rx<=x<=rx+w and ry<=y<=ry+h):return False
@@ -32,18 +32,24 @@ def png(size):
     def chunk(name,data):return struct.pack('>I',len(data))+name+data+struct.pack('>I',zlib.crc32(name+data)&0xffffffff)
     return b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',size,size,8,2,0,0,0))+chunk(b'IDAT',zlib.compress(pixels,9))+chunk(b'IEND',b'')
 
+def manifest_for(android_relative='.'):
+    p=android_relative
+    return {
+        'id':'/android-learning-guide/android/','name':'Android教材','short_name':'Android教材',
+        'description':'通常教材・簡易版スライド・詳細版の深掘り動画を一つの入口から選ぶ。',
+        'lang':'ja','start_url':p+'/?source=homescreen','scope':p+'/',
+        'display':'standalone','orientation':'any','background_color':'#0a1521','theme_color':'#0a1521',
+        'icons':[{'src':p+'/slides/icons/icon-192.png','sizes':'192x192','type':'image/png','purpose':'any'},
+                 {'src':p+'/slides/icons/icon-512.png','sizes':'512x512','type':'image/png','purpose':'any maskable'}],
+    }
+
 def build():
-    icons=ROOT/'icons';icons.mkdir(parents=True,exist_ok=True)
+    icons=ROOT/'slides/icons';icons.mkdir(parents=True,exist_ok=True)
     for size,name in [(180,'apple-touch-icon.png'),(192,'icon-192.png'),(512,'icon-512.png')]:
         (icons/name).write_bytes(png(size))
-    manifest={
-        'id':'/android-learning-guide/android/slides/','name':'Androidを動く図で学ぶ','short_name':'Android学習',
-        'description':'Androidの仕組みを図・実例・字幕で学ぶ32レッスン。',
-        'lang':'ja','start_url':'./?source=homescreen','scope':'./',
-        'display':'standalone','orientation':'any','background_color':'#0a1521','theme_color':'#0a1521',
-        'icons':[{'src':'icons/icon-192.png','sizes':'192x192','type':'image/png','purpose':'any'},
-                 {'src':'icons/icon-512.png','sizes':'512x512','type':'image/png','purpose':'any maskable'}],
-    }
-    (ROOT/'manifest.webmanifest').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
-    print('Generated standalone manifest and opaque 180 / 192 / 512px installation icons.')
+    (ROOT/'manifest.webmanifest').write_text(json.dumps(manifest_for(),ensure_ascii=False,indent=2)+'\n')
+    # Compatibility URLs for old installations; every manifest now describes the same app.
+    for folder in ('slides','deep-dives'):
+        (ROOT/folder/'manifest.webmanifest').write_text(json.dumps(manifest_for('..'),ensure_ascii=False,indent=2)+'\n')
+    print('Generated common Android manifest, compatibility manifests and installation icons.')
 if __name__=='__main__':build()
