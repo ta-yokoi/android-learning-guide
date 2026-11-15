@@ -115,6 +115,7 @@ JS=r'''
 __DIRECTION_JS__
 __FULLSCREEN_JS__
 __HOME_JS__
+ window.addEventListener('android-learning-progress-imported',e=>{if(!Array.isArray(e.detail?.keys)||!e.detail.keys.includes(KEY))return;let value;try{value=JSON.parse(localStorage.getItem(KEY)||'null')}catch(_){return}if(!value||!Number.isInteger(value.slide)||value.slide<0||value.slide>=DATA.length||![.75,1,1.25,1.5,2].includes(value.rate))return;pause();elapsed=value.slide*DURATION;rate=value.rate;$('speed').value=String(rate);player.style.setProperty('--packet-duration',(2.4/rate)+'s');player.style.setProperty('--demo-duration',(2/rate)+'s');render();transport();persist();message('記録ファイルの位置へ移動し、一時停止しました。')});
  DATA.forEach((slide,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=String(i+1).padStart(2,'0')+' / '+slide.title;select.append(o)});range.max=String(TOTAL);player.style.setProperty('--packet-duration',(2.4/rate)+'s');player.style.setProperty('--demo-duration',(2/rate)+'s');document.documentElement.classList.add('scripted');document.querySelector('.skip').href='#player';render();transport();layout();message('再生を選ぶと、図と説明が順に進みます。');initHomeApp();
 })();
 '''

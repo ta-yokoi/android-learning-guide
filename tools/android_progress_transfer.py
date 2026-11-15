@@ -23,7 +23,7 @@ JS=r'''
   try{if(file.size>65536)throw Error('size');const data=JSON.parse(await file.text());if(data?.schema!==1||data.subject!=='android-learning'||!data.records||typeof data.records!=='object'||Array.isArray(data.records))throw Error('format');const entries=Object.entries(data.records);if(entries.length>100||entries.some(([k,v])=>!isKey(k)||!valid(k,v)))throw Error('format');const replace=root.querySelector('#progress-overwrite').checked,writes=[];let kept=0;
    for(const [k,incoming]of entries){const old=read(k);if(k===normal){writes.push([k,JSON.stringify([...new Set([...(old||[]),...incoming])])]);continue}if(old&&!replace){kept++;continue}writes.push([k,JSON.stringify(clean(k,incoming))])}
    const originals=writes.map(([k])=>[k,localStorage.getItem(k)]);try{for(const [k,v]of writes)localStorage.setItem(k,v)}catch(error){for(const [k,v]of originals){try{v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}}throw error}
-   status.textContent=writes.length+'件を読み込みました。'+(kept?kept+'件の保存済み再生位置は保持しました。':'')+'教材を開き直すと反映されます。';
+   window.dispatchEvent(new CustomEvent('android-learning-progress-imported',{detail:{keys:writes.map(([k])=>k)}}));status.textContent=writes.length+'件を読み込みました。'+(kept?kept+'件の保存済み再生位置は保持しました。':'')+'通常教材や別の講座は、次に開いたときに反映されます。';
   }catch(_){status.textContent='読み込めませんでした。Android学習記録のJSONファイルと、端末への保存許可を確認してください。'}finally{fileInput.value='';fileInput.disabled=false}
  });
 })();
