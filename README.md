@@ -13,6 +13,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/guide/
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/gof/guide/
 - 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/gof/animations/
+- GoFの音声付き動画風スライド: https://ta-yokoi.github.io/android-learning-guide/gof/slides/
 - CSS Motion Gallery: https://ta-yokoi.github.io/android-learning-guide/works/css-motion-gallery/
 - 光の潮汐: https://ta-yokoi.github.io/android-learning-guide/works/luminous-tides/
 - Kinetic Observatory: https://ta-yokoi.github.io/android-learning-guide/works/kinetic-observatory/
@@ -28,7 +29,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 index.html           # Android／GoF／組み込み開発／作品集の入口
 android/index.html   # Android教材アプリの共通入口
 android/manifest.webmanifest # 通常教材・簡易版・詳細版で共通の起動設定
-gof/index.html       # GoF：通常の教材・アニメーションを選ぶ
+gof/index.html       # GoF：通常の教材・CSS図解・音声付き動画風スライドを選ぶ
 embedded/index.html  # 組み込み開発：通常の教材を選ぶ
 guides/index.html    # 旧教材一覧からトップへの転送
 works/index.html     # 作品一覧（各作品への親ページ）
@@ -39,6 +40,10 @@ android/guide/index.html   # Android（30章・図38点・78問）
 embedded/guide/index.html  # 組み込み開発（13章・図21点・52問・用語85語）
 gof/guide/index.html # GoF（28章・23パターン・図23点・確認問題46問）
 gof/animations/index.html # 動くGoF図解（5パターン・9シナリオ・確認問題5問）
+gof/slides/index.html # GoF動画風スライド（23パターン・56場面・224段階・端末の読み上げ）
+tools/generate_gof_slides.py # GoF動画版の再生成（閲覧時は不要）
+tools/gof_video_patterns.py # 23パターンのナレーションと場面設計
+tools/gof_slide_diagrams.py # GoFの役割・呼出・遷移の図
 works/css-motion-gallery/index.html # HTMLだけで動くアニメーション集（9作品）
 works/luminous-tides/index.html # 光の潮汐：三層の光の流れの独立作品
 works/kinetic-observatory/index.html # 光粒子だけで描く12種類の立体変形
@@ -239,7 +244,7 @@ ChromiumでJavaScriptを無効にし、全384粒の移動、各色128粒の表�
 トップは「Android」「GoFデザインパターン」「組み込み開発」「作品集」の入口です。「学習教材」という共通の中間ページは設けず、各分野で学び方を選びます。
 
 - `android/index.html` → `android/guide/index.html`（通常の教材）、`android/slides/index.html`（スライド）
-- `gof/index.html` → `gof/guide/index.html`（通常の教材）、`gof/animations/index.html`（アニメーション）
+- `gof/index.html` → `gof/guide/index.html`（通常の教材）、`gof/animations/index.html`（CSS図解）、`gof/slides/index.html`（音声付き動画風スライド）
 - `embedded/index.html` → `embedded/guide/index.html`（通常の教材）
 - `works/index.html` → 各作品（変更なし）
 
@@ -353,3 +358,33 @@ Binder講座の全6場面を2倍速で120秒通し再生し、正常な終端、
 Chromiumの実APIでも、音声バックエンドが使えない環境で字幕再生へ戻ることを確認しました。操作部は全画面の縦横5サイズで検査し、字幕のみの既存検証では全32枚・4幅のライト／ダーク、シーク・自動送り・途中再開、保存拒否、JavaScript無効、32ページの印刷が通っています。全55ページのローカルリンクも検査済みです。
 
 この環境では実際に聞こえる日本語音声、iPhone Safari・ホーム画面版での実音声、着信・他アプリ音声による割込みは未確認です。音声に関する自動検証は動作の模擬であり、発音品質や端末上の音量・音声取得を保証するものではありません。音声ファイルは追加しておらず、追加容量は各HTMLに内包する制御コード・設定欄などだけです。
+
+## GoFの動画風スライド・日本語読み上げ
+
+`gof/slides/index.html`に、23パターンすべてを扱う動画風の教材を追加しました。トップ → GoFデザインパターン →「動画風スライド・音声付き」から閲覧できます。通常の教材とCSSのみの5パターン図解はそのまま残し、相互リンクを設けています。ファイルを直接開く場合もビルドや外部ライブラリは不要です。
+
+各パターンは「役割と処理を追う」「Javaと採用判断」の2場面です。導入2場面、パターン46場面、類似パターンの比較4場面、注文通知の総合演習3場面、整理1場面の計56場面・224段階です。字幕のみ1倍では29分52秒、読み上げ時は文章を読み終えてから次へ進むので所要時間が変わります。確認問題は各パターン2問と導入・比較・演習・整理の10問で、計56問です。
+
+木構造、製品群、継承による生成フック、二つの変化軸、入れ子のラッパー、通知の分岐と購読解除、状態遷移、走査、保存復元、Visitorの呼出などを描き分けました。矢印のラベルで呼出・参照・実装・制御復帰・状態遷移を区別します。動きは事前に用意した説明であり、Javaや業務処理を実行するものではありません。各実装場面の解説欄には、通常教材と同じJava 17の適用前後の完全な`Main.java`、使用例、実行結果、変更への対応、コスト、類似パターンとの差を掲載しています。
+
+比較ではAbstract FactoryとFactory Method、BridgeとAdapter、DecoratorとProxy、StateとStrategyを扱います。Factory Methodをstatic生成関数と区別し、Singletonの共有状態・テスト・並行性、Observerの解除・順序・例外方針も説明します。総合演習は注文通知の要件追加に合わせて、単純な呼出、注入、Adapter、Strategy、Observer、Decorator、Command、Stateなどの候補と採用しない案を比較します。配送保証や冪等性がパターンだけで得られるとは説明しません。
+
+プレーヤーはAndroid版と同じ操作を引き継ぎます。16:9、スマートフォン全画面、操作バーの自動非表示、字幕、説明単位の移動、章選択、速度変更、キーボード、解答の開閉、ライト／ダークに対応します。「全56場面を静止版で読む」では図を横スクロールでき、コードと全工程を停止した状態で確認できます。動きを減らす設定では移動と場面切替のアニメーションを停止し、静止図と文章で読めます。印刷とJavaScript無効時には全場面の静止版・コード・解答を表示します。
+
+読み上げはWeb Speech APIで端末の日本語音声を利用し、再生または試聴操作を押すまで発声しません。オン／オフ、声の選択・試聴、再生速度との連動、停止・再開、画面離脱時の停止、音声非対応・エラー時の字幕再生を備えます。パターン名などには読みを設定しています。録音ファイルの追加はありません。使える声、発音、端末側の通信の有無はOS・ブラウザに依存します。
+
+再生位置と速度は`gof-motion-slides-player-v1`、読み上げ設定は`gof-narration-preferences-v1`へ保存します。通常GoFの読了記録とAndroidの記録には触れません。保存拒否時も閲覧・再生できます。Android教材用の記録バックアップには今回のGoF動画の記録を含めていません。
+
+開発時の再生成はリポジトリ直下で`python3 tools/generate_gof_slides.py`を実行します。Javaの全文・適用前・出力と既存の2問は通常GoF教材から取り込み、ナレーションと図の設計は専用Pythonファイルで管理します。生成された単一HTMLの閲覧にPythonは不要です。
+
+### GoF動画版の確認結果
+
+Chromiumで全56場面・各4段階の移動、幅1440／844／390／320pxのライト・ダーク、16:9と画面外へのはみ出し、字幕の自動送り・停止・速度・終端・ハッシュ・途中再開、解答とJavaコードの開閉、キーボード、通常教材・CSS図解・一覧との往復を確認しました。全画面の横向き・縦向き5サイズ、ネイティブFullscreenと非対応時の画面内最大化、操作バー非表示時の全面表示、Tabでの復帰も確認しています。本文・解説・モジュール名などの文字と背景は両配色でコントラスト比4.5以上を確認し、23パターンのSVGが描画範囲に収まることも検査しました。
+
+静止版のキーボードによる図の横スクロール、動きを減らす設定、全56場面の印刷PDF、JavaScript無効、localStorage拒否でも閲覧と操作が続くことを確認しました。全56ページのローカルリンク・章リンクを検査し、ブラウザの実行エラー・HTTPエラー・教材閲覧時の外部リソース通信はありません。通常GoFと既存CSS図解のCSS／JavaScriptは変更せず、Androidのファイルも変更していません。動画操作後も既存GoFの読了記録とAndroidの再生記録が保持されることを検査しています。
+
+音声合成のコールバックを模擬し、利用者操作前に発声しないこと、日本語の端末内音声の優先と用語の読み、長い発話中に説明を維持すること、終了後の進行、停止と読み直し、声・速度の変更、設定保存、古い／重複した終了・例外通知の無効化、画面離脱と最後の説明の停止を確認しました。API非対応、日本語音声なし、非同期の音声一覧更新、音声エラー、開始通知が来ない場合の字幕再生も検査しています。Chromiumの実APIでは、この環境に日本語音声がない場合の字幕への切替を確認しました。
+
+Javaは通常教材から取り込んだ適用前後46例をECJのJava 17互換モードでコンパイルし、OpenJDK 21上で実行しました。適用後23例の標準出力は、掲載する実行結果とすべて一致しています。Java 17実行環境での実行そのものは今回未確認です。生成スクリプトの再実行でHTMLが一致することも確認しています。
+
+実iPhone・Safari／Firefox、ホーム画面版での挙動、実際に聞こえる日本語音声と発音品質、着信などによる音声割込み、読み上げソフト、実プリンターは未確認です。`file://`での直接表示は管理環境のChromiumに`ERR_BLOCKED_BY_ADMINISTRATOR`で拒否されたため未確認で、HTTP経由で検証しています。新しいHTMLは約0.7MBで、音声ファイルの追加はありません。
