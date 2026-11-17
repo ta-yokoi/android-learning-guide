@@ -55,6 +55,10 @@
   .diagram-canvas svg rect[fill="#f0e8fa"],.diagram-canvas svg rect[fill="#ece9f5"],.diagram-canvas svg rect[fill="#ece5f5"],.diagram-canvas svg rect[fill="#f5f1fa"],.diagram-canvas svg rect[fill="#edeaf6"]{fill:#372d48}
   .state-lab{background:#19352d;border-color:#7ebba5}.lab-status>div{background:#1c2f3c;border-color:#658493}.lab-status dt{color:var(--muted)}
 }
+</style><style id="engineering-workbook-styles">
+.engineering-workbook{margin:28px 0;padding:23px;border:1px solid var(--line,#b9ccc4);border-radius:10px;min-width:0;color:inherit;background:transparent;line-height:1.9}.engineering-workbook h3{font-size:22px;line-height:1.55;margin:0 0 18px}.engineering-workbook h4{font-size:16px;margin:24px 0 9px}.engineering-workbook p,.engineering-workbook li{font-size:14px;line-height:1.95}.engineering-kicker{font-size:11px!important;font-weight:700;letter-spacing:.1em;color:var(--accent,var(--teal,#176f64))}.engineering-contract{padding:14px 18px;border-left:3px solid var(--accent,var(--teal,#176f64));background:#638a7610}.engineering-table{max-width:100%;overflow:auto}.engineering-workbook table{min-width:570px;width:100%;border-collapse:collapse;font-size:13px;background:transparent}.engineering-workbook th,.engineering-workbook td{padding:12px;text-align:left;vertical-align:top;border:1px solid var(--line,#b9ccc4);line-height:1.8}.engineering-workbook pre{max-width:100%;overflow:auto;padding:17px;background:#102433;color:#e4f0eb;border:1px solid #52717e;border-radius:8px;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4}.engineering-workbook pre code{white-space:pre;background:transparent;color:inherit}.engineering-workbook details{padding:13px 0;margin:14px 0;border-top:1px solid var(--line,#b9ccc4)}.engineering-workbook summary{font-size:14px;line-height:1.7;font-weight:600;cursor:pointer}.engineering-scope{font-size:12px!important;color:var(--muted,#536d77)}.engineering-workbook :focus-visible{outline:3px solid #bc8d2d;outline-offset:3px}.engineering-learning{margin:22px 0;padding:18px 22px;border-left:3px solid var(--accent,var(--teal,#176f64));font-size:14px}.engineering-learning p{font-size:14px}.engineering-bench{width:100%;height:100%;overflow:auto;border:1px solid #5a7b85;border-radius:10px;background:#0d202c;color:#e4f0eb;padding:clamp(7px,1.6cqw,20px)}.engineering-beat{display:none}.engineering-beat.focus{display:block;opacity:1}.engineering-beat h3{font-size:clamp(11px,1.7cqw,22px);color:#c4ef9b;margin:0 0 10px;line-height:1.5}.engineering-beat p,.engineering-beat li,.engineering-beat pre{font-size:clamp(10px,1.5cqw,19px);line-height:1.65}.engineering-beat li{margin:6px 0}.engineering-beat pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;margin:0}.engineering-beat code{color:inherit;background:transparent}.engineering-beat ol{margin:0;padding-left:22px}.static-diagram:has(.engineering-bench){height:auto!important}.static-diagram .engineering-bench{display:grid;grid-template-columns:1fr 1fr;gap:20px}.static-diagram .engineering-beat{display:block}.static-diagram .engineering-beat h3{font-size:14px}.static-diagram .engineering-beat p,.static-diagram .engineering-beat li,.static-diagram .engineering-beat pre{font-size:12px}
+@media(max-width:650px){.engineering-workbook{padding:16px}.engineering-workbook h3{font-size:19px}.engineering-workbook p,.engineering-workbook li{font-size:13px}.engineering-workbook pre{font-size:11px;padding:12px}.static-diagram .engineering-bench{grid-template-columns:1fr}}
+@media print{.engineering-workbook{padding:6px 0;border:0;break-inside:auto}.engineering-workbook h3{font-size:17px}.engineering-workbook h4{font-size:13px;margin:12px 0 5px}.engineering-workbook p,.engineering-workbook li,.engineering-workbook table,.engineering-workbook th,.engineering-workbook td{font-size:10px}.engineering-workbook pre{background:#f1f6f3;color:#16392c;font-size:9px;white-space:pre-wrap;overflow:visible}.engineering-workbook pre code{white-space:pre-wrap;overflow-wrap:anywhere}.engineering-table{overflow:visible}.engineering-workbook table{min-width:0}.engineering-workbook details{break-inside:auto}.engineering-bench{background:#f1f6f3;color:#16392c}.engineering-beat h3{color:#28614d}.engineering-learning{display:none}}
 </style></head>
 <body><a class="skip" href="#main">本文へ移動</a><div class="shell"><aside class="sidebar"><a class="catalog-back" href="../index.html">← 組み込み開発の教材一覧へ戻る</a><div class="brand">組み込み開発<br>体系学習ガイド</div><div class="edition">FOUNDATIONS → DESIGN / v1.0</div><details class="nav-details" id="toc" open><summary class="sidebar-summary">目次を開く・閉じる</summary><nav aria-label="教材の目次"><a href="#start">はじめに・学習ルート</a><a href="#overview"><span class="nav-no">01</span>組み込みシステムの全体像</a>
 <a href="#hardware"><span class="nav-no">02</span>信号・回路・周辺機能の基礎</a>
@@ -88,7 +92,30 @@
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>温度→判断→PWM要求→回転確認の図を描き、各境界で何が分かるかを書いてください。</p><p><b>実機・計測器あり：</b>対象ボードのCPU、RAM、Flash、クロック、入出力、デバッグ端子を資料で特定します。未搭載・不明は分けて記録します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. RTOSを使えば全ての期限を守れますか？</summary><p>守れるとは限りません。処理・割込み・待ち・機器応答等の上限を含めて設計・検証します。</p></details><details class="answer"><summary>Q2. PWMを書き込めたらファンは回転していますか？</summary><p>要求やレジスタ反映と実回転は別です。回転センサー等、必要な観測を確認します。</p></details><details class="answer"><summary>Q3. SoCという名称だけでLinux搭載が決まりますか？</summary><p>決まりません。CPU構成・メモリ・製品要件・BSP等と合わせて選びます。</p></details><details class="answer"><summary>Q4. リアルタイム性を平均処理時間だけで示せますか？</summary><p>示せません。期限、起点・終点、負荷、最悪時の待ち等を含めて評価します。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://arm-software.github.io/CMSIS_6/latest/Core/index.html" target="_blank" rel="noopener noreferrer">Arm CMSIS-Core：Cortex-Mの実行基盤 ↗</a><a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html" target="_blank" rel="noopener noreferrer">Zephyr：スレッドの基本 ↗</a></div>
-<div class="chapter-bottom"><a href="#start">← 前へ</a><label class="complete"><input type="checkbox" data-complete="overview">この章を読了</label><a href="#hardware">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><aside class="engineering-learning"><h3>設計検証ノートの使い方</h3><p>この分野の13項目へ実習39問を追加しています。各項目の最後に、追加要求・守る契約・架空の入力と期待結果・実行できるホストモデル・代案・三つの実習問題を設けています。</p><ol><li>コードを開く前に結果を予想する。</li><li>標準出力と、自分が予想した理由を照合する。</li><li>モデルで確認できた範囲と、対象機で未確認の範囲を書く。</li><li>代案のコストを比べ、次に必要な実機試験を一つ定義する。</li></ol><p>モデルの合格はAndroid API、回路、ドライバー、RTOSや実機の正しさを証明しません。条件・時計・寿命・副作用の契約を学び、実際の対象仕様と証拠へ結び付けてください。</p></aside><section class="engineering-workbook" id="workbook-overview"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：平均処理時間では、期限を守る根拠にならない</h3><h4>追加された要求</h4><p>入力から出力まで五ミリ秒以内に完了したい。処理本体以外の待ちと割込みの影響も予算へ含める。</p><div class="engineering-contract"><b>先に定める契約</b><p>モデルは同じ経路上の直列区間の上限を加算する。並行区間を重複加算せず、見積り値は対象機で検証する。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">合計4500us、期限5000us</th><td>margin=500</td><td>待ちと出力を含める。</td></tr><tr><th scope="row">合計5500us</th><td>over-budget=1</td><td>処理本体が速くても期限を外す。</td></tr><tr><th scope="row">合計5000us</th><td>boundary=1</td><td>境界と余裕の規則を決める。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static uint32_t total(uint32_t in,uint32_t run,uint32_t wait,uint32_t out) {
+    return in+run+wait+out; /* この実習の小さな値の範囲に限定 */
+}
+int main(void) {
+    uint32_t budget=5000, good=total(500,1000,2000,1000), bad=total(500,1000,3000,1000);
+    assert(good==4500 &amp;&amp; bad&gt;budget);
+    printf(&quot;margin=%&quot; PRIu32 &quot;\n&quot;,budget-good);
+    printf(&quot;over-budget=%d\n&quot;,bad&gt;budget);
+    printf(&quot;boundary=%d\n&quot;,total(500,1000,2500,1000)&lt;=budget);
+    return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>margin=500
+over-budget=1
+boundary=1</code></pre></details><h4>読み解く：観測から設計へ</h4><p>計算本体が一ミリ秒でも、入力待ち、ブロッキング、割込み、出力反映が残る。平均の速さを根拠にすると、まれな待ちによる期限違反を見落とす。境界ごとに上限と計測点を決める。</p><p>実習は予算表の算術を検査するだけである。キャッシュ、バス競合、機器の反応の上限を測ったことにはならない。余裕を残し、各前提が変わった時に再評価する。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">平均値で見積る</th><td>典型時は見えるが期限の保証には足りない。</td></tr><tr><th scope="row">上限と余裕を設定</th><td>要求へ対応づけられる。上限の根拠を維持する必要がある。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 実測最大を最悪値としてよいか。</summary><p><b>解答と理由：</b>未観測の条件があり得る。測定・解析の前提と余裕を明示する。</p></details><details class="engineering-answer"><summary>実習2. 改善対象はどう選ぶか。</summary><p><b>解答と理由：</b>入力から出力の同じ時間軸で、大きな区間と変動の原因を探す。</p></details><details class="engineering-answer"><summary>実習3. 並行区間も単純に加算するか。</summary><p><b>解答と理由：</b>しない。因果と時間の重なりを整理してから予算を作る。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#start">← 前へ</a><label class="complete"><input type="checkbox" data-complete="overview">この章を読了</label><a href="#hardware">次へ →</a></div></section>
 <section class="chapter" id="hardware" aria-labelledby="title-hardware"><div class="section-number">CHAPTER 02</div><h2 id="title-hardware">02. 信号・回路・周辺機能の基礎</h2><div class="learning"><div><span>この章で分かること</span>電気的条件とGPIO・クロック・ADC・PWMの意味を読み取れる。</div><div><span>前提知識</span>第1章。電圧・電流・抵抗の基礎。</div></div>
 <p>ソフトウェアが扱う0／1は、実機では電圧と時間の条件で伝わります。配線がつながっていても、論理レベル、入力のしきい値、信号の安定時間、リセット条件が合わなければ正しく動きません。回路図とデータシートを、コードと同じ設計資料として読みます。</p>
 <h3>1. 信号の条件を確認する</h3>
@@ -105,7 +132,34 @@
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>PWMの周期・High時間・dutyを相互に計算し、ADCの分解能と精度の違いを説明します。</p><p><b>実機・計測器あり：</b>回路図とpin設定を照合し、許可された測定点で信号の電圧・周期を確認します。プローブの基準と計測器の定格は対象回路に合わせます。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 絶対最大定格の範囲内なら通常動作を保証できますか？</summary><p>できません。通常の設計は推奨動作条件と各仕様の条件に基づきます。</p></details><details class="answer"><summary>Q2. GPIO番号と基板の端子番号は同じですか？</summary><p>別です。端子の割当、pin mux、基板配線を対応付けます。</p></details><details class="answer"><summary>Q3. 12 bit ADCなら実測精度も12 bitですか？</summary><p>分解能と精度は別です。基準電圧、各種誤差、入力回路等を確認します。</p></details><details class="answer"><summary>Q4. PWMのdutyだけで出力の影響を決められますか？</summary><p>周波数、駆動回路、負荷特性も必要です。要求値と物理結果を分けます。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://www.st.com/resource/en/application_note/an4899-stm32-microcontroller-gpio-hardware-settings-and-lowpower-consumption-stmicroelectronics.pdf" target="_blank" rel="noopener noreferrer">ST AN4899：STM32 GPIOの設定例（他製品へ一般化しない） ↗</a><a href="https://arm-software.github.io/CMSIS_6/latest/Core/index.html" target="_blank" rel="noopener noreferrer">Arm：クロック等の初期化の位置付け ↗</a></div>
-<div class="chapter-bottom"><a href="#overview">← 前へ</a><label class="complete"><input type="checkbox" data-complete="hardware">この章を読了</label><a href="#memory">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-hardware"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：チャタリングと、電気的な条件を分ける</h3><h4>追加された要求</h4><p>スイッチの一操作が複数の入力に見える。連続する同じ観測を待つ処理と、実回路の条件を分けて検証する。</p><div class="engineering-contract"><b>先に定める契約</b><p>一定周期のデジタル観測で三回連続一致を安定とするモデル。電圧、しきい値、電気的なノイズ除去の保証ではない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">1,0,1,1,1</th><td>stable-at=5</td><td>連続の開始を取り直す。</td></tr><tr><th scope="row">1,0,1,0</th><td>unstable=0</td><td>まだ安定していない。</td></tr><tr><th scope="row">1,1,1</th><td>minimum=3</td><td>最小の安定列。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static size_t stable_at(const int *samples,size_t count) {
+    unsigned consecutive=0; int last=-1;
+    for(size_t i=0;i&lt;count;++i) {
+        consecutive=samples[i]==last?consecutive+1u:1u; last=samples[i];
+        if(consecutive==3u) return i+1u;
+    }
+    return 0;
+}
+int main(void) {
+    const int a[]={1,0,1,1,1}, b[]={1,0,1,0}, c[]={1,1,1};
+    assert(stable_at(a,5)==5 &amp;&amp; stable_at(b,4)==0 &amp;&amp; stable_at(c,3)==3);
+    printf(&quot;stable-at=%zu\n&quot;,stable_at(a,5));
+    printf(&quot;unstable=%zu\n&quot;,stable_at(b,4));
+    printf(&quot;minimum=%zu\n&quot;,stable_at(c,3)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>stable-at=5
+unstable=0
+minimum=3</code></pre></details><h4>読み解く：観測から設計へ</h4><p>1、0、1、1、1では五回目で三回連続の1になる。周期を変えれば待ち時間も変わるため、回数を時間の要求へ結び付ける。</p><p>安定を待つコードだけでは過電圧や浮いた入力、メタステーブルへ対処できない。データシート、プル抵抗、入力回路、配線と計測条件を確認する。配列のモデルと実信号を混同しない。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">ソフトの安定判定</th><td>設定しやすいが応答遅延が増える。</td></tr><tr><th scope="row">回路と入力機能の対策</th><td>電気的な条件を改善できる。部品と信号の仕様が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 取得周期を変えると何が変わるか。</summary><p><b>解答と理由：</b>同じ連続回数でも検出までの時間が変わる。最短パルスと許容遅延を確認する。</p></details><details class="engineering-answer"><summary>実習2. 過電圧をこのコードで防げるか。</summary><p><b>解答と理由：</b>防げない。保護回路やレベル変換を部品の仕様で対策する。</p></details><details class="engineering-answer"><summary>実習3. 追加する実機条件は。</summary><p><b>解答と理由：</b>ノイズ、温度、電源、入力しきい値、取得周期とパルス幅を確認する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#overview">← 前へ</a><label class="complete"><input type="checkbox" data-complete="hardware">この章を読了</label><a href="#memory">次へ →</a></div></section>
 <section class="chapter" id="memory" aria-labelledby="title-memory"><div class="section-number">CHAPTER 03</div><h2 id="title-memory">03. CPU・メモリ・DMAの仕組み</h2><div class="learning"><div><span>この章で分かること</span>アドレス・配置・cache・DMAの境界を分けて説明できる。</div><div><span>前提知識</span>第1・2章。16進数とbyteの基礎。</div></div>
 <p>CPUは命令を実行し、レジスタやメモリへ値を保持します。組み込み開発では「どのアドレスの何を、どの主体が、いつ読み書きするか」が重要です。通常のRAM、機器レジスタ、DMA用バッファを同じ扱いにしないことが、不具合の予防につながります。</p>
 <h3>1. 保存領域とメモリマップ</h3>
@@ -131,7 +185,29 @@ bool read_u16_le(const uint8_t *data, size_t size, uint16_t *out)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>コードへ0x34, 0x12を入力し0x1234になること、長さ0・1やnullを拒否することを確認します。</p><p><b>実機・計測器あり：</b>実機のmapと起動設定を読み、stack上限・RAM範囲・MMIO・DMAバッファの配置を特定します。実アドレスへの任意アクセスは行いません。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. DMAへCPUのポインタをそのまま渡せますか？</summary><p>前提にできません。機器が使うアドレスとCPU側のアドレスを区別し、プラットフォームのAPIを使います。</p></details><details class="answer"><summary>Q2. volatileを付けるとcache整合性も解決しますか？</summary><p>解決しません。cache、所有権、機器との同期は別の仕組みです。</p></details><details class="answer"><summary>Q3. heapを使わなければRAM不足は起きませんか？</summary><p>起きます。静的領域、各タスクのstack、割込みstack、バッファ等もRAMを使います。</p></details><details class="answer"><summary>Q4. 受信byte列を構造体へ変換すれば常に正しく読めますか？</summary><p>保証できません。長さ、アラインメント、padding、エンディアン、ABI等を確認します。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://docs.kernel.org/driver-api/device-io.html" target="_blank" rel="noopener noreferrer">Linux：MMIOとアクセサ ↗</a><a href="https://docs.kernel.org/core-api/dma-api-howto.html" target="_blank" rel="noopener noreferrer">Linux：DMAアドレスと同期 ↗</a><a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf" target="_blank" rel="noopener noreferrer">C11委員会草案：型とオブジェクトの規則 ↗</a></div>
-<div class="chapter-bottom"><a href="#hardware">← 前へ</a><label class="complete"><input type="checkbox" data-complete="memory">この章を読了</label><a href="#language">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-memory"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：DMA完了と、CPUから読める状態は別</h3><h4>追加された要求</h4><p>受信DMAは完了したが、CPUは古い値を読む。バッファの所有権とキャッシュ整合の手順を分ける。</p><div class="engineering-contract"><b>先に定める契約</b><p>非コヒーレントな受信DMAの抽象モデル。所有権の返却と必要な整合処理後にCPUが読む。具体的な命令や順序は対象機の仕様で決める。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">DMA所有中</th><td>during=0</td><td>CPUの読取りを禁止。</td></tr><tr><th scope="row">完了直後、未整合</th><td>after-complete=0</td><td>完了と可視性を分ける。</td></tr><tr><th scope="row">整合してCPUへ返す</th><td>after-sync=1</td><td>モデルの利用条件を満たす。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+enum Owner { CPU, DEVICE, NEEDS_SYNC };
+static bool readable(enum Owner owner) { return owner==CPU; }
+int main(void) {
+    enum Owner owner=DEVICE;
+    assert(!readable(owner)); printf(&quot;during=%d\n&quot;,readable(owner));
+    owner=NEEDS_SYNC;
+    assert(!readable(owner)); printf(&quot;after-complete=%d\n&quot;,readable(owner));
+    owner=CPU; /* 抽象的な整合完了。CPUの命令を実行していない */
+    assert(readable(owner)); printf(&quot;after-sync=%d\n&quot;,readable(owner)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>during=0
+after-complete=0
+after-sync=1</code></pre></details><h4>読み解く：観測から設計へ</h4><p>DMAが所有する間はCPUが同じバッファを読書きしない。完了後も古いキャッシュラインが残る構成では整合が必要になる。volatileは所有権やキャッシュ処理の代わりではない。</p><p>転送方向、開始前のライン処理、完了確認、バリア、ライン境界の共有を対象仕様で確認する。モデルのsyncは状態名であり実命令ではない。コヒーレントな機種へ同じ手順を無条件に適用しない。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">無秩序な共有</th><td>コピーは減るが古い値やデータ破壊の原因になる。</td></tr><tr><th scope="row">所有権と整合点を明示</th><td>利用時点を検査できる。対象依存の処理は別に必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. volatileだけで最新値が見えるか。</summary><p><b>解答と理由：</b>保証しない。キャッシュ、バス、所有権とバリアを機種の仕様で確認する。</p></details><details class="engineering-answer"><summary>実習2. ラインを別データと共有すると何が問題か。</summary><p><b>解答と理由：</b>ライン単位の処理が他のデータへ影響し得る。配置と所有権を検討する。</p></details><details class="engineering-answer"><summary>実習3. ホスト試験でDMA実装を証明できるか。</summary><p><b>解答と理由：</b>できない。実転送、整合処理、割込み順、最適化条件を対象機で検証する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#hardware">← 前へ</a><label class="complete"><input type="checkbox" data-complete="memory">この章を読了</label><a href="#language">次へ →</a></div></section>
 <section class="chapter" id="language" aria-labelledby="title-language"><div class="section-number">CHAPTER 04</div><h2 id="title-language">04. C／C++と安全な実装の基礎</h2><div class="learning"><div><span>この章で分かること</span>型・寿命・volatile・同期の保証範囲を区別できる。</div><div><span>前提知識</span>第3章。Cの関数・配列・ポインタ、C++例にはクラスの基礎。</div></div>
 <p>C／C++の文法だけでなく、処理系が何を保証し、何を保証しないかを理解します。最適化を有効にすると動かなくなるコードは、タイミングだけでなく未定義動作や共有データの問題も疑います。実装依存の挙動は、コンパイラ・オプション・ABI・CPU版と一緒に記録します。</p>
 <h3>1. 型・演算・ビット操作</h3>
@@ -182,7 +258,29 @@ public:
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. volatile変数の++はスレッド間で安全ですか？</summary><p>保証されません。不可分性・同期・データ競合を扱う仕組みが必要です。</p></details><details class="answer"><summary>Q2. 固定幅の型なら演算前の型変換を考えなくてよいですか？</summary><p>考える必要があります。整数昇格や符号の変換等が作用します。</p></details><details class="answer"><summary>Q3. RAIIを使えばデッドロックもなくなりますか？</summary><p>なくなりません。解放経路の管理と、ロック順序・待ちの設計は別です。</p></details><details class="answer"><summary>Q4. 関数内の配列を非同期処理へ渡してすぐ戻れますか？</summary><p>完了まで領域が有効かを確認します。コピーや所有権の移動等が必要な場合があります。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf" target="_blank" rel="noopener noreferrer">C11委員会草案：整数・寿命・atomic等 ↗</a><a href="https://gcc.gnu.org/onlinedocs/gcc/Volatiles.html" target="_blank" rel="noopener noreferrer">GCC：volatileの保証範囲 ↗</a><a href="https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html" target="_blank" rel="noopener noreferrer">GCC：メモリモデルを扱うatomic builtins ↗</a></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_concurrency.html" target="_blank" rel="noopener noreferrer">GCC libstdc++：標準ライブラリと並行処理 ↗</a></div>
-<div class="chapter-bottom"><a href="#memory">← 前へ</a><label class="complete"><input type="checkbox" data-complete="language">この章を読了</label><a href="#boot-build">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-language"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：範囲検査の加算も、オーバーフローする</h3><h4>追加された要求</h4><p>外部入力の長さでバッファへ追記する。used+nの計算で容量検査をすり抜けないようにする。</p><div class="engineering-contract"><b>先に定める契約</b><p>used&lt;=capacityを確認してからnをcapacity-usedと比較する。コピー元・先の有効性や重なりは別の前提。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">used=8、n=0、capacity=8</th><td>boundary=1</td><td>空の追加は算術上許容。</td></tr><tr><th scope="row">n=SIZE_MAX</th><td>huge=0</td><td>加算せず拒否。</td></tr><tr><th scope="row">used=9、capacity=8</th><td>invalid-used=0</td><td>引算のアンダーフローを防ぐ。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static bool fits(size_t used,size_t n,size_t capacity) {
+    return used&lt;=capacity &amp;&amp; n&lt;=capacity-used;
+}
+int main(void) {
+    assert(fits(8,0,8) &amp;&amp; fits(7,1,8));
+    assert(!fits(7,SIZE_MAX,8) &amp;&amp; !fits(9,0,8) &amp;&amp; !fits(7,2,8));
+    printf(&quot;boundary=%d\n&quot;,fits(8,0,8));
+    printf(&quot;huge=%d\n&quot;,fits(7,SIZE_MAX,8));
+    printf(&quot;invalid-used=%d\n&quot;,fits(9,0,8)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>boundary=1
+huge=0
+invalid-used=0</code></pre></details><h4>読み解く：観測から設計へ</h4><p>符号なし加算は最大値を越えると剰余で小さくなる。used+n&lt;=capacityだけでは大きなnに対する判定が壊れ得る。引算の前提を先に確認して残容量と比較する。</p><p>実習は容量の算術を検査する。ポインターの範囲、元データの長さ、重なり、検査後の並行変更は実装で別に確認する。C++で所有権やコンテナーを使っても外部入力の境界は残る。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">加算して判定</th><td>自然に見えるが加算の桁あふれを見落とす。</td></tr><tr><th scope="row">残容量で比較</th><td>加算を避けられる。usedの妥当性を先に確かめる。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. size_tなら加算は安全か。</summary><p><b>解答と理由：</b>未定義動作にならなくても剰余で小さくなり、検査を誤る。</p></details><details class="engineering-answer"><summary>実習2. これだけでmemcpyは安全か。</summary><p><b>解答と理由：</b>違う。ポインターと元データの範囲、重なり、並行変更も確認する。</p></details><details class="engineering-answer"><summary>実習3. 追加する境界値は。</summary><p><b>解答と理由：</b>ゼロ、残容量ちょうど、一つ越え、SIZE_MAX、usedが容量を越えた値。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#memory">← 前へ</a><label class="complete"><input type="checkbox" data-complete="language">この章を読了</label><a href="#boot-build">次へ →</a></div></section>
 <section class="chapter" id="boot-build" aria-labelledby="title-boot-build"><div class="section-number">CHAPTER 05</div><h2 id="title-boot-build">05. 起動・クロスビルド・成果物</h2><div class="learning"><div><span>この章で分かること</span>startupとビルド成果物の関係を追い、版を固定できる。</div><div><span>前提知識</span>第3・4章。ファイルとビルドの基礎。</div></div>
 <p>ソースコードはそのままCPUが実行するものではありません。コンパイラが命令へ変換し、リンカが配置と参照を解決し、起動環境が必要な初期化を行ってから製品の処理へ進みます。「ビルド成功」「書込み成功」「起動成功」「機能利用可能」は別々に確認します。</p>
 <h3>1. リセットからmainまで</h3>
@@ -206,7 +304,33 @@ SECTIONS
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>小さなPC向けCをコンパイルし、シンボルやsectionを対応するツールで調べます。PC向け配置をMCUの配置と混同しないでください。</p><p><b>実機・計測器あり：</b>ベンダーの既知の最小プロジェクトで、reset入口→main→最初の機能利用可能までを追い、mapと書込み先を照合します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 書込み成功ならmainへ到達していますか？</summary><p>別の確認が必要です。起動条件・実行位置・RAM初期化等に問題が残る場合があります。</p></details><details class="answer"><summary>Q2. .dataのRAM配置とFlashの初期値は同じ場所ですか？</summary><p>分ける構成があります。load先・実行時の配置とstartupのコピーを照合します。</p></details><details class="answer"><summary>Q3. 不具合時に別ビルドのELFで解析してよいですか？</summary><p>正しい対応を保証できません。対象実機の版と一致する成果物・シンボルを使います。</p></details><details class="answer"><summary>Q4. リンカスクリプトだけでRAM初期化は実行されますか？</summary><p>配置の指定と実行時の初期化は別です。startup等の処理と整合させます。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://sourceware.org/binutils/docs/ld/Scripts.html" target="_blank" rel="noopener noreferrer">GNU ld：リンカスクリプト ↗</a><a href="https://arm-software.github.io/CMSIS_6/latest/Core/index.html" target="_blank" rel="noopener noreferrer">Arm：初期化とCMSISの位置付け ↗</a><a href="https://docs.mcuboot.com/design.html" target="_blank" rel="noopener noreferrer">MCUboot：bootloaderの設計例 ↗</a></div>
-<div class="chapter-bottom"><a href="#language">← 前へ</a><label class="complete"><input type="checkbox" data-complete="boot-build">この章を読了</label><a href="#interrupts">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-boot-build"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：エントリー値を、対象アーキテクチャの意味で検査する</h3><h4>追加された要求</h4><p>Cortex-Mの説明用イメージで初期SPとリセットベクターの取り違えを検出する。</p><div class="engineering-contract"><b>先に定める契約</b><p>この構成ではRAM範囲内の8バイト整列SPと、Flash内のThumbエントリーを要求する。他の機種へ一律に一般化しない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">正しい領域・整列・Thumb</th><td>valid=1</td><td>この例の条件を満たす。</td></tr><tr><th scope="row">SP未整列</th><td>bad-sp=0</td><td>起動前の条件違反。</td></tr><tr><th scope="row">Thumbビット0</th><td>bad-entry=0</td><td>命令状態の条件違反。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static bool valid_vector(uint32_t sp,uint32_t reset) {
+    uint32_t entry=reset &amp; ~UINT32_C(1);
+    bool stack=sp&gt;UINT32_C(0x20000000) &amp;&amp; sp&lt;=UINT32_C(0x20002000) &amp;&amp; sp%8u==0u;
+    bool code=(reset&amp;1u)!=0u &amp;&amp; entry&gt;=UINT32_C(0x08000000) &amp;&amp; entry&lt;UINT32_C(0x08010000);
+    return stack &amp;&amp; code;
+}
+int main(void) {
+    assert(valid_vector(UINT32_C(0x20002000),UINT32_C(0x08000101)));
+    assert(!valid_vector(UINT32_C(0x20000003),UINT32_C(0x08000101)));
+    assert(!valid_vector(UINT32_C(0x20002000),UINT32_C(0x08000100)));
+    printf(&quot;valid=%d\n&quot;,valid_vector(UINT32_C(0x20002000),UINT32_C(0x08000101)));
+    printf(&quot;bad-sp=%d\n&quot;,valid_vector(UINT32_C(0x20000003),UINT32_C(0x08000101)));
+    printf(&quot;bad-entry=%d\n&quot;,valid_vector(UINT32_C(0x20002000),UINT32_C(0x08000100))); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>valid=1
+bad-sp=0
+bad-entry=0</code></pre></details><h4>読み解く：観測から設計へ</h4><p>単なる整数としてアドレスを見ると、領域、整列、命令状態の条件を落とす。リンカースクリプト、マップ、起動コードと書込先を対応づける。</p><p>検査が通っても起動成功の証明にはならない。ベクター配置、初期化、クロック、割込み、ブートローダーとの契約を対象機で確認する。ホストで例のアドレスへ実アクセスしない。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">生の値を目視</th><td>確認の入口だが領域や命令状態を落としやすい。</td></tr><tr><th scope="row">対象仕様から条件を生成</th><td>受入検査を自動化できる。対象とリンカー設定の一致が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. ホストでこの番地を読んでよいか。</summary><p><b>解答と理由：</b>いけない。数値だけを検査するモデルである。</p></details><details class="engineering-answer"><summary>実習2. 領域を決め打ちして使い回せるか。</summary><p><b>解答と理由：</b>対象機のメモリマップとリンカー設定から導出し、版と一緒に管理する。</p></details><details class="engineering-answer"><summary>実習3. 合格後の実機確認は。</summary><p><b>解答と理由：</b>初期化、エントリーへの到達、配置、割込み、起動失敗時の復旧を確認する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#language">← 前へ</a><label class="complete"><input type="checkbox" data-complete="boot-build">この章を読了</label><a href="#interrupts">次へ →</a></div></section>
 <section class="chapter" id="interrupts" aria-labelledby="title-interrupts"><div class="section-number">CHAPTER 06</div><h2 id="title-interrupts">06. 割込み・周期処理・リアルタイム性</h2><div class="learning"><div><span>この章で分かること</span>実行文脈と時間の起点・終点を分け、期限とwrapを扱える。</div><div><span>前提知識</span>第2〜5章。</div></div>
 <p>割込みは、外部や周辺回路のイベント等を契機に、現在の実行へ割り込んで処理する仕組みです。イベントを早く受け付ける役割と、全ての作業をその場で終える役割は分けられます。割込みの発生、受理、ハンドラ開始、後段処理、物理応答を別の時刻として測ります。</p>
 <h3>1. 割込みから後段処理へ</h3>
@@ -232,7 +356,36 @@ bool elapsed_u32(uint32_t now, uint32_t started, uint32_t period)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>上のコードへwrap直前・直後、期限の直前・一致・直後を入力します。検出から物理出力までの時間予算を表にします。</p><p><b>実機・計測器あり：</b>タイマー等で発生させたイベントとISR入口・後段完了を計測し、デバッガ停止がタイマーやwatchdogへ与える影響も記録します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. ISRでmutexを待ってもよいですか？</summary><p>一般に待てる文脈ではありません。対象OSのISR向けAPIと制約に従います。</p></details><details class="answer"><summary>Q2. 割込みの数値とタスク優先度の数値は同じ意味ですか？</summary><p>同じとは限りません。CPUとOSそれぞれの仕様を確認します。</p></details><details class="answer"><summary>Q3. 32 bit tickの差なら何年止まっても時間が分かりますか？</summary><p>分かりません。wrap回数の情報が失われます。有効な間隔と長時間停止時の扱いを定義します。</p></details><details class="answer"><summary>Q4. watchdogを常にfeedすれば健全性を示せますか？</summary><p>示せません。監視対象の進捗が止まったときにfeedを止められる条件等が必要です。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://arm-software.github.io/CMSIS_6/latest/Core/group__NVIC__gr.html" target="_blank" rel="noopener noreferrer">Arm NVIC：優先度・割込み ↗</a><a href="https://docs.zephyrproject.org/latest/kernel/services/interrupts.html" target="_blank" rel="noopener noreferrer">Zephyr：ISRと後段処理 ↗</a></div>
-<div class="chapter-bottom"><a href="#boot-build">← 前へ</a><label class="complete"><input type="checkbox" data-complete="interrupts">この章を読了</label><a href="#rtos">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-interrupts"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：平均負荷が低くても、待ちで期限を外す</h3><h4>追加された要求</h4><p>低優先の処理が持つ資源を待ち、周期処理が遅れる。実行時間、ブロッキングと高優先の干渉を応答時間へ含める。</p><div class="engineering-contract"><b>先に定める契約</b><p>単一コア・固定優先度・プリエンプティブ、独立した周期の高優先タスク一つ。ジッタは省略し、切替費用などは実用で見積りへ含める。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">C=1000、B=500、H=500、T=2000us</th><td>response=2000</td><td>固定点まで反復。</td></tr><tr><th scope="row">B=1800へ増加</th><td>blocked-response=3800</td><td>資源待ちの影響。</td></tr><tr><th scope="row">期限2500us</th><td>late=1</td><td>待ちによる期限違反。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static uint32_t response(uint32_t c,uint32_t b,uint32_t h,uint32_t period) {
+    assert(period&gt;0u);
+    uint32_t r=c+b;
+    for(unsigned i=0;i&lt;32u;++i) {
+        uint32_t next=c+b+((r+period-1u)/period)*h;
+        if(next==r) return r;
+        r=next; /* この例の小さな値と一つの干渉タスクに限定 */
+    }
+    return UINT32_MAX;
+}
+int main(void) {
+    uint32_t good=response(1000,500,500,2000), bad=response(1000,1800,500,2000);
+    assert(good==2000 &amp;&amp; bad==3800);
+    printf(&quot;response=%&quot; PRIu32 &quot;\n&quot;,good);
+    printf(&quot;blocked-response=%&quot; PRIu32 &quot;\n&quot;,bad);
+    printf(&quot;late=%d\n&quot;,bad&gt;2500u); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>response=2000
+blocked-response=3800
+late=1</code></pre></details><h4>読み解く：観測から設計へ</h4><p>Rの初期値をC+Bとし、Rの次値をC+B+ceil(R/T)×Hとして固定点まで加える。Hは高優先処理の実行時間、Tは周期。応答は実行時間だけではなく、低い平均負荷でも長い資源待ちで期限を外す。</p><p>この例は一つの干渉タスクに限定する。複数タスク、入れ子割込み、共有資源、周期の揺れを対象に合わせて拡張する。優先度継承があっても待ちの上限が自動で要求を満たすとは限らない。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">CPU負荷率だけを見る</th><td>全体傾向には有用だが個別の応答上限を示さない。</td></tr><tr><th scope="row">応答とブロッキングを解析</th><td>期限へ対応づく。実行時間と干渉の仮定の検証が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 実行時間だけ最適化すれば十分か。</summary><p><b>解答と理由：</b>待ちや干渉が支配的なら足りない。上限を増やす項を確認する。</p></details><details class="engineering-answer"><summary>実習2. 収束しなければ無限に計算するか。</summary><p><b>解答と理由：</b>しない。解析の打切りと期限違反を扱い、仮定した負荷が成立するか調べる。</p></details><details class="engineering-answer"><summary>実習3. 実機で照合するには。</summary><p><b>解答と理由：</b>割込み、開始・終了、待ちを同じ時計で測り、最悪の経路と条件を確認する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#boot-build">← 前へ</a><label class="complete"><input type="checkbox" data-complete="interrupts">この章を読了</label><a href="#rtos">次へ →</a></div></section>
 <section class="chapter" id="rtos" aria-labelledby="title-rtos"><div class="section-number">CHAPTER 07</div><h2 id="title-rtos">07. ベアメタル・RTOS・タスク間連携</h2><div class="learning"><div><span>この章で分かること</span>タスク構成、待ち、同期、queue容量とstackを設計できる。</div><div><span>前提知識</span>第4〜6章。</div></div>
 <p>ベアメタルではループ内で処理を順番に進めるスーパーループが基本の一つです。RTOSでは独立した実行単位であるタスクを作り、優先度や待ち条件に応じて切り替えます。分けるほどよいのではなく、期限、責務、共有資源、stackのコストからタスク構成を決めます。</p>
 <h3>1. タスクの状態とスケジューリング</h3>
@@ -275,7 +428,35 @@ bool byte_queue_pop(ByteQueue *q, uint8_t *out)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>4個入るqueueへ5個目を追加して拒否を確認し、取り出し順序とwrapを試します。タスクごとの周期・期限・共有資源を書きます。</p><p><b>実機・計測器あり：</b>RTOSの公式サンプルで待ちと実行の状態を観測し、満杯・高負荷・優先度逆転のケースを評価します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 待ちが解けたタスクは即座に実行しますか？</summary><p>READYになっても他のタスクや割込み等の影響があります。実行選択と実行開始を分けます。</p></details><details class="answer"><summary>Q2. 上のqueueをISRとtaskから同時に使えますか？</summary><p>使えません。この例は単一文脈専用で、同期は実装していません。</p></details><details class="answer"><summary>Q3. 優先度継承でデッドロックも防げますか？</summary><p>防げません。取得順序、依存、タイムアウト等は別に設計します。</p></details><details class="answer"><summary>Q4. stackの最大観測値が小さければ全条件で安全ですか？</summary><p>保証できません。未実行経路、ネスト、OS・ライブラリ条件も評価します。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html" target="_blank" rel="noopener noreferrer">Zephyr：スレッドの状態とstack ↗</a><a href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/mutexes.html" target="_blank" rel="noopener noreferrer">Zephyr：mutexと優先度継承 ↗</a><a href="https://github.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-Tasks-and-co-routines/04-Task-scheduling" target="_blank" rel="noopener noreferrer">FreeRTOS：スケジューリング（OS差分の例） ↗</a></div>
-<div class="chapter-bottom"><a href="#interrupts">← 前へ</a><label class="complete"><input type="checkbox" data-complete="rtos">この章を読了</label><a href="#linux">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-rtos"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：満杯時の方針を、キューの仕様に含める</h3><h4>追加された要求</h4><p>処理よりイベントの到着が速い。容量二で三件目をどう扱うか、欠落を観測できるようにする。</p><div class="engineering-contract"><b>先に定める契約</b><p>満杯なら新しいイベントを拒否しFIFOを保つモデル。単一スレッドで方針を検証し、ISR用APIや排他は実装しない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">1と2を追加</th><td>二件を保持</td><td>容量内のFIFO。</td></tr><tr><th scope="row">3を追加</th><td>dropped=1</td><td>拒否を返す。</td></tr><tr><th scope="row">二件取り出す</th><td>fifo=1,2 / empty=1</td><td>既存順を保つ。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+struct Queue { int data[2]; unsigned head,tail,count; };
+static bool push(struct Queue *q,int value) {
+    if(q-&gt;count==2u) return false;
+    q-&gt;data[q-&gt;tail]=value; q-&gt;tail=(q-&gt;tail+1u)%2u; ++q-&gt;count; return true;
+}
+static bool pop(struct Queue *q,int *value) {
+    if(q-&gt;count==0u) return false;
+    *value=q-&gt;data[q-&gt;head]; q-&gt;head=(q-&gt;head+1u)%2u; --q-&gt;count; return true;
+}
+int main(void) {
+    struct Queue q={0}; int a=0,b=0,unused=0;
+    assert(push(&amp;q,1) &amp;&amp; push(&amp;q,2)); bool dropped=!push(&amp;q,3);
+    assert(pop(&amp;q,&amp;a) &amp;&amp; pop(&amp;q,&amp;b));
+    printf(&quot;dropped=%d\n&quot;,dropped); printf(&quot;fifo=%d,%d\n&quot;,a,b);
+    printf(&quot;empty=%d\n&quot;,!pop(&amp;q,&amp;unused)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>dropped=1
+fifo=1,2
+empty=1</code></pre></details><h4>読み解く：観測から設計へ</h4><p>送れた二件だけの試験では、三件目が消える条件を見落とす。破棄、上書き、集約、待機は異なる仕様なので、イベントの意味と発生上限から選ぶ。</p><p>実RTOSではISRから使えるAPI、割込み優先度、起床とスケジューラを確認する。満杯時の無制限待機をISRへ持ち込まない。拒否の件数を観測し、処理が追いつかない状態を検出する。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">満杯で拒否</th><td>FIFOを保つ。拒否の観測と回復が必要。</td></tr><tr><th scope="row">最新値へ集約</th><td>状態の通知には有効な場合がある。全件必要な操作には使えない。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 容量を増やせば必ず解決か。</summary><p><b>解答と理由：</b>平均的に処理が追いつかなければ再び満杯になる。発生率と処理上限を確認する。</p></details><details class="engineering-answer"><summary>実習2. 状態通知と操作要求で破棄方針を同じにしてよいか。</summary><p><b>解答と理由：</b>最新値だけでよい状態と、一件ずつ必要な操作を分ける。</p></details><details class="engineering-answer"><summary>実習3. 単一スレッド試験で排他も正しいと言えるか。</summary><p><b>解答と理由：</b>言えない。割込み・タスク間の競合とRTOSの契約を別に検証する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#interrupts">← 前へ</a><label class="complete"><input type="checkbox" data-complete="rtos">この章を読了</label><a href="#linux">次へ →</a></div></section>
 <section class="chapter" id="linux" aria-labelledby="title-linux"><div class="section-number">CHAPTER 08</div><h2 id="title-linux">08. 組み込みLinuxとドライバの境界</h2><div class="learning"><div><span>この章で分かること</span>ユーザー空間・カーネル・Device Treeを区別し、他OSとの連携を整理できる。</div><div><span>前提知識</span>第3・5〜7章。</div></div>
 <p>組み込みLinuxは、Linuxカーネルとユーザー空間のプログラム等を製品向けに構成したものです。アプリから機器の物理アドレスを自由に操作する設計ではなく、ドライバやOSのインターフェースを通して資源・権限・共有を扱います。Androidの基盤にもLinuxがありますが、Android Framework等は追加の構成です。</p>
 <h3>1. ユーザー空間とカーネル空間</h3>
@@ -298,7 +479,40 @@ ls /sys/bus
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>アプリ→API→driver→機器の図へ、要求と通知の向きを描きます。RTOSとLinux間の起動・再接続契約を表にします。</p><p><b>実機・計測器あり：</b>読み取り情報と採用カーネル設定・Device Tree・BSP版を照合し、機器検出と利用可能の時刻を分けて観測します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. Device Treeはドライバの実装そのものですか？</summary><p>違います。ハードウェア記述であり、対応するdriverやbinding、実機条件が必要です。</p></details><details class="answer"><summary>Q2. /devに窓口があれば実機も利用可能ですか？</summary><p>別途確認が必要です。権限、接続、電源、現在の準備状態等が関わります。</p></details><details class="answer"><summary>Q3. processを再起動すると機器状態も必ず初期化されますか？</summary><p>保証されません。driverや別OS・実機の状態と復旧契約を確認します。</p></details><details class="answer"><summary>Q4. Linux側の送信成功はマイコン側の実動作完了ですか？</summary><p>契約次第です。送信受付・相手の受付・処理・物理結果を区別します。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://docs.kernel.org/driver-api/driver-model/overview.html" target="_blank" rel="noopener noreferrer">Linux：driver model ↗</a><a href="https://docs.kernel.org/devicetree/usage-model.html" target="_blank" rel="noopener noreferrer">Linux：Device Tree ↗</a><a href="https://docs.kernel.org/driver-api/gpio/using-gpio.html" target="_blank" rel="noopener noreferrer">Linux：GPIOを使う境界 ↗</a></div>
-<div class="chapter-bottom"><a href="#rtos">← 前へ</a><label class="complete"><input type="checkbox" data-complete="linux">この章を読了</label><a href="#communication">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-linux"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：部分I/Oと、割込み・再待機を区別する</h3><h4>追加された要求</h4><p>デバイスへ三バイト書く要求が、二バイト、割込み、一バイトに分かれる。一回のwrite相当処理で全部終わる前提を外す。</p><div class="engineering-contract"><b>先に定める契約</b><p>仮想I/Oでは正の戻りだけoffsetを進め、割込みは同じ位置で再試行、would-blockは待機へ戻す。ゼロは進捗なしとし、書込みの終了と断定しない。実errnoやカーネルを再現しない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">2、割込み、1</th><td>sent=3 calls=3</td><td>割込みで進捗を変えない。</td></tr><tr><th scope="row">1の後にwould-block</th><td>deferred-offset=1</td><td>進捗を残して待機へ戻る。</td></tr><tr><th scope="row">書込みの戻り値0</th><td>zero=no-progress</td><td>読取りのEOFと同じ意味にしない。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+enum Status { PROGRESS, COMPLETE, RETRY, DEFERRED, NO_PROGRESS, INVALID };
+enum MockResult { IO_INTERRUPTED=-1, IO_WOULD_BLOCK=-2 };
+static enum Status advance(size_t *offset,size_t total,int result) {
+    if(result==IO_INTERRUPTED) return RETRY;
+    if(result==IO_WOULD_BLOCK) return DEFERRED;
+    if(result&lt;0 || *offset&gt;total) return INVALID;
+    if(result==0) return NO_PROGRESS;
+    if((size_t)result&gt;total-*offset) return INVALID;
+    *offset+=(size_t)result; return *offset==total?COMPLETE:PROGRESS;
+}
+int main(void) {
+    const int results[]={2,IO_INTERRUPTED,1}; size_t offset=0;
+    for(size_t i=0;i&lt;3;++i) {
+        enum Status s=advance(&amp;offset,3,results[i]);
+        assert(s==(i==0?PROGRESS:i==1?RETRY:COMPLETE));
+    }
+    printf(&quot;sent=%zu calls=3\n&quot;,offset);
+    offset=1; assert(advance(&amp;offset,3,IO_WOULD_BLOCK)==DEFERRED);
+    printf(&quot;deferred-offset=%zu\n&quot;,offset);
+    assert(advance(&amp;offset,3,0)==NO_PROGRESS); puts(&quot;zero=no-progress&quot;); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>sent=3 calls=3
+deferred-offset=1
+zero=no-progress</code></pre></details><h4>読み解く：観測から設計へ</h4><p>戻った数を無視して先頭から再送すると二重データになり、要求数だけ進めると欠落する。正の戻り値が残りの範囲内かを検査し、進んだ分だけ保存する。</p><p>would-blockで忙しく再試行するとCPUを使い続ける。実LinuxではAPIの契約、EINTR、EAGAIN、poll等の待機、期限、終了と取消を確認する。このコードの負値はモデル専用であり実errnoと対応づけない。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">一回で全部送る前提</th><td>短いが部分I/Oで欠落や二重化を起こす。</td></tr><tr><th scope="row">進捗を持って継続</th><td>分割と待機を扱える。期限、終了と取消も管理する。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 負の戻りをsize_tへ変換してよいか。</summary><p><b>解答と理由：</b>いけない。エラーの分岐を先に行い、正の範囲だけ進捗へ反映する。</p></details><details class="engineering-answer"><summary>実習2. 部分書込み後に取消されたら。</summary><p><b>解答と理由：</b>送信済みの部分は取り消せない場合がある。上位プロトコルの要求境界や復旧を設計する。</p></details><details class="engineering-answer"><summary>実習3. /devの実装へそのまま当てはめられるか。</summary><p><b>解答と理由：</b>対象ドライバーとAPIの戻り値・待機・終了の契約を確認する。モデルの規則を一律に使わない。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#rtos">← 前へ</a><label class="complete"><input type="checkbox" data-complete="linux">この章を読了</label><a href="#communication">次へ →</a></div></section>
 <section class="chapter" id="communication" aria-labelledby="title-communication"><div class="section-number">CHAPTER 09</div><h2 id="title-communication">09. 通信・プロトコル・機器制御</h2><div class="learning"><div><span>この章で分かること</span>電気・転送・メッセージ・実行結果を分け、失敗と再送を設計できる。</div><div><span>前提知識</span>第2・3・6・7章。</div></div>
 <p>通信は、配線や電気信号、フレームの受渡し、メッセージの意味を重ねた仕組みです。「つながった」は、電源・リンク・アドレス・受信・相手の処理等のどの段階かを指定します。センサーのレジスタを読む場合も、別OSへ制御を依頼する場合も、下位の成功だけで用途の成功を決めません。</p>
 <h3>1. インターフェースを比較する</h3>
@@ -336,7 +550,43 @@ uint8_t crc8_smbus(const uint8_t *data, size_t size)
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. CANのACKで対象アプリの実行完了を確認できますか？</summary><p>できません。frameの受信に関する応答と、用途の処理完了は別です。</p></details><details class="answer"><summary>Q2. TCPのreadは送信時のwriteと同じ単位ですか？</summary><p>保証されません。byte streamの境界を長さ等のプロトコルで定義します。</p></details><details class="answer"><summary>Q3. CRCがあれば悪意のある改変も防げますか？</summary><p>防げません。認証・署名・MAC等は別の目的の仕組みです。</p></details><details class="answer"><summary>Q4. タイムアウトした要求は未実行と決めて再送できますか？</summary><p>決められません。作用済みの可能性や重複を考慮し、現在値と要求ID等を確認します。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf" target="_blank" rel="noopener noreferrer">NXP UM10204：I2Cの仕様 ↗</a><a href="https://docs.zephyrproject.org/latest/hardware/peripherals/uart.html" target="_blank" rel="noopener noreferrer">Zephyr：UART ↗</a><a href="https://docs.kernel.org/networking/can.html" target="_blank" rel="noopener noreferrer">Linux SocketCAN ↗</a><a href="https://docs.kernel.org/driver-api/usb/usb.html" target="_blank" rel="noopener noreferrer">Linux USB host API ↗</a><a href="https://docs.kernel.org/networking/operstates.html" target="_blank" rel="noopener noreferrer">Linux：network interfaceのoperstate ↗</a></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://www.smbus.org/specs/SMBus_3_2_20220112.pdf" target="_blank" rel="noopener noreferrer">SMBus 3.2：Packet Error Code（PEC） ↗</a></div>
-<div class="chapter-bottom"><a href="#linux">← 前へ</a><label class="complete"><input type="checkbox" data-complete="communication">この章を読了</label><a href="#power-state">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-communication"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：長さ、内容、CRCの順に境界を検査する</h3><h4>追加された要求</h4><p>受信フレームの長さ欄が壊れた。先にデータを読むパーサーを、範囲外参照しない順序へ変えたい。</p><div class="engineering-contract"><b>先に定める契約</b><p>フレームは長さ1バイト、データ、CRC8の構造。先に実長と長さ欄の整合を検査し、範囲が確定してからCRCを調べる。暗号学的認証ではない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">正常フレーム</th><td>valid=1</td><td>長さとCRCが一致。</td></tr><tr><th scope="row">データを一ビット変更</th><td>bad-crc=0</td><td>CRC不一致で拒否する。</td></tr><tr><th scope="row">長さ欄だけ200へ変更</th><td>bad-length=0</td><td>CRC計算前に拒否する。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static uint8_t crc8(const uint8_t *data,size_t n) {
+    uint8_t crc=0;
+    for(size_t i=0;i&lt;n;++i) {
+        crc=(uint8_t)(crc^data[i]);
+        for(unsigned bit=0;bit&lt;8u;++bit)
+            crc=(uint8_t)((crc&amp;0x80u)?(((unsigned)crc&lt;&lt;1)^0x07u):((unsigned)crc&lt;&lt;1));
+    }
+    return crc;
+}
+
+ static bool valid(const uint8_t *frame,size_t n) {
+     if(n&lt;2u) return false;
+     if((size_t)frame[0]!=n-2u) return false;
+     return crc8(frame,n-1u)==frame[n-1u];
+ }
+ int main(void) {
+     const uint8_t known[]=&quot;123456789&quot;;
+     assert(crc8(known,9)==0xf4u); /* CRC-8/SMBUS: poly 07, init 00, xorout 00 */
+     uint8_t frame[]={2,0x10,0x20,0}; frame[3]=crc8(frame,3);
+     assert(valid(frame,4)); printf(&quot;valid=%d\n&quot;,valid(frame,4));
+     frame[1]^=1u; assert(!valid(frame,4)); printf(&quot;bad-crc=%d\n&quot;,valid(frame,4));
+     frame[0]=200; assert(!valid(frame,4)); printf(&quot;bad-length=%d\n&quot;,valid(frame,4));
+     return 0;
+ }
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>valid=1
+bad-crc=0
+bad-length=0</code></pre></details><h4>読み解く：観測から設計へ</h4><p>先に長さ欄だけを信じて読むと、CRCの検査へ到達する前に範囲外アクセスする。最小長、長さ欄と実データ長、CRCの順で確認し、不足・余剰の扱いも定める。</p><p>CRC8は偶発的な破損を検出するための小さな例で、攻撃者による改ざんや再送を防がない。実用ではエンディアン、要求ID、再送・重複、フレームの同期回復、認証を用途に応じて追加する。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">長さ欄を先に信頼</th><td>簡単だが壊れた入力で範囲外を読む。</td></tr><tr><th scope="row">段階で妥当性を確認</th><td>解析範囲を限定できる。異常入力と同期回復の仕様が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. CRCが一致すれば正しい送信者か。</summary><p><b>解答と理由：</b>証明できない。認証や改ざん対策は別の仕組みを使う。</p></details><details class="engineering-answer"><summary>実習2. 受信がフレーム単位で返ると考えてよいか。</summary><p><b>解答と理由：</b>ストリームでは分割・連結され得る。蓄積と境界の検出、上限を設計する。</p></details><details class="engineering-answer"><summary>実習3. 既知のCRCベクターを試す理由は。</summary><p><b>解答と理由：</b>生成と検査が同じ誤りを共有しても相互に通る可能性がある。独立した既知値で規則を確認する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#linux">← 前へ</a><label class="complete"><input type="checkbox" data-complete="communication">この章を読了</label><a href="#power-state">次へ →</a></div></section>
 <section class="chapter" id="power-state" aria-labelledby="title-power-state"><div class="section-number">CHAPTER 10</div><h2 id="title-power-state">10. 電源管理・状態機械・異常復旧</h2><div class="learning"><div><span>この章で分かること</span>状態軸を分け、要求と観測を結び付けて休止・復帰を設計できる。</div><div><span>前提知識</span>第6〜9章。</div></div>
 <p>装置の状態は、一つのON／OFFだけでは表せません。CPUが動作中でも画面がOFF、通信は再接続中、センサー値は古い、という組合せがあり得ます。複数の軸を分け、用途が使える条件を組み合わせます。</p>
 <h3>1. 電源状態を階層で分ける</h3>
@@ -373,7 +623,27 @@ bool command_confirmed(Command c, Observation o)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>状態遷移表へ通信断・取消・同時eventを追加します。操作例で再接続と旧応答、期限超過後の応答を試します。</p><p><b>実機・計測器あり：</b>休止・復帰・終了の各段階を時刻付きで観測し、機器ごとに保持・失効・再初期化の条件を確認します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 画面OFFはCPUの休止完了ですか？</summary><p>違います。表示、CPU、OS、機器、装置の電源は別の軸です。</p></details><details class="answer"><summary>Q2. TIMEOUTした要求は未実行ですか？</summary><p>断定できません。期限までに確認できなかった状態です。作用済みの可能性と現在値を確認します。</p></details><details class="answer"><summary>Q3. 再接続前の成功応答を新しいREADYへ使えますか？</summary><p>使いません。世代と要求の有効性を照合し、必要な観測を取り直します。</p></details><details class="answer"><summary>Q4. 標準enumがなければ製品状態を定義できませんか？</summary><p>定義できます。OSの状態と製品側の状態を区別し、観測・遷移条件へ対応付けます。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://docs.kernel.org/admin-guide/pm/sleep-states.html" target="_blank" rel="noopener noreferrer">Linux：system sleepの種類 ↗</a><a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html" target="_blank" rel="noopener noreferrer">Zephyr：スレッドと停止・復帰の境界 ↗</a><a href="https://docs.kernel.org/driver-api/driver-model/overview.html" target="_blank" rel="noopener noreferrer">Linux：機器の管理モデル ↗</a></div>
-<div class="chapter-bottom"><a href="#communication">← 前へ</a><label class="complete"><input type="checkbox" data-complete="power-state">この章を読了</label><a href="#storage-update">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-power-state"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：復帰した時点と、出力を許可する時点を分ける</h3><h4>追加された要求</h4><p>スリープからCPUは復帰したが、バスと周辺機器は未準備だった。以前の出力を即座に再開しない状態機械にする。</p><div class="engineering-contract"><b>先に定める契約</b><p>抽象状態RESTORINGでは出力を禁止し、確認済みのREADYだけで許可する。許可フラグが実際の安全を証明するものではない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">復帰してRESTORING</th><td>restoring=0</td><td>まだ許可しない。</td></tr><tr><th scope="row">機器確認後READY</th><td>ready=1</td><td>モデルの利用条件を満たす。</td></tr><tr><th scope="row">故障を検出</th><td>fault=0</td><td>再び禁止する。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+enum State { SLEEP, RESTORING, READY, FAULT };
+static bool output_allowed(enum State s) { return s==READY; }
+int main(void) {
+    enum State state=SLEEP;
+    state=RESTORING; assert(!output_allowed(state)); printf(&quot;restoring=%d\n&quot;,output_allowed(state));
+    state=READY; assert(output_allowed(state)); printf(&quot;ready=%d\n&quot;,output_allowed(state));
+    state=FAULT; assert(!output_allowed(state)); printf(&quot;fault=%d\n&quot;,output_allowed(state)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>restoring=0
+ready=1
+fault=0</code></pre></details><h4>読み解く：観測から設計へ</h4><p>割込みで目が覚めることと、周辺機器の再初期化や状態確認が終わることは違う。前回の値を再利用するなら、その鮮度と復元順を定める。</p><p>復帰途中の失敗はFAULTへ移し、要求に合う安全側の出力を実機で検証する。ソフトウェアの禁止フラグだけに頼らず、回路や機器側の条件、ウォッチドッグ、リセット時の出力も評価する。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">起床と同時に出力</th><td>復帰は速いが未準備の機器へ操作する。</td></tr><tr><th scope="row">復帰準備を独立状態にする</th><td>禁止期間を検査できる。期限と失敗時の回復を設計する。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 復帰割込みだけで何が分かるか。</summary><p><b>解答と理由：</b>CPU側の復帰契機を示すが、全機器の準備や値の鮮度は証明しない。</p></details><details class="engineering-answer"><summary>実習2. 安全側の出力を一律にゼロにしてよいか。</summary><p><b>解答と理由：</b>用途による。危険分析や機器の意味に基づいて定め、実際の回路と出力を確認する。</p></details><details class="engineering-answer"><summary>実習3. 失敗注入をどこへ入れるか。</summary><p><b>解答と理由：</b>クロック・バス・周辺機器の初期化、観測の再取得、出力許可の直前等を分ける。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#communication">← 前へ</a><label class="complete"><input type="checkbox" data-complete="power-state">この章を読了</label><a href="#storage-update">次へ →</a></div></section>
 <section class="chapter" id="storage-update" aria-labelledby="title-storage-update"><div class="section-number">CHAPTER 11</div><h2 id="title-storage-update">11. 不揮発データ・電源断対策・更新</h2><div class="learning"><div><span>この章で分かること</span>保存確定、寿命、形式移行、イメージ更新と復旧の条件を整理できる。</div><div><span>前提知識</span>第3・5・9・10章。</div></div>
 <p>不揮発メモリは電源を切っても値を保持できますが、書込み途中の電源断、寿命、保存形式の変更まで自動で解決するものではありません。読めること、整合すること、新旧ソフトウェアが意味を解釈できることを分けます。</p>
 <h3>1. Flashの物理制約と保存単位</h3>
@@ -390,7 +660,54 @@ bool command_confirmed(Command c, Observation o)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>保存recordの形式と有効条件を定義し、各byte書込みの境界で停止した場合の選択結果を表にします。</p><p><b>実機・計測器あり：</b>専用の試験構成で、更新・保存の各段階を中断したときの起動、保持データ、復旧を検証します。実機やデータを破壊しない試験手順を先に定義します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 不揮発なら書込み中に電源が切れても常に新しい値を読めますか？</summary><p>保証できません。書込み単位、原子性、確定情報、復旧の設計が必要です。</p></details><details class="answer"><summary>Q2. CRCが一致すれば形式版も意味も正しいですか？</summary><p>別です。版・長さ・対象・内容の範囲等を検証します。</p></details><details class="answer"><summary>Q3. 旧ファームウェアへ戻せればデータ互換性も解決しますか？</summary><p>解決しません。新形式を旧版がどう扱うか別に設計します。</p></details><details class="answer"><summary>Q4. 全製品で同じA/B更新を採用できますか？</summary><p>容量、boot方式、Flash制約、復旧要件等が異なるため、方式を選びます。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://docs.zephyrproject.org/latest/hardware/peripherals/flash.html" target="_blank" rel="noopener noreferrer">Zephyr：Flash APIと条件 ↗</a><a href="https://docs.zephyrproject.org/latest/services/storage/nvs/nvs.html" target="_blank" rel="noopener noreferrer">Zephyr NVS：不揮発ストレージの実装例 ↗</a><a href="https://docs.mcuboot.com/design.html" target="_blank" rel="noopener noreferrer">MCUboot：更新・確定・復旧の設計例 ↗</a></div>
-<div class="chapter-bottom"><a href="#power-state">← 前へ</a><label class="complete"><input type="checkbox" data-complete="storage-update">この章を読了</label><a href="#debug-test">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-storage-update"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：電源断の後、どのコピーを採用できるか</h3><h4>追加された要求</h4><p>二つの保存領域へ交互に設定を記録する。新しいコピーの途中で電源が落ちても、前の有効な設定を選びたい。</p><div class="engineering-contract"><b>先に定める契約</b><p>モデルはコミット済みでCRCが一致する記録だけを候補にし、世代の大きい方を採用する。世代の周回は扱わず、実Flashの原子性は保証しない。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">新コピー未コミット</th><td>power-cut=4</td><td>旧世代を選ぶ。</td></tr><tr><th scope="row">新コピーの検査と確定が完了</th><td>committed=5</td><td>新世代を採用する。</td></tr><tr><th scope="row">新コピーの内容が破損</th><td>corrupt=4</td><td>旧値へ戻るモデル。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static uint8_t crc8(const uint8_t *data,size_t n) {
+    uint8_t crc=0;
+    for(size_t i=0;i&lt;n;++i) {
+        crc=(uint8_t)(crc^data[i]);
+        for(unsigned bit=0;bit&lt;8u;++bit)
+            crc=(uint8_t)((crc&amp;0x80u)?(((unsigned)crc&lt;&lt;1)^0x07u):((unsigned)crc&lt;&lt;1));
+    }
+    return crc;
+}
+
+ struct Record { uint32_t generation; uint8_t value,crc; bool committed; };
+ static uint8_t checksum(const struct Record *r) {
+     uint8_t encoded[5]={(uint8_t)r-&gt;generation,(uint8_t)(r-&gt;generation&gt;&gt;8),
+         (uint8_t)(r-&gt;generation&gt;&gt;16),(uint8_t)(r-&gt;generation&gt;&gt;24),r-&gt;value};
+     return crc8(encoded,5);
+ }
+ static bool valid_record(const struct Record *r) { return r-&gt;committed &amp;&amp; r-&gt;crc==checksum(r); }
+ static const struct Record *select_record(const struct Record *a,const struct Record *b) {
+     bool av=valid_record(a),bv=valid_record(b);
+     if(!av &amp;&amp; !bv) return NULL;
+     if(!av) return b;
+     if(!bv) return a;
+     return a-&gt;generation&gt;=b-&gt;generation?a:b;
+ }
+ int main(void) {
+     struct Record old={4,10,0,true}, next={5,20,0,false};
+     old.crc=checksum(&amp;old); next.crc=checksum(&amp;next);
+     assert(select_record(&amp;old,&amp;next)==&amp;old);
+     printf(&quot;power-cut=%&quot; PRIu32 &quot;\n&quot;,select_record(&amp;old,&amp;next)-&gt;generation);
+     next.committed=true; assert(select_record(&amp;old,&amp;next)==&amp;next);
+     printf(&quot;committed=%&quot; PRIu32 &quot;\n&quot;,select_record(&amp;old,&amp;next)-&gt;generation);
+     next.value^=1u; assert(select_record(&amp;old,&amp;next)==&amp;old);
+     printf(&quot;corrupt=%&quot; PRIu32 &quot;\n&quot;,select_record(&amp;old,&amp;next)-&gt;generation);
+     old.committed=false; assert(select_record(&amp;old,&amp;next)==NULL); return 0;
+ }
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>power-cut=4
+committed=5
+corrupt=4</code></pre></details><h4>読み解く：観測から設計へ</h4><p>データ、検査値、採用を示す記録を別の段階に分ける。新コピーが途中なら旧コピーを使い、両方有効なら新しい世代を選ぶ。構造体の生バイトをCRCへ渡すとパディング等に依存するため、例では明示的に符号化する。</p><p>実機では消去・書込単位、ビット遷移、途中書込の読出し、寿命、ECC、コミット値の書込みを検証する。CRCは認証ではない。更新では署名とロールバック防止、初回起動の確定も別に必要になる。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">一箇所へ上書き</th><td>単純で容量は小さいが、途中終了で旧値も失い得る。</td></tr><tr><th scope="row">有効コピーを選択</th><td>旧値を残せる。メタデータ、消耗と両方無効時の方針が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. CRCを構造体のsizeof範囲へそのまま計算してよいか。</summary><p><b>解答と理由：</b>パディング、エンディアン、形式の版で変わる。保存形式を明示する。</p></details><details class="engineering-answer"><summary>実習2. 世代番号が周回する場合は。</summary><p><b>解答と理由：</b>単純な大小比較を使えない。比較可能な更新幅と番号規則、初期化や復旧の方針を定める。</p></details><details class="engineering-answer"><summary>実習3. ホストの電源断モデルで実Flashの耐性を保証できるか。</summary><p><b>解答と理由：</b>できない。実電源断を各書込段階へ注入し、機器の保証と復旧結果を照合する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#power-state">← 前へ</a><label class="complete"><input type="checkbox" data-complete="storage-update">この章を読了</label><a href="#debug-test">次へ →</a></div></section>
 <section class="chapter" id="debug-test" aria-labelledby="title-debug-test"><div class="section-number">CHAPTER 12</div><h2 id="title-debug-test">12. デバッグ・計測・テスト・品質</h2><div class="learning"><div><span>この章で分かること</span>調査手段の限界を理解し、再現から修正確認まで証拠を残せる。</div><div><span>前提知識</span>第1〜11章。</div></div>
 <p>不具合調査では、観測した事実と仮説を分けます。GPIOが変わらない場合でも、アプリの要求、pin mux、周辺clock、driver、電源、実配線等に原因候補があります。どの境界まで正しかったかを証拠で狭めます。</p>
 <h3>1. デバッグ接続の構成</h3>
@@ -412,7 +729,27 @@ bool command_confirmed(Command c, Observation o)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>上の架空ログから、事実・未確認・仮説を3列に分けてください。計測する起点と終点を定義します。</p><p><b>実機・計測器あり：</b>ログ・デバッガ・波形の情報を同じ再現へ対応付け、デバッガ接続の有無で症状が変わるか比較します。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. breakpointで動けば実時間でも正常ですか？</summary><p>保証できません。停止によってタイミングや競合が変わります。継続実行中の観測も確認します。</p></details><details class="answer"><summary>Q2. GDB remote protocolとSWDは同じですか？</summary><p>別の層です。PC側のデバッガ接続と、プローブからCPUへ接続する方式を分けます。</p></details><details class="answer"><summary>Q3. ホストPCの単体試験で実機の電源復帰も保証できますか？</summary><p>できません。実機・BSP・電気・時間の条件を含む試験が必要です。</p></details><details class="answer"><summary>Q4. 観測値がないことだけで機器故障と断定できますか？</summary><p>断定できません。観測系、取得範囲、経路、時刻、機器の条件を切り分けます。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://sourceware.org/gdb/current/onlinedocs/gdb.html/Remote-Debugging.html" target="_blank" rel="noopener noreferrer">GDB：remote debugging ↗</a><a href="https://openocd.org/doc/html/Debug-Adapter-Configuration.html" target="_blank" rel="noopener noreferrer">OpenOCD：debug adapterの構成 ↗</a><a href="https://arm-software.github.io/CMSIS_6/latest/Core/group__NVIC__gr.html" target="_blank" rel="noopener noreferrer">Arm：faultや例外の基盤 ↗</a></div>
-<div class="chapter-bottom"><a href="#storage-update">← 前へ</a><label class="complete"><input type="checkbox" data-complete="debug-test">この章を読了</label><a href="#security-process">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-debug-test"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：タイマーの周回を、経過時間の計算へ含める</h3><h4>追加された要求</h4><p>長時間稼働後だけタイムアウトが壊れる。32ビットの単調カウンターが周回する境界を試験したい。</p><div class="engineering-contract"><b>先に定める契約</b><p>uint32_tの剰余差を用い、経過が一周未満と分かる範囲で比較する。時計の停止、再起動、複数周回は別に扱う。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">fffffff0から00000020</th><td>elapsed=48</td><td>一回の周回を越えた差。</td></tr><tr><th scope="row">期限32</th><td>timed-out=1</td><td>定義した範囲で判定する。</td></tr><tr><th scope="row">開始と現在が同じ</th><td>same=0</td><td>本当に零か複数周回かは前提が必要。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static uint32_t elapsed(uint32_t start,uint32_t now) { return now-start; }
+int main(void) {
+    uint32_t delta=elapsed(UINT32_C(0xfffffff0),UINT32_C(0x20));
+    assert(delta==48u);
+    printf(&quot;elapsed=%&quot; PRIu32 &quot;\n&quot;,delta);
+    printf(&quot;timed-out=%d\n&quot;,delta&gt;=32u);
+    printf(&quot;same=%&quot; PRIu32 &quot;\n&quot;,elapsed(10,10)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>elapsed=48
+timed-out=1
+same=0</code></pre></details><h4>読み解く：観測から設計へ</h4><p>現在値が開始値より小さくても、周回した後なら経過時間は正である。符号付きへ変換したり、開始値に期限を足して単純比較すると、境界付近で意味を誤る場合がある。</p><p>この差の計算が成立するのは、二時点が同じ時計で一周未満という前提があるため。長い休止、周回回数、再起動後の基準を含め、計測の条件と取得方法を決める。ログで時間を使う場合も時計の種類を記す。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">絶対値を単純比較</th><td>短い動作では通っても周回で壊れ得る。</td></tr><tr><th scope="row">剰余差と範囲を明示</th><td>境界を試験できる。周回回数と時計の寿命の仮定が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. 同じ値なら必ず経過零か。</summary><p><b>解答と理由：</b>一周以上を許すなら断定できない。観測間隔の上限や周回数の拡張を設計する。</p></details><details class="engineering-answer"><summary>実習2. 異なる時計の値を引いてよいか。</summary><p><b>解答と理由：</b>よくない。基準と単位、停止・再起動の条件を確認する。</p></details><details class="engineering-answer"><summary>実習3. 実機の計測へ何を残すか。</summary><p><b>解答と理由：</b>時計の型、分解能、周回周期、取得の原子性、測定区間と取得による負荷を記録する。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#storage-update">← 前へ</a><label class="complete"><input type="checkbox" data-complete="debug-test">この章を読了</label><a href="#security-process">次へ →</a></div></section>
 <section class="chapter" id="security-process" aria-labelledby="title-security-process"><div class="section-number">CHAPTER 13</div><h2 id="title-security-process">13. セキュリティ・開発工程・総合演習</h2><div class="learning"><div><span>この章で分かること</span>保護の目的と要求・設計・試験の関係を整理して基本設計をまとめられる。</div><div><span>前提知識</span>第1〜12章。</div></div>
 <p>製品の品質はコードだけでは決まりません。何を要求し、どの設計で満たし、どの証拠で確認したかをつなげます。機能安全、信頼性、セキュリティは関係しますが目的が異なるため、同じ「安全」の言葉で一つにまとめません。</p>
 <h3>1. セキュリティの目的を分ける</h3>
@@ -431,7 +768,31 @@ bool command_confirmed(Command c, Observation o)
 <div class="exercise"><h3>手を動かして確かめる</h3><p><b>PCのみ：</b>総合演習の6種類の成果物を作り、要求の一つを変更した場合に影響する箇所を追います。</p><p><b>実機・計測器あり：</b>実機試験で確認できた範囲と未確認を分け、版と証拠をそろえてレビューします。</p></div>
 <div class="quiz"><h3>理解を確かめる</h3><details class="answer"><summary>Q1. 署名したイメージは内容も暗号化されていますか？</summary><p>署名と暗号化は別です。改変・主体の確認と秘匿の目的を分けます。</p></details><details class="answer"><summary>Q2. Secure Bootだけで製品の全ての動作が安全ですか？</summary><p>保証できません。起動後の権限、処理、データ、故障対策等は別に設計・検証します。</p></details><details class="answer"><summary>Q3. コード修正だけで変更管理は完了ですか？</summary><p>要求・設計・interface・試験・版・運用への影響を確認し、関係する証拠を更新します。</p></details><details class="answer"><summary>Q4. この教材を学べば機能安全規格へ適合したことになりますか？</summary><p>なりません。規格の適用範囲・工程・製品の証拠等を別に評価する必要があります。</p></details></div>
 <div class="source-links"><b>一次資料・適用先</b><a href="https://www.nist.gov/publications/platform-firmware-resiliency-guidelines" target="_blank" rel="noopener noreferrer">NIST：firmwareの保護・検出・復旧 ↗</a><a href="https://csrc.nist.gov/projects/ssdf" target="_blank" rel="noopener noreferrer">NIST：Secure Software Development Framework ↗</a><a href="https://assets.iec.ch/public/acos/IEC%2061508%20%26%20Functional%20Safety-2022.pdf" target="_blank" rel="noopener noreferrer">IEC：IEC 61508とfunctional safetyの概要（PDF） ↗</a></div>
-<div class="chapter-bottom"><a href="#debug-test">← 前へ</a><label class="complete"><input type="checkbox" data-complete="security-process">この章を読了</label><a href="#glossary">次へ →</a></div></section>
+<!-- ENGINEERING-WORKBOOK-START --><section class="engineering-workbook" id="workbook-security-process"><p class="engineering-kicker">DESIGN WORKBOOK / EMBEDDED</p><h3>設計検証ノート：検証済みでも、製品と版の条件を外してはいけない</h3><h4>追加された要求</h4><p>更新候補に正しい署名があっても、別製品用や古い版なら適用しない。セキュリティの受入条件を分解する。</p><div class="engineering-contract"><b>先に定める契約</b><p>モデルのverifiedは信頼した検証器の結果を入力する前提。署名検証を実装せず、製品一致と最低版の規則だけを検査する。</p></div><h4>実行前に予想する</h4><p>以下の入力は説明用の架空ケースです。なぜその結果になるか、コードを開く前に一行ずつ説明してください。表は狭い画面で横スクロールできます。</p><div class="engineering-table" tabindex="0" role="region" aria-label="入力と期待結果の表"><table><thead><tr><th scope="col">入力・条件</th><th scope="col">期待する結果・観点</th><th scope="col">検証する理由</th></tr></thead><tbody><tr><th scope="row">検証済み・製品一致・版4以上</th><td>allowed=1</td><td>このモデルの条件を満たす。</td></tr><tr><th scope="row">未検証</th><td>unverified=0</td><td>認証前提を満たさない。</td></tr><tr><th scope="row">正規版だが古い版、または別製品</th><td>rollback=0 / wrong-product=0</td><td>認証後も適用条件を検査する。</td></tr></tbody></table></div><details class="engineering-code"><summary>検証コードと標準出力を開く（C11 / main.c）</summary><p>標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。</p><p>別のフォルダーに保存し、次のコマンドで実行します。アサーションは有効にした状態で使います。</p><pre tabindex="0" role="region" aria-label="ホスト検証の実行方法"><code>cc -std=c11 -Wall -Wextra -Werror -pedantic main.c -o experiment
+./experiment</code></pre><pre tabindex="0" role="region" aria-label="独立して実行できるホストモデル"><code>#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;inttypes.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+static bool allowed(bool verified,bool product_matches,uint32_t version,uint32_t minimum) {
+    return verified &amp;&amp; product_matches &amp;&amp; version&gt;=minimum;
+}
+int main(void) {
+    assert(allowed(true,true,4,4));
+    assert(!allowed(false,true,4,4) &amp;&amp; !allowed(true,true,3,4) &amp;&amp; !allowed(true,false,4,4));
+    printf(&quot;allowed=%d\n&quot;,allowed(true,true,4,4));
+    printf(&quot;unverified=%d\n&quot;,allowed(false,true,4,4));
+    printf(&quot;rollback=%d\n&quot;,allowed(true,true,3,4));
+    printf(&quot;wrong-product=%d\n&quot;,allowed(true,false,4,4)); return 0;
+}
+</code></pre><h4>このモデルの標準出力</h4><pre tabindex="0" role="region" aria-label="ホストモデルの標準出力"><code>allowed=1
+unverified=0
+rollback=0
+wrong-product=0</code></pre></details><h4>読み解く：観測から設計へ</h4><p>署名が有効でも、対象製品や用途へ結び付いていなければ適用してよいとは限らない。古い正規版の再投入も、許可するかを要件として定める。ハッシュの一致だけを送信元の認証と混同しない。</p><p>真偽値を外部のメタデータからそのまま信用してはいけない。実用では信頼の起点、署名対象、鍵の管理と失効、ロールバック防止の保存、更新失敗時の復旧を確認する。モデル合格を暗号の正しさや製品の安全性の証明へ読み替えない。</p><h4>別の案なら何が変わるか</h4><div class="engineering-table" tabindex="0" role="region" aria-label="設計案とコストの比較"><table><thead><tr><th scope="col">設計案</th><th scope="col">選ぶ理由とコスト</th></tr></thead><tbody><tr><th scope="row">ハッシュだけで判定</th><td>破損検知には使えても、正規の発行者や適用可否を証明しない。</td></tr><tr><th scope="row">認証と適用条件を分離</th><td>どの根拠で許可するかを説明できる。鍵と版の永続管理が必要。</td></tr></tbody></table></div><h4>自分で判断する：三つの実習問題</h4><p>解答を開く前に、守る契約・設計の変更箇所・追加する実機試験を書いてください。以下はこの前提に基づく解答例です。</p><details class="engineering-answer"><summary>実習1. verifiedを受信データから読んでよいか。</summary><p><b>解答と理由：</b>いけない。信頼できる検証手順の結果でなければ、攻撃者が許可値を作れてしまう。</p></details><details class="engineering-answer"><summary>実習2. 最低版を通常の設定だけに保存すればよいか。</summary><p><b>解答と理由：</b>改ざん・巻戻しや電源断を含む要件による。信頼する保存と更新方法を定める。</p></details><details class="engineering-answer"><summary>実習3. 開発工程へ必要な検証は。</summary><p><b>解答と理由：</b>脅威・故障の想定、鍵と依存の管理、正常・異常・電源断の試験、更新と復旧の記録を追跡可能にする。</p></details><p class="engineering-scope">標準C11で動くホスト上の検証例です。レジスター、実割込み、DMA、RTOS、実ストレージを操作しません。 合格した出力を、対象機の性能・安全性・互換性の保証へ読み替えないでください。</p><p><a href="#sources">一次資料と適用範囲を確認する</a></p></section><!-- ENGINEERING-WORKBOOK-END --><div class="chapter-bottom"><a href="#debug-test">← 前へ</a><label class="complete"><input type="checkbox" data-complete="security-process">この章を読了</label><a href="#glossary">次へ →</a></div></section>
 <section class="chapter" id="glossary"><h2>用語集：名前から仕組みへ戻る</h2><label class="search-label" for="glossary-query">用語・説明から検索</label><input class="search-input" id="glossary-query" type="search" placeholder="例：DMA、割込み、timeout" autocomplete="off"><p class="small" id="glossary-count" role="status">85語</p><div class="table-scroll" tabindex="0" role="region" aria-label="用語集"><table><thead><tr><th scope="col">用語</th><th scope="col">意味</th><th scope="col">詳しい章</th></tr></thead><tbody id="glossary-rows"><tr><th scope="row">組み込みシステム</th><td>機器の目的を実現するコンピューターとソフトウェアの構成。</td><td><a href="#overview">第1章</a></td></tr><tr><th scope="row">MCU／SoC</th><td>CPU・メモリ・周辺等を集積するチップ。名称だけで性能やOSを決めない。</td><td><a href="#overview">第1章</a></td></tr><tr><th scope="row">ベアメタル</th><td>一般的なOSを使わず実行順序・資源を扱う構成。</td><td><a href="#overview">第1章</a></td></tr><tr><th scope="row">RTOS</th><td>タスクや実行の優先関係等を管理するリアルタイムOS。期限保証は設計・検証が必要。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">ファームウェア</th><td>機器へ組み込むソフトウェア。OSを含む構成もある。</td><td><a href="#overview">第1章</a></td></tr><tr><th scope="row">リアルタイム性</th><td>定義した期限内に必要な結果を得る性質。平均的な速さとは別。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">GPIO／pin mux</th><td>汎用入出力／端子の機能割当。基板端子番号とは区別。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">pull-up／pull-down</th><td>未駆動時等の信号をHigh／Low側へ定める抵抗。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">open-drain</th><td>片側を駆動する出力方式の一つ。共有線や外付け抵抗を確認。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">絶対最大定格</th><td>通常動作の推奨条件とは異なる、超えてはならない限界仕様。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">clock／PLL</th><td>動作の時間基準／周波数生成等の仕組み。安定・分周を確認。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">reset／brownout</th><td>初期化の契機／電源電圧低下に関する状態。原因と保持範囲を記録。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">ADC／DAC</th><td>アナログ入力の数値化／数値からアナログ出力を生成。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">分解能／精度</th><td>細かさ／実際の値との一致の程度等。ADCのbit数だけで精度を決めない。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">PWM／duty</th><td>周期的な出力／周期に対するHigh時間等の割合。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">チャタリング</th><td>接点操作で複数の短い変化が生じる現象。実測と期限から対策。</td><td><a href="#hardware">第2章</a></td></tr><tr><th scope="row">メモリマップ</th><td>アドレスとRAM・Flash・機器等の対応。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">stack／heap</th><td>呼出し等の実行用領域／実行時確保の領域。用途と寿命を管理。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">.data／.bss</th><td>初期値を持つ静的データ／ゼロ初期化する領域等のsection。</td><td><a href="#boot-build">第5章</a></td></tr><tr><th scope="row">エンディアン</th><td>複数byteの値を並べる順序。通信形式とCPUを区別。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">アラインメント／ABI</th><td>配置境界の条件／呼出しやデータ配置等の処理系の約束。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">MMIO</th><td>メモリアドレス空間を通じて機器レジスタへアクセスする方式。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">MMU／MPU</th><td>アドレス変換や保護等／領域の保護・属性等を担う機構。機能差を確認。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">cache／coherency</th><td>高速化のための保持／複数の参照主体での整合。同期が必要な構成がある。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">DMA／IOMMU</th><td>CPUの逐次コピーを介さない転送等／機器側アドレスの変換・保護等。</td><td><a href="#memory">第3章</a></td></tr><tr><th scope="row">volatile</th><td>対象へのアクセスを処理系の規則で扱う修飾。排他・cache整合性とは別。</td><td><a href="#language">第4章</a></td></tr><tr><th scope="row">未定義動作</th><td>言語仕様が結果の要件を定めない動作。最適化で症状が変わることもある。</td><td><a href="#language">第4章</a></td></tr><tr><th scope="row">atomic／memory order</th><td>不可分操作等／並行実行での可視性と順序の契約。</td><td><a href="#language">第4章</a></td></tr><tr><th scope="row">所有権／寿命</th><td>誰がデータや資源を管理するか／有効に使える期間。</td><td><a href="#language">第4章</a></td></tr><tr><th scope="row">RAII</th><td>オブジェクトの寿命へ資源の取得・解放を対応付けるC++の考え方。</td><td><a href="#language">第4章</a></td></tr><tr><th scope="row">断片化／固定pool</th><td>空き領域が分かれる状況／一定の枠で管理する領域確保方式。</td><td><a href="#language">第4章</a></td></tr><tr><th scope="row">クロスコンパイル</th><td>開発PCとは異なる対象CPU・環境向けに生成すること。</td><td><a href="#boot-build">第5章</a></td></tr><tr><th scope="row">リンカスクリプト</th><td>sectionの配置や出力内容等を制御する定義。</td><td><a href="#boot-build">第5章</a></td></tr><tr><th scope="row">ELF／map</th><td>シンボル・命令等を持つ形式／配置・サイズ等を調べる情報。</td><td><a href="#boot-build">第5章</a></td></tr><tr><th scope="row">BSP／startup</th><td>ボード向けの実装・設定／main等へ進むための初期処理。</td><td><a href="#boot-build">第5章</a></td></tr><tr><th scope="row">bootloader</th><td>起動候補の選択・検証・引渡し等を行うソフトウェア。</td><td><a href="#boot-build">第5章</a></td></tr><tr><th scope="row">IRQ／ISR</th><td>割込み要求／割込みに応じて実行するハンドラ。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">NVIC／vector</th><td>Cortex-Mの割込み管理機構／ハンドラ等へ対応付ける情報。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">latency／jitter</th><td>所定の開始等までの遅延／周期・時刻等のばらつき。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">deadline／WCET</th><td>完了すべき期限／最悪実行時間。待ちを含む応答時間とは区別。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">ポーリング</th><td>定期的に状態を読み、変化を検出する方式。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">tick／wrap</th><td>OS等の時間刻み／有限幅の値が一周すること。観測間隔の条件が必要。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">watchdog</th><td>所定の応答等が失われたことを検出する仕組み。feed条件を設計。</td><td><a href="#interrupts">第6章</a></td></tr><tr><th scope="row">スーパーループ</th><td>処理をループで順に進める実行構成。長い待ちを評価。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">task／context switch</th><td>独立した実行単位／実行対象を替える際の保存・復元等。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">READY／RUNNING／BLOCKED</th><td>実行可能／実行中／条件待ちの代表的な状態名。OSで差がある。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">preemption／starvation</th><td>実行中の処理を切り替えること／実行機会を得られない状況。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">queue／FIFO</th><td>データ受渡しの仕組み／先入れ先出しの順序。容量と満杯時を定義。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">semaphore／mutex</th><td>通知・資源数等の同期／所有者を持つ排他等。仕様差を確認。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">critical section</th><td>共有状態等を整合させるため保護する実行区間。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">優先度逆転／継承</th><td>共有資源待ちで優先関係が崩れる状況／待ちを抑える仕組みの一つ。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">デッドロック</th><td>循環待ち等により処理が先へ進めなくなる状況。</td><td><a href="#rtos">第7章</a></td></tr><tr><th scope="row">user／kernel空間</th><td>アプリ等の実行領域／OS中核の領域。アクセスと保護の境界。</td><td><a href="#linux">第8章</a></td></tr><tr><th scope="row">system call／IPC</th><td>OSへ機能を要求する入口／プロセス間で通信する仕組み。</td><td><a href="#linux">第8章</a></td></tr><tr><th scope="row">Device Tree／driver</th><td>ハードウェアの記述／機器の機能をOSへ接続する実装。</td><td><a href="#linux">第8章</a></td></tr><tr><th scope="row">root filesystem</th><td>起動後のファイル構成の基盤。可変データや更新単位を分ける。</td><td><a href="#linux">第8章</a></td></tr><tr><th scope="row">UART／baud</th><td>非同期通信の方式／symbolの速度。data・parity・stop等も設定。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">I2C／ACK／NACK</th><td>SCL・SDA等の通信／確認応答／否定または最終byte等の応答。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">SPI／CPOL／CPHA</th><td>同期転送方式／clock極性／dataを扱う位相等の設定。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">CAN／bus-off</th><td>車載等で使う通信／controllerのエラー管理に関する状態。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">Ethernet／MAC／PHY</th><td>frameの伝送方式／送受信制御／物理信号側の機能。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">USB／enumeration</th><td>hostが管理する接続方式／機器の機能を認識する処理。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">frame／framing</th><td>伝送の単位／byte stream等から境界を識別する方法。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">CRC／認証</th><td>誤り検出／主体や改変等の信頼を確認する仕組み。目的が異なる。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">再送／冪等性</th><td>要求を再び送ること／重複で作用が変わらない性質等。</td><td><a href="#communication">第9章</a></td></tr><tr><th scope="row">timeout／cancel</th><td>期限内に確認できない判定／取消要求。未実行の保証とは別。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">世代／request ID</th><td>接続・起動等の有効範囲／個別要求の識別。古い結果を排除。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">希望値／観測値</th><td>望む設定／実際に取得した値。受付・反映・物理確認を区別。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">UNKNOWN／STALE</th><td>未確認／古くなった観測。正常として扱わない。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">suspend／resume</th><td>休止への移行／復帰。保持内容と再評価の条件は構成依存。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">DEGRADED</th><td>一部の機能を制限して動作する状態。製品で条件を定義。</td><td><a href="#power-state">第10章</a></td></tr><tr><th scope="row">erase／program</th><td>消去／書込み。単位・順序・電源断条件等を確認。</td><td><a href="#storage-update">第11章</a></td></tr><tr><th scope="row">wear leveling</th><td>書込み・消去の偏りを抑える管理。寿命の条件も必要。</td><td><a href="#storage-update">第11章</a></td></tr><tr><th scope="row">commit／migration</th><td>保存等を確定する境界／データ形式等の移行。</td><td><a href="#storage-update">第11章</a></td></tr><tr><th scope="row">A/B／confirm／revert</th><td>候補を分ける更新／新しい版の確定／旧版等への復旧の例。</td><td><a href="#storage-update">第11章</a></td></tr><tr><th scope="row">JTAG／SWD</th><td>CPU等のdebug機能へ接続する方式。GDB protocolとは別。</td><td><a href="#debug-test">第12章</a></td></tr><tr><th scope="row">GDB／OpenOCD</th><td>デバッガ／プローブ・ターゲット等へ接続するサーバーの例。</td><td><a href="#debug-test">第12章</a></td></tr><tr><th scope="row">breakpoint／watchpoint</th><td>実行箇所／所定のアクセス等に応じた停止・検知。</td><td><a href="#debug-test">第12章</a></td></tr><tr><th scope="row">trace／dump</th><td>実行等の時系列情報／所定時点の状態の保存。取得範囲と欠落を確認。</td><td><a href="#debug-test">第12章</a></td></tr><tr><th scope="row">oscilloscope／logic analyzer</th><td>電圧波形等／デジタル信号・protocol等を観測する計測器。</td><td><a href="#debug-test">第12章</a></td></tr><tr><th scope="row">Secure Boot／信頼の起点</th><td>信頼する起動内容の検証／その信頼を支える基盤。</td><td><a href="#security-process">第13章</a></td></tr><tr><th scope="row">署名／暗号化／鍵管理</th><td>改変等の検証／秘匿／鍵の生成・保管・更新・廃棄等。</td><td><a href="#security-process">第13章</a></td></tr><tr><th scope="row">rollback protection</th><td>古い脆弱な版等へ戻すことを制御する仕組み。復旧と整合が必要。</td><td><a href="#security-process">第13章</a></td></tr><tr><th scope="row">機能安全／セキュリティ</th><td>故障等に起因する危険への対策／攻撃・不正利用等への対策。</td><td><a href="#security-process">第13章</a></td></tr><tr><th scope="row">トレーサビリティ</th><td>要求・設計・実装・試験・証拠の関係を追えること。</td><td><a href="#security-process">第13章</a></td></tr></tbody></table></div></section>
 <section class="chapter" id="sources"><h2>一次資料と適用範囲</h2><p>作成：2026-11-01／v1.0。公式文書を参照した学習用の説明です。Web文書は更新されるため、実装前にCPU・OS・BSP・ツールの採用版へ照合してください。C11のN1570は公開された委員会草案であり、購入した正式規格本文と同一の扱いにはしません。</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="横スクロールできる表"><table><thead><tr><th scope="col">範囲</th><th scope="col">今回確認すること</th><th scope="col">残る確認</th></tr></thead><tbody><tr><th scope="row">本文と図</th><td>章・用語・リンク・SVG構造・対象と前提</td><td>この環境ではChromeの描画起動に失敗。実ブラウザ・実スマートフォンでの表示と読みやすさは未確認</td></tr><tr><th scope="row">PC向けC／C++</th><td>Apple clang 21.0.0（arm64 macOS）で掲載6個のC例とC++17例をコンパイル。AddressSanitizer／UndefinedBehaviorSanitizer付きで境界値・並行実行を確認</td><td>ターゲットのABI、最適化、OS、割込み、実行時間</td></tr><tr><th scope="row">操作機能</th><td>Node.jsの模擬DOMで読了保存・用語検索・印刷復元・21図の表示切替・状態演習のロジックを確認</td><td>実ブラウザの操作、端末間の差</td></tr><tr><th scope="row">機器とOS</th><td>公式資料に基づく構成と確認項目</td><td>実機の信号・電源・Flash・通信・復帰等は未検証</td></tr><tr><th scope="row">未完成・説明用の例</th><td>GNU ld断片、架空ログ、状態名を明示</td><td>ボード・driver・RTOSの完成プロジェクトではない</td></tr></tbody></table></div>

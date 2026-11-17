@@ -72,6 +72,7 @@ CSS+=r'''
 '''
 
 CSS+=PRESENTATION_CSS+FULLSCREEN_CSS+HOME_CSS+SPEECH_CSS
+PLAYER_PALETTE=r'''@media screen and (prefers-color-scheme:dark){:root{color-scheme:dark;--paper:#101b23;--ink:#e5efec;--muted:#b6cbd0;--line:#45636d;--accent:#9addc3}.transcript,.fallback article{background:#162630;color:var(--ink)}}'''
 JS=r'''
 (()=>{'use strict';
  const DATA=__DATA__,STEP=6,DURATION=24,TOTAL=DATA.length*DURATION,KEY='android-animated-slides-player-v1';
@@ -140,7 +141,7 @@ def build():
     buttons=''.join(f'<button type="button" data-step="{i}" aria-label="説明{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4))
     data=json.dumps(SLIDES,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
     directed_js=JS.replace('__HOME_JS__',HOME_JS).replace('__FULLSCREEN_JS__',FULLSCREEN_JS).replace('__DIRECTION_JS__',DIRECTION_JS.replace('__MODULES__',json.dumps(MODULES,ensure_ascii=False))).replace('__DATA__',data)
-    result=TEMPLATE.replace('__CSS__',CSS).replace('__FALLBACK__','\n'.join(fallback)).replace('__STEP_BUTTONS__',buttons).replace('__JS__',directed_js).replace('__CASE_HTML__',CASE_HTML).replace('__OPENING__',OPENING).replace('__RECAP__',RECAP).replace('__HOME_HEAD__',HOME_HEAD).replace('__HOME_GUIDE__',HOME_GUIDE).replace('__TRANSFER_HTML__',TRANSFER_HTML).replace('__SPEECH_CONTROLS__',SPEECH_CONTROLS).replace('__SPEECH_SETTINGS__',SPEECH_SETTINGS)
+    result=TEMPLATE.replace('__CSS__',CSS+PLAYER_PALETTE).replace('__FALLBACK__','\n'.join(fallback)).replace('__STEP_BUTTONS__',buttons).replace('__JS__',directed_js).replace('__CASE_HTML__',CASE_HTML).replace('__OPENING__',OPENING).replace('__RECAP__',RECAP).replace('__HOME_HEAD__',HOME_HEAD).replace('__HOME_GUIDE__',HOME_GUIDE).replace('__TRANSFER_HTML__',TRANSFER_HTML).replace('__SPEECH_CONTROLS__',SPEECH_CONTROLS).replace('__SPEECH_SETTINGS__',SPEECH_SETTINGS)
     target=ROOT/'android/slides/index.html';target.parent.mkdir(parents=True,exist_ok=True);target.write_text(result)
     print(f'Verified {len(SLIDES)} slides / {len(SLIDES)*4} explanations and original chapter links; {len(result.encode()):,} bytes.')
 if __name__=='__main__':build()

@@ -12,10 +12,11 @@ from android_slide_home_app import HEAD,GUIDE,JS as HOME_JS,head_for,guide_for
 from android_progress_transfer import HTML as TRANSFER_HTML,JS as TRANSFER_JS
 from generate_android_app_assets import manifest_for
 from update_android_app_entries import strip_managed_head
+from engineering_workbooks import android as workbooks,render as render_workbook,figure as workbook_figure,CSS as WORKBOOK_CSS
 ROOT=Path(__file__).resolve().parent.parent
 OUT=ROOT/'android/deep-dives'
 E=lambda s:html.escape(str(s),quote=True)
-NAMES=['課題と前提','内部の仕組み','実装の焦点','失敗からの改善','観測と切り分け','理解度・総合演習']
+NAMES=['課題と前提','内部の仕組み','実装の焦点','失敗からの改善','観測と切り分け','設計レビュー・検証実習']
 ACCENTS=['#74d9ff','#c4f36b','#c6a5ff','#f7bd7b','#6de0c3','#c4f36b']
 LAYERS={'layers','boot','overview'}
 MATRICES={'power','network-security','aaos-detail','data-practice','test-lab','os-integration','capstone'}
@@ -31,6 +32,7 @@ EXTRA_CSS=r'''
 
 def figure(c,unit,static=False):
     p=('static' if static else 'live')+'-'+c['id']+'-'+str(unit)
+    if unit==5:return workbook_figure(workbooks.WORKBOOKS[c['id']]),'設計検証：要求 → 予想 → ホストモデルの出力 → 代案'
     if unit in (2,4):
         parts=[]
         for i,(label,value,_) in enumerate(c['code'] if unit==2 else c['observe']):
@@ -98,29 +100,33 @@ def detail(c,unit,static=False):
     if unit==4:
         pre+='<h3>観測結果をどう読むか</h3><ol>'+''.join(f'<li><b>{E(label)}</b><pre tabindex="0"><code>{E(value)}</code></pre><p>{E(reason)}</p></li>' for label,value,reason in c['observe'])+'</ol><p>SERIALとPACKAGEは対象の値へ置き換えます。コマンドはこのページから実行されません。実行可否と出力は端末・権限・ビルドに依存します。</p>'
     if unit==5:
+        pre+='<p>動画の字幕と読み上げは各段階の要点です。詳しい前提・理由・代案と検証コードは、この下の設計検証ノートで確認してください。</p>'
         pre+='<h3>総合演習：根拠を添えて答える</h3>'+''.join((f'<section><h4>Q{i+1}. {E(q)}</h4><p>{E(a)}</p></section>' if static else f'<details><summary>Q{i+1}. {E(q)}</summary><p>{E(a)}</p></details>') for i,(q,a) in enumerate(c['qa']))
         pre+='<p>手元の要件に合わせて状態・入力・期待する証拠を一組書いてください。製品条件を変えた時に何を再確認するかも残します。</p>'
+        pre+=render_workbook(workbooks.WORKBOOKS[c['id']],'android',static=static)
     pre+='<h3>元の章と参考資料</h3><ul><li><a href="../../guide/index.html#'+E(c['id'])+'">通常教材の対応する章</a></li>'+''.join('<li><a href="'+E(url)+'">'+E(label)+'</a></li>' for url,label in c['refs'])+'</ul>'
     return '<div class="deep-detail">'+pre+'</div>'
 
 def slides(c):
     out=[];m=c['mechanism'];co=c['code'];f=c['failure'];o=c['observe'];qa=c['qa']
+    lab=workbooks.WORKBOOKS[c['id']]
     payloads=[
         [('症状',c['problem']),('前提','対象のOS・製品・権限をそろえ、本文に示す前提を確認する。'),('分離',m[0][1]),('到達点',c['goal'])],
-        m,[(x[0],x[2]) for x in co],f,[(x[0],x[2]) for x in o],[(q,a) for q,a in qa],
+        m,[(x[0],x[2]) for x in co],f,[(x[0],x[2]) for x in o],list(zip(['変更要求','契約と予想','観測の意味','代案と判断'],[text.split('。',1)[0]+'。' for text in [lab['request'],lab['contract'],*lab['reading']]])),
     ]
-    hooks=[qa[0][0],'役割と境界の違いを説明する','実装で守るべき条件は？',qa[2][0],'証拠から、どこまで言える？','条件が変わっても説明できる？']
+    hooks=[qa[0][0],'役割と境界の違いを説明する','実装で守るべき条件は？',qa[2][0],'証拠から、どこまで言える？',lab['title']]
     for unit,rows in enumerate(payloads):
-        steps=[x[1] if unit!=5 else 'Q'+str(i+1)+'. '+x[0] for i,x in enumerate(rows)]
+        steps=[x[1] for x in rows]
         nodes=[x[0] if len(x[0])<15 else '問い'+str(i+1) for i,x in enumerate(rows)]
         svg,label=figure(c,unit)
         values=(['症状を固定','前提を固定',m[0][0],'到達点を確認'] if unit==0 else [x[0] for x in rows])
         if unit==4:values=[x[0] for x in o]
-        if unit==5:values=['Q'+str(i+1) for i in range(4)]
+        if unit==5:values=[x[0] for x in rows]
         frames=[dict(status=(['状況','前提','分離','目標'][i] if unit==0 else str(i+1)+'の観点'),value=v,detail=steps[i]) for i,v in enumerate(values)]
         q,a=qa[{0:0,1:0,2:1,3:2,4:3,5:3}[unit]]
+        if unit==5:q,a=lab['questions'][0]
         mod=unit//2+1
-        out.append(dict(chapter=c['id'],title=NAMES[unit]+'｜'+c['title'],nodes=nodes,steps=steps,note=c['scope']+' '+c['problem'],question=q,answer=a,svg=svg,diagramLabel=label,diagramType='deep-'+str(unit),detail=detail(c,unit),module=dict(name=c['title'],index=mod,accent=ACCENTS[unit]),direction=dict(hook=hooks[unit],takeaway=(c['goal'] if unit in (0,5) else rows[-1][1]),kind='terminal' if unit in (2,4) else 'check',label=NAMES[unit]+' / 説明用の例',frames=frames)))
+        out.append(dict(chapter=c['id'],workbook=unit==5,title=NAMES[unit]+'｜'+c['title'],nodes=nodes,steps=steps,note=c['scope']+' '+c['problem'],question=q,answer=a,svg=svg,diagramLabel=label,diagramType='deep-'+str(unit),detail=detail(c,unit),module=dict(name=c['title'],index=mod,accent=ACCENTS[unit]),direction=dict(hook=hooks[unit],takeaway=(c['goal'] if unit==0 else rows[-1][1]),kind='terminal' if unit in (2,4) else 'check',label=NAMES[unit]+' / 説明用の例',frames=frames)))
     return out
 
 def player(c):
@@ -128,10 +134,13 @@ def player(c):
     static=[]
     for i,slide in enumerate(data):
         drawing,label=figure(c,i,True)
-        static.append(f'<article id="static-slide-{i+1}"><p class="eyebrow">DEEP DIVE / {i+1} OF 6</p><h2>{E(slide["title"])}</h2><div class="static-diagram" role="img" aria-label="{E(label)}">{drawing}</div><ol>'+''.join('<li>'+E(t)+'</li>' for t in slide['steps'])+f'</ol><p class="lesson-conclusion">要点：{E(slide["direction"]["takeaway"])}</p>'+detail(c,i,True)+'</article>')
+        static.append(f'<article id="static-slide-{i+1}"><span id="slide-{i+1}"></span><p class="eyebrow">DEEP DIVE / {i+1} OF 6</p><h2>{E(slide["title"])}</h2><div class="static-diagram" role="img" aria-label="{E(label)}">{drawing}</div><ol>'+''.join('<li>'+E(t)+'</li>' for t in slide['steps'])+f'</ol><p class="lesson-conclusion">要点：{E(slide["direction"]["takeaway"])}</p>'+detail(c,i,True)+'</article>')
     modules=[dict(name=n,first=i*2,last=i*2+1,accent=ACCENTS[i*2]) for i,n in enumerate(['課題と仕組み','実装と失敗','調査と演習'])]
     script=base.JS.replace('STEP=6,DURATION=24','STEP=10,DURATION=40').replace('android-animated-slides-player-v1','android-deep-dive-'+c['id']+'-v1').replace('../guide/index.html#','../../guide/index.html#').replace('prepareCase(slide);','prepareCase(slide);$(\'deep-detail\').innerHTML=slide.detail;')
+    script=script.replace("'../../guide/index.html#'+slide.chapter","'../../guide/index.html#'+(slide.workbook?'workbook-':'')+slide.chapter")
+    script=script.replace("e.target.closest('input,select,button,a,summary,textarea')","e.target.closest('input,select,button,a,summary,textarea,pre,.spotlight-story,.engineering-bench,.engineering-workbook')")
     script=script.replace('directCase(slide,s);', "directCase(slide,s);const story=$('diagram').querySelector('.spotlight-story');if(story){const part=story.querySelector('.focus');story.scrollTop=part?Math.max(0,part.offsetTop-8):0}")
+    script=script.replace('directCase(slide,s);',"directCase(slide,s);const bench=$('diagram').querySelector('.engineering-bench');if(bench)bench.scrollTop=0;")
     script=script.replace(' DATA.forEach', " $('deep-detail').addEventListener('toggle',e=>{if(e.target.tagName==='DETAILS'&&e.target.open)pause()},true);\n DATA.forEach",1)
     script=script.replace('__HOME_JS__',HOME_JS).replace('__FULLSCREEN_JS__',FULLSCREEN_JS).replace('__DIRECTION_JS__',DIRECTION_JS.replace('__MODULES__',json.dumps(modules,ensure_ascii=False))).replace('__DATA__',json.dumps(data,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c'))
     head=head_for('../..')
@@ -140,18 +149,19 @@ def player(c):
     template=base.TEMPLATE.replace('<body>','<body class="deep-course">').replace('../guide/index.html','../../guide/index.html').replace('← Androidの教材一覧','← 深掘り講座一覧').replace('Androidの教材一覧へ戻る','深掘り講座一覧へ戻る').replace('<ol id="explanation"></ol>','<ol id="explanation"></ol><div id="deep-detail"></div>')
     template=template.replace('Androidを動く図で学ぶ｜スライド教材',E(c['title'])+'｜Android深掘り動画').replace('Androidを、<br>動く図で学ぶ。',E(c['title'])).replace('身近な疑問から、図と実例で仕組みを追う32レッスン。',E(c['goal'])).replace('字幕のみは約13分','6場面・字幕のみは約4分').replace('Android 16の30章を動く図と字幕で振り返る、16:9のスライド教材。全32枚、自動再生とスマートフォン全画面に対応。',E(c['title'])+'を、内部構造・実装・失敗例・調査・演習から深く学ぶ動画風HTML。')
     # Additional excerpt styling is included in the same self-contained document.
-    return template.replace('__CSS__',base.CSS+EXTRA_CSS).replace('__FALLBACK__','\n'.join(static)).replace('__STEP_BUTTONS__',''.join(f'<button type="button" data-step="{i}" aria-label="説明{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4))).replace('__JS__',script).replace('__CASE_HTML__',CASE_HTML).replace('__OPENING__',opening).replace('__RECAP__',RECAP).replace('__HOME_HEAD__',head).replace('__HOME_GUIDE__',guide).replace('__TRANSFER_HTML__',TRANSFER_HTML).replace('__SPEECH_CONTROLS__',SPEECH_CONTROLS).replace('__SPEECH_SETTINGS__',SPEECH_SETTINGS)
+    return template.replace('__CSS__',base.CSS+EXTRA_CSS+WORKBOOK_CSS+base.PLAYER_PALETTE).replace('__FALLBACK__','\n'.join(static)).replace('__STEP_BUTTONS__',''.join(f'<button type="button" data-step="{i}" aria-label="説明{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4))).replace('__JS__',script).replace('__CASE_HTML__',CASE_HTML).replace('__OPENING__',opening).replace('__RECAP__',RECAP).replace('__HOME_HEAD__',head).replace('__HOME_GUIDE__',guide).replace('__TRANSFER_HTML__',TRANSFER_HTML).replace('__SPEECH_CONTROLS__',SPEECH_CONTROLS).replace('__SPEECH_SETTINGS__',SPEECH_SETTINGS)
 
 def catalog():
     old=(ROOT/'android/index.html').read_text();head=strip_managed_head(old.split('<body>')[0]).replace('</head>', '<style>'+base.HOME_CSS+'@media(display-mode:standalone){.home-install{display:none}}</style></head>')
     head=head.replace('Androidの教材｜教材ライブラリ','Android 項目別・深掘り動画｜教材ライブラリ').replace('</head>',head_for('..',False)+'</head>')
     cards=[]
     for i,c in enumerate(COURSES,1):
-        cards.append(f'<article class="card" aria-labelledby="course-{c["id"]}"><div class="card-top"><span class="subject-icon" aria-hidden="true">{i:02d}</span><span class="category">DEEP DIVE / VOICE + CAPTIONS</span></div><h3 id="course-{c["id"]}">{E(c["title"])}</h3><p class="description">{E(c["problem"])}</p><p class="description"><b>到達点：</b>{E(c["goal"])}</p><div class="tags"><span class="tag">内部構造</span><span class="tag">実装と失敗例</span><span class="tag">調査・演習</span></div><div class="facts"><span>6場面・24段階</span><span>字幕のみ約4分・読み上げ対応</span><span>確認問題4問</span></div><a class="open-guide" href="./{c["id"]}/index.html">この講座を開く<span aria-hidden="true">→</span></a><p style="font-size:12px;margin-bottom:0"><a href="../guide/index.html#{c["id"]}">元の章を読む</a></p></article>')
-    return head+'''<body><a class="skip" href="#courses">講座一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド →</a></div></header><main class="wrap"><section class="hero"><div class="eyebrow">ANDROID / FOCUSED VIDEO LESSONS</div><h1>ひとつの項目を、<br>狭く、深く。</h1><p class="lead">概要を知った次は、設計と証拠を自分の言葉で。<br>30項目を、それぞれ独立した動画風スライドで学びます。</p></section>'''+guide_for('..')+'''<aside class="reading-note"><p>各講座は「課題 → 内部構造 → 実装 → 失敗例 → 調査 → 演習」の6場面です。字幕のみで約4分、読み上げ時は音声の長さに合わせて進みます。図と字幕で進み、コードと解説は停止して読めます。実機の計測動画ではなく説明用の図解で、コードは前提を伴う断片です。再生位置は講座ごとに保存します。</p></aside><section id="courses" aria-labelledby="courses-title"><div class="section-heading"><h2 id="courses-title">深掘り講座</h2><span class="count">30 講座 / 字幕のみ全約120分</span></div><div class="grid">'''+''.join(cards)+'''</div></section>'''+TRANSFER_HTML+'''</main><footer class="site-footer"><div class="wrap"><a href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド</a></div></footer><script>'''+TRANSFER_JS+'''</script></body></html>'''
+        cards.append(f'<article class="card" aria-labelledby="course-{c["id"]}"><div class="card-top"><span class="subject-icon" aria-hidden="true">{i:02d}</span><span class="category">DEEP DIVE / VOICE + CAPTIONS</span></div><h3 id="course-{c["id"]}">{E(c["title"])}</h3><p class="description">{E(c["problem"])}</p><p class="description"><b>到達点：</b>{E(c["goal"])}</p><div class="tags"><span class="tag">内部構造</span><span class="tag">実装と失敗例</span><span class="tag">調査・演習</span></div><div class="facts"><span>6場面・24段階</span><span>字幕のみ約4分・読み上げ対応</span><span>確認4問 + 実習3問</span></div><a class="open-guide" href="./{c["id"]}/index.html">この講座を開く<span aria-hidden="true">→</span></a><p style="font-size:12px;margin-bottom:0"><a href="../guide/index.html#{c["id"]}">元の章を読む</a></p></article>')
+    return head+'''<body><a class="skip" href="#courses">講座一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド →</a></div></header><main class="wrap"><section class="hero"><div class="eyebrow">ANDROID / FOCUSED VIDEO LESSONS</div><h1>ひとつの項目を、<br>狭く、深く。</h1><p class="lead">概要を知った次は、設計と証拠を自分の言葉で。<br>30項目を、それぞれ独立した動画風スライドで学びます。</p></section>'''+guide_for('..')+'''<aside class="reading-note"><p>各講座は「課題 → 内部構造 → 実装 → 失敗例 → 調査 → 演習」の6場面です。字幕のみで約4分、読み上げ時は音声の長さに合わせて進みます。図と字幕で進み、コードと解説は停止して読めます。実機の計測動画ではなく説明用の図解で、Androidのコードは前提を伴う断片です。最終場面には単独実行できるPythonの検証モデルと設計レビューを追加しています。再生位置は講座ごとに保存します。</p></aside><section id="courses" aria-labelledby="courses-title"><div class="section-heading"><h2 id="courses-title">深掘り講座</h2><span class="count">30 講座 / 字幕のみ全約120分</span></div><div class="grid">'''+''.join(cards)+'''</div></section>'''+TRANSFER_HTML+'''</main><footer class="site-footer"><div class="wrap"><a href="../index.html">← Androidの教材一覧</a><a href="../slides/index.html">概要版スライド</a></div></footer><script>'''+TRANSFER_JS+'''</script></body></html>'''
 
 def build():
     expected={s['chapter'] for s in base.SLIDES[1:-1]};assert expected=={c['id'] for c in COURSES}
+    assert expected==set(workbooks.WORKBOOKS)
     OUT.mkdir(parents=True,exist_ok=True)
     for c in COURSES:
         target=OUT/c['id']/'index.html';target.parent.mkdir(parents=True,exist_ok=True);result=player(c)
@@ -160,5 +170,5 @@ def build():
     (OUT/'index.html').write_text(catalog())
     manifest=manifest_for('..')
     (OUT/'manifest.webmanifest').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
-    print('Generated 30 deep-dive courses / 180 scenes / 720 explanation steps / 120 unique questions.')
+    print('Generated 30 deep-dive courses / 180 scenes / 720 explanation steps / 120 foundation questions + 90 new design exercises.')
 if __name__=='__main__':build()
