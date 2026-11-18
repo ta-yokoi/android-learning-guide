@@ -2,6 +2,7 @@
 """Generate 30 separate, self-contained deep-dive players without modifying the overview."""
 import html,json
 from pathlib import Path
+from polish_library import polish_courses
 import generate_android_slides as base
 from android_deep_courses import COURSES
 from android_slide_narration import CONTROLS as SPEECH_CONTROLS, SETTINGS as SPEECH_SETTINGS
@@ -167,7 +168,7 @@ def build():
         target=OUT/c['id']/'index.html';target.parent.mkdir(parents=True,exist_ok=True);result=player(c)
         assert '__DATA__' not in result and '__HOME_' not in result and '__JS__' not in result
         target.write_text(result)
-    (OUT/'index.html').write_text(catalog())
+    (OUT/'index.html').write_text(polish_courses(catalog()))
     manifest=manifest_for('..')
     (OUT/'manifest.webmanifest').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     print('Generated 30 deep-dive courses / 180 scenes / 720 explanation steps / 120 foundation questions + 90 new design exercises.')

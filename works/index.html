@@ -64,7 +64,54 @@
   .open-guide{background:#8bdfc3;color:#102b24}.open-guide:hover{background:#b0efd8;color:#102b24}
   .reading-note{background:#1c342d;color:#c3dfd2;border-color:#7ebba5}
 }
-</style></head>
-<body><a class="skip" href="#main">作品一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← 教材ライブラリ</a><span class="header-label">WORKS / LIGHT &amp; MOTION</span></div></header><main id="main" class="wrap"><section class="hero" aria-labelledby="hero-title"><div class="eyebrow">EXPLORE LIGHT &amp; MOTION</div><h1 id="hero-title">光と動きを、<br>かたちにする。</h1><p class="lead">HTMLとCSSで描くアニメーション作品。<br>作品を選んで、光の流れと立体の変化を楽しめます。</p></section><section aria-labelledby="works-title"><div class="section-heading"><h2 id="works-title">作品一覧</h2><span class="count">3 作品・作品集</span></div><div class="grid"><article class="card" aria-labelledby="motion-gallery-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">M</div><span class="category">CREATIVE / CSS MOTION</span></div><h3 id="motion-gallery-title">CSS Motion Gallery</h3><p class="description">HTMLだけで動く9つの作品。480粒の光が色を変え、球体・結び目・花冠へと変形。オーロラ、軌道、キューブ、波、流体、文字、日食、トンネルとともに、光と奥行き、動きのリズムを楽しめます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">再生・一時停止</span><span class="tag">スマートフォン対応</span></div><div class="facts"><span><strong>9</strong>つの作品</span><span><strong>1</strong>つのHTML</span><span>JavaScript不要</span></div><a class="open-guide" href="./css-motion-gallery/index.html" aria-label="CSS Motion Galleryのアニメーション集を開く">アニメーション集を開く<span aria-hidden="true">→</span></a></article>
-<article class="card" aria-labelledby="observatory-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">K</div><span class="category">EXPERIMENT / SPATIAL MOTION</span></div><h3 id="observatory-title">Kinetic Observatory</h3><p class="description">最大360個の光粒子だけで描く立体作品。球体・花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体、五重結び目・四次元トーラス・二重環・ローレンツ軌道へ、色を変えながら変形します。12秒で1回転し、変形時は粒子が滑らかに次の形へ移動。視点や粒子密度も切り替えられます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">視点・密度の切替</span><span class="tag">動きの数理</span></div><div class="facts"><span><strong>12</strong>つの立体</span><span><strong>1</strong>つのHTML</span><span>JavaScript不要</span></div><a class="open-guide" href="./kinetic-observatory/index.html" aria-label="Kinetic Observatoryの立体作品を開く">光の構造体を観察する<span aria-hidden="true">→</span></a></article>
-<article class="card" aria-labelledby="tides-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">L</div><span class="category">ART / LUMINOUS CURRENTS</span></div><h3 id="tides-title">光の潮汐</h3><p class="description">青緑・琥珀・菫色の光が、三つの立体的な帯を編む独立した作品。384粒が異なる方向と速さで流れ、帯の膨張・収縮と回転が重なります。光の層を一つずつ選んで観察できます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">三層の光の流れ</span><span class="tag">一時停止・密度切替</span></div><div class="facts"><span><strong>最大384</strong>個の光</span><span><strong>3</strong>本の帯</span><span>JavaScript不要</span></div><a class="open-guide" href="./luminous-tides/index.html" aria-label="光の潮汐の作品を開く">光の潮汐を鑑賞する<span aria-hidden="true">→</span></a></article></div></section><aside class="reading-note"><p>各作品で一時停止や表示の切替ができます。端末の「動きを減らす」設定では静止表示になります。</p></aside></main><footer class="site-footer"><div class="wrap"><a href="../index.html">← トップページへ戻る</a><span>Light, shape &amp; motion</span></div></footer></body></html>
+</style><!-- library-style -->
+<style id="library-layout">
+:root{--library-surface:#fff;--library-bg:#f6f8f5;--library-accent:#075e55;--library-tint:#e7f2ec}
+body{background:var(--library-bg)}
+.site-header{background:var(--library-surface)}
+.hero{padding:clamp(32px,6vw,70px) 0 clamp(25px,4vw,44px);background:transparent;position:relative}
+.hero h1{max-width:18ch;font-weight:780;letter-spacing:-.045em}
+.hero .lead{max-width:66ch;text-wrap:pretty}
+.library-nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:12px auto 8px}
+.library-nav a{display:inline-flex;align-items:center;min-height:44px;font-size:13px;padding:0 9px;border-radius:7px}
+.library-nav a[aria-current]{background:var(--library-tint);color:var(--library-accent);font-weight:700;text-decoration:none}
+.library-routes{margin:0 0 34px;padding:20px 0;border-block:1px solid var(--line)}
+.library-routes h2{font-size:18px;margin:0 0 12px}
+.library-route-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.library-route{display:block;background:var(--library-surface);border:1px solid var(--line);padding:13px 15px;border-radius:8px;text-decoration:none;color:var(--ink)}
+.library-route strong{display:block;color:var(--library-accent);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.library-route span{display:block;color:var(--muted);font-size:13px;line-height:1.6;margin-top:4px}
+.library-route:hover{border-color:var(--library-accent)}
+.card{min-width:0;background:var(--library-surface);border-top:3px solid var(--library-accent);padding:clamp(17px,3vw,28px)}
+.card h3{font-size:clamp(20px,2.4vw,26px);margin-top:5px;text-wrap:pretty}
+.card .description{font-size:14px;line-height:1.8}
+.card .open-guide{min-height:44px}
+.home-install{margin-bottom:22px}
+.card:has(#gof-title),.card:has(#slides-title){border-top-color:#8066a8}
+.card:has(#embedded-title){border-top-color:#ab763d}
+.card:has(#works-card-title){border-top-color:#677cae}
+.works-cover{height:clamp(96px,16vw,156px);margin:0 0 15px;border-radius:6px;background-color:#111a30}
+.works-cover.gallery{background-image:radial-gradient(ellipse at 48% 45%,transparent 19%,#91e6fe99 20%,transparent 23%),radial-gradient(ellipse at 52% 55%,transparent 28%,#9f7cffaa 29%,transparent 33%),radial-gradient(ellipse at 56% 50%,#534190,transparent 67%)}
+.works-cover.observatory{background-image:radial-gradient(circle at 48% 44%,#c6faff, #458ccb 6%,#1b315b 20%,transparent 45%),repeating-radial-gradient(ellipse at center,#a9d7ff88 0 1px,transparent 2px 13px)}
+.works-cover.tides{background-image:radial-gradient(ellipse at 32% 108%,#61e9d2 0%,#266caa 25%,transparent 58%),radial-gradient(ellipse at 82% -10%,#bc7adc 0%,#534190 27%,transparent 58%),linear-gradient(156deg,#10182e,#16294d)}
+.library-groups{display:flex;flex-wrap:wrap;gap:4px 14px;margin:12px 0}
+.library-groups a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.library-course-group .facts{margin-top:auto}
+.library-course-group{margin:26px 0 34px;scroll-margin-top:12px}
+.library-course-group>h3{font-size:20px;margin:0 0 10px}
+.library-course-group>.grid>.card h4{font-size:clamp(18px,2vw,23px);margin:0 0 8px;line-height:1.5}
+.library-search{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:0 0 16px}
+.library-search>label{font-weight:700;flex:1 1 240px}
+.library-search input{display:block;width:100%;padding:9px 12px;margin-top:4px}
+.library-search button{padding:9px 13px}
+.library-search input,.library-search button{min-height:44px;border:1px solid var(--line);border-radius:7px;background:var(--library-surface);color:var(--ink);font:inherit}
+.library-search-status{min-height:1.8em;color:var(--muted);font-size:14px}
+[hidden]{display:none!important}
+@media(prefers-color-scheme:dark){:root{--library-surface:#18242f;--library-bg:#101820;--library-accent:#8bdfc3;--library-tint:#203c35}}
+@media(max-width:700px){.library-routes{margin-bottom:26px}.library-nav{gap:0 3px}.library-nav a{padding:0 7px}.library-course-group{margin-bottom:26px}}
+@media print{.library-nav,.library-search,.library-search-status{display:none!important}body{background:#fff}.library-route{break-inside:avoid}}
+</style>
+<!-- /library-style --></head>
+<body><a class="skip" href="#main">作品一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← 教材ライブラリ</a><span class="header-label">WORKS / LIGHT &amp; MOTION</span></div></header><!-- library-navigation --><nav class="library-nav wrap" aria-label="ライブラリ内の移動"><a href="../index.html">トップ</a><a href="../android/index.html">Android</a><a href="../gof/index.html">GoF</a><a href="../embedded/index.html">組み込み</a><a href="../works/index.html" aria-current="page">作品集</a></nav><!-- /library-navigation --><main id="main" class="wrap"><section class="hero" aria-labelledby="hero-title"><h1 id="hero-title">光と動きを、<br>かたちにする。</h1><p class="lead">HTMLとCSSで描くアニメーション作品。<br>作品を選んで、光の流れと立体の変化を楽しめます。</p></section><section aria-labelledby="works-title"><div class="section-heading"><h2 id="works-title">作品一覧</h2><span class="count">3 作品・作品集</span></div><div class="grid"><article class="card" aria-labelledby="motion-gallery-title"><div class="works-cover gallery" aria-hidden="true"></div><h3 id="motion-gallery-title">CSS Motion Gallery</h3><p class="description">HTMLだけで動く9つの作品。480粒の光が色を変え、球体・結び目・花冠へと変形。オーロラ、軌道、キューブ、波、流体、文字、日食、トンネルとともに、光と奥行き、動きのリズムを楽しめます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">再生・一時停止</span><span class="tag">スマートフォン対応</span></div><div class="facts"><span><strong>9</strong>つの作品</span><span><strong>1</strong>つのHTML</span><span>JavaScript不要</span></div><a class="open-guide" href="./css-motion-gallery/index.html" aria-label="CSS Motion Galleryのアニメーション集を開く">アニメーション集を開く<span aria-hidden="true">→</span></a></article>
+<article class="card" aria-labelledby="observatory-title"><div class="works-cover observatory" aria-hidden="true"></div><h3 id="observatory-title">Kinetic Observatory</h3><p class="description">最大360個の光粒子だけで描く立体作品。球体・花冠・トーラス・三葉結び目・メビウスの帯・二重らせん・星芒・立方体、五重結び目・四次元トーラス・二重環・ローレンツ軌道へ、色を変えながら変形します。12秒で1回転し、変形時は粒子が滑らかに次の形へ移動。視点や粒子密度も切り替えられます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">視点・密度の切替</span><span class="tag">動きの数理</span></div><div class="facts"><span><strong>12</strong>つの立体</span><span><strong>1</strong>つのHTML</span><span>JavaScript不要</span></div><a class="open-guide" href="./kinetic-observatory/index.html" aria-label="Kinetic Observatoryの立体作品を開く">光の構造体を観察する<span aria-hidden="true">→</span></a></article>
+<article class="card" aria-labelledby="tides-title"><div class="works-cover tides" aria-hidden="true"></div><h3 id="tides-title">光の潮汐</h3><p class="description">青緑・琥珀・菫色の光が、三つの立体的な帯を編む独立した作品。384粒が異なる方向と速さで流れ、帯の膨張・収縮と回転が重なります。光の層を一つずつ選んで観察できます。</p><div class="tags"><span class="tag">HTML + CSSのみ</span><span class="tag">三層の光の流れ</span><span class="tag">一時停止・密度切替</span></div><div class="facts"><span><strong>最大384</strong>個の光</span><span><strong>3</strong>本の帯</span><span>JavaScript不要</span></div><a class="open-guide" href="./luminous-tides/index.html" aria-label="光の潮汐の作品を開く">光の潮汐を鑑賞する<span aria-hidden="true">→</span></a></article></div></section><aside class="reading-note"><p>各作品で一時停止や表示の切替ができます。端末の「動きを減らす」設定では静止表示になります。</p></aside></main><footer class="site-footer"><div class="wrap"><a href="../index.html">← トップページへ戻る</a><span>Light, shape &amp; motion</span></div></footer></body></html>

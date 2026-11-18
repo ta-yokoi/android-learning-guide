@@ -64,5 +64,52 @@
   .open-guide{background:#8bdfc3;color:#102b24}.open-guide:hover{background:#b0efd8;color:#102b24}
   .reading-note{background:#1c342d;color:#c3dfd2;border-color:#7ebba5}
 }
-</style></head>
-<body><a class="skip" href="#main">教材一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← トップへ</a><span class="header-label">LEARNING / 組み込み開発</span></div></header><main id="main" class="wrap"><section class="hero"><div class="eyebrow">CHOOSE YOUR WAY TO LEARN</div><h1>組み込み開発</h1><p class="lead">回路・CPU・メモリから実装・デバッグまで、仕組みと設計を学びます。</p></section><section aria-labelledby="formats-title"><div class="section-heading"><h2 id="formats-title">学び方を選ぶ</h2><span class="count">1 教材</span></div><div class="grid"><article class="card" aria-labelledby="embedded-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">E</div><span class="category">SYSTEMS / EMBEDDED</span></div><h3 id="embedded-title">通常の教材</h3><p class="description">回路・CPU・メモリから、C/C++、起動、割込み、RTOS、Linux、通信、電源、更新、デバッグまで。全13章の設計検証ノート、PCで動くC11の検証例と追加実習39問で、時間・境界・電源断の判断を深く学びます。</p><div class="tags"><span class="tag">初学者向け</span><span class="tag">MCU / SoC</span><span class="tag">RTOS / Linux</span><span class="tag">基本設計</span></div><div class="facts"><span><strong>13</strong>章</span><span><strong>91</strong>問の確認・実習</span><span><strong>85</strong>語の用語集</span></div><a class="open-guide" href="./guide/index.html" aria-label="組み込み開発の体系学習ガイドを読む">組み込み開発の教材を読む<span aria-hidden="true">→</span></a></article></div></section><aside class="reading-note"><p>図解・実装例・確認問題を使い、基礎から順に読み進めてください。読了記録は従来と同じキーに保存されます。</p></aside></main><footer class="site-footer"><div class="wrap"><a href="../index.html">← トップへ戻る</a><a href="../works/index.html">作品一覧を見る →</a></div></footer><script>if(location.hash){const target=new URL('./guide/index.html',location.href);target.search=location.search;target.hash=location.hash;location.replace(target.href)}</script></body></html>
+</style><!-- library-style -->
+<style id="library-layout">
+:root{--library-surface:#fff;--library-bg:#f6f8f5;--library-accent:#075e55;--library-tint:#e7f2ec}
+body{background:var(--library-bg)}
+.site-header{background:var(--library-surface)}
+.hero{padding:clamp(32px,6vw,70px) 0 clamp(25px,4vw,44px);background:transparent;position:relative}
+.hero h1{max-width:18ch;font-weight:780;letter-spacing:-.045em}
+.hero .lead{max-width:66ch;text-wrap:pretty}
+.library-nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:12px auto 8px}
+.library-nav a{display:inline-flex;align-items:center;min-height:44px;font-size:13px;padding:0 9px;border-radius:7px}
+.library-nav a[aria-current]{background:var(--library-tint);color:var(--library-accent);font-weight:700;text-decoration:none}
+.library-routes{margin:0 0 34px;padding:20px 0;border-block:1px solid var(--line)}
+.library-routes h2{font-size:18px;margin:0 0 12px}
+.library-route-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.library-route{display:block;background:var(--library-surface);border:1px solid var(--line);padding:13px 15px;border-radius:8px;text-decoration:none;color:var(--ink)}
+.library-route strong{display:block;color:var(--library-accent);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.library-route span{display:block;color:var(--muted);font-size:13px;line-height:1.6;margin-top:4px}
+.library-route:hover{border-color:var(--library-accent)}
+.card{min-width:0;background:var(--library-surface);border-top:3px solid var(--library-accent);padding:clamp(17px,3vw,28px)}
+.card h3{font-size:clamp(20px,2.4vw,26px);margin-top:5px;text-wrap:pretty}
+.card .description{font-size:14px;line-height:1.8}
+.card .open-guide{min-height:44px}
+.home-install{margin-bottom:22px}
+.card:has(#gof-title),.card:has(#slides-title){border-top-color:#8066a8}
+.card:has(#embedded-title){border-top-color:#ab763d}
+.card:has(#works-card-title){border-top-color:#677cae}
+.works-cover{height:clamp(96px,16vw,156px);margin:0 0 15px;border-radius:6px;background-color:#111a30}
+.works-cover.gallery{background-image:radial-gradient(ellipse at 48% 45%,transparent 19%,#91e6fe99 20%,transparent 23%),radial-gradient(ellipse at 52% 55%,transparent 28%,#9f7cffaa 29%,transparent 33%),radial-gradient(ellipse at 56% 50%,#534190,transparent 67%)}
+.works-cover.observatory{background-image:radial-gradient(circle at 48% 44%,#c6faff, #458ccb 6%,#1b315b 20%,transparent 45%),repeating-radial-gradient(ellipse at center,#a9d7ff88 0 1px,transparent 2px 13px)}
+.works-cover.tides{background-image:radial-gradient(ellipse at 32% 108%,#61e9d2 0%,#266caa 25%,transparent 58%),radial-gradient(ellipse at 82% -10%,#bc7adc 0%,#534190 27%,transparent 58%),linear-gradient(156deg,#10182e,#16294d)}
+.library-groups{display:flex;flex-wrap:wrap;gap:4px 14px;margin:12px 0}
+.library-groups a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.library-course-group .facts{margin-top:auto}
+.library-course-group{margin:26px 0 34px;scroll-margin-top:12px}
+.library-course-group>h3{font-size:20px;margin:0 0 10px}
+.library-course-group>.grid>.card h4{font-size:clamp(18px,2vw,23px);margin:0 0 8px;line-height:1.5}
+.library-search{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:0 0 16px}
+.library-search>label{font-weight:700;flex:1 1 240px}
+.library-search input{display:block;width:100%;padding:9px 12px;margin-top:4px}
+.library-search button{padding:9px 13px}
+.library-search input,.library-search button{min-height:44px;border:1px solid var(--line);border-radius:7px;background:var(--library-surface);color:var(--ink);font:inherit}
+.library-search-status{min-height:1.8em;color:var(--muted);font-size:14px}
+[hidden]{display:none!important}
+@media(prefers-color-scheme:dark){:root{--library-surface:#18242f;--library-bg:#101820;--library-accent:#8bdfc3;--library-tint:#203c35}}
+@media(max-width:700px){.library-routes{margin-bottom:26px}.library-nav{gap:0 3px}.library-nav a{padding:0 7px}.library-course-group{margin-bottom:26px}}
+@media print{.library-nav,.library-search,.library-search-status{display:none!important}body{background:#fff}.library-route{break-inside:avoid}}
+</style>
+<!-- /library-style --></head>
+<body><a class="skip" href="#main">教材一覧へ移動</a><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../index.html">← トップへ</a><span class="header-label">LEARNING / 組み込み開発</span></div></header><!-- library-navigation --><nav class="library-nav wrap" aria-label="ライブラリ内の移動"><a href="../index.html">トップ</a><a href="../android/index.html">Android</a><a href="../gof/index.html">GoF</a><a href="../embedded/index.html" aria-current="page">組み込み</a><a href="../works/index.html">作品集</a></nav><!-- /library-navigation --><main id="main" class="wrap"><section class="hero"><h1>組み込み開発</h1><p class="lead">回路・CPU・メモリから実装・デバッグまで、仕組みと設計を学びます。</p></section><!-- library-routes --><section class="library-routes" aria-labelledby="library-routes-title"><h2 id="library-routes-title">テーマから読み始める</h2><div class="library-route-grid"><a class="library-route" href="guide/index.html#hardware"><strong>データと周辺機器</strong><span>回路・CPU・DMAの境界をつかむ。</span></a><a class="library-route" href="guide/index.html#interrupts"><strong>時間と割込み</strong><span>応答時間と資源の待ちを計算する。</span></a><a class="library-route" href="guide/index.html#storage-update"><strong>電源断に備える</strong><span>二つの保存領域から復元する条件を考える。</span></a></div></section><!-- /library-routes --><section aria-labelledby="formats-title"><div class="section-heading"><h2 id="formats-title">学び方を選ぶ</h2><span class="count">1 教材</span></div><div class="grid"><article class="card" aria-labelledby="embedded-title"><h3 id="embedded-title">通常の教材</h3><p class="description">回路・CPU・メモリから、C/C++、起動、割込み、RTOS、Linux、通信、電源、更新、デバッグまで。全13章の設計検証ノート、PCで動くC11の検証例と追加実習39問で、時間・境界・電源断の判断を深く学びます。</p><div class="tags"><span class="tag">初学者向け</span><span class="tag">MCU / SoC</span><span class="tag">RTOS / Linux</span><span class="tag">基本設計</span></div><div class="facts"><span><strong>13</strong>章</span><span><strong>91</strong>問の確認・実習</span><span><strong>85</strong>語の用語集</span></div><a class="open-guide" href="./guide/index.html" aria-label="組み込み開発の体系学習ガイドを読む">組み込み開発の教材を読む<span aria-hidden="true">→</span></a></article></div></section><aside class="reading-note"><p>図解・実装例・確認問題を使い、基礎から順に読み進めてください。読了記録は従来と同じキーに保存されます。</p></aside></main><footer class="site-footer"><div class="wrap"><a href="../index.html">← トップへ戻る</a><a href="../works/index.html">作品一覧を見る →</a></div></footer><script>if(location.hash){const target=new URL('./guide/index.html',location.href);target.search=location.search;target.hash=location.hash;location.replace(target.href)}</script></body></html>

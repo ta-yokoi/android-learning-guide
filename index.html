@@ -64,13 +64,60 @@
   .open-guide{background:#8bdfc3;color:#102b24}.open-guide:hover{background:#b0efd8;color:#102b24}
   .reading-note{background:#1c342d;color:#c3dfd2;border-color:#7ebba5}
 }
-</style></head>
+</style><!-- library-style -->
+<style id="library-layout">
+:root{--library-surface:#fff;--library-bg:#f6f8f5;--library-accent:#075e55;--library-tint:#e7f2ec}
+body{background:var(--library-bg)}
+.site-header{background:var(--library-surface)}
+.hero{padding:clamp(32px,6vw,70px) 0 clamp(25px,4vw,44px);background:transparent;position:relative}
+.hero h1{max-width:18ch;font-weight:780;letter-spacing:-.045em}
+.hero .lead{max-width:66ch;text-wrap:pretty}
+.library-nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:12px auto 8px}
+.library-nav a{display:inline-flex;align-items:center;min-height:44px;font-size:13px;padding:0 9px;border-radius:7px}
+.library-nav a[aria-current]{background:var(--library-tint);color:var(--library-accent);font-weight:700;text-decoration:none}
+.library-routes{margin:0 0 34px;padding:20px 0;border-block:1px solid var(--line)}
+.library-routes h2{font-size:18px;margin:0 0 12px}
+.library-route-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.library-route{display:block;background:var(--library-surface);border:1px solid var(--line);padding:13px 15px;border-radius:8px;text-decoration:none;color:var(--ink)}
+.library-route strong{display:block;color:var(--library-accent);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.library-route span{display:block;color:var(--muted);font-size:13px;line-height:1.6;margin-top:4px}
+.library-route:hover{border-color:var(--library-accent)}
+.card{min-width:0;background:var(--library-surface);border-top:3px solid var(--library-accent);padding:clamp(17px,3vw,28px)}
+.card h3{font-size:clamp(20px,2.4vw,26px);margin-top:5px;text-wrap:pretty}
+.card .description{font-size:14px;line-height:1.8}
+.card .open-guide{min-height:44px}
+.home-install{margin-bottom:22px}
+.card:has(#gof-title),.card:has(#slides-title){border-top-color:#8066a8}
+.card:has(#embedded-title){border-top-color:#ab763d}
+.card:has(#works-card-title){border-top-color:#677cae}
+.works-cover{height:clamp(96px,16vw,156px);margin:0 0 15px;border-radius:6px;background-color:#111a30}
+.works-cover.gallery{background-image:radial-gradient(ellipse at 48% 45%,transparent 19%,#91e6fe99 20%,transparent 23%),radial-gradient(ellipse at 52% 55%,transparent 28%,#9f7cffaa 29%,transparent 33%),radial-gradient(ellipse at 56% 50%,#534190,transparent 67%)}
+.works-cover.observatory{background-image:radial-gradient(circle at 48% 44%,#c6faff, #458ccb 6%,#1b315b 20%,transparent 45%),repeating-radial-gradient(ellipse at center,#a9d7ff88 0 1px,transparent 2px 13px)}
+.works-cover.tides{background-image:radial-gradient(ellipse at 32% 108%,#61e9d2 0%,#266caa 25%,transparent 58%),radial-gradient(ellipse at 82% -10%,#bc7adc 0%,#534190 27%,transparent 58%),linear-gradient(156deg,#10182e,#16294d)}
+.library-groups{display:flex;flex-wrap:wrap;gap:4px 14px;margin:12px 0}
+.library-groups a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.library-course-group .facts{margin-top:auto}
+.library-course-group{margin:26px 0 34px;scroll-margin-top:12px}
+.library-course-group>h3{font-size:20px;margin:0 0 10px}
+.library-course-group>.grid>.card h4{font-size:clamp(18px,2vw,23px);margin:0 0 8px;line-height:1.5}
+.library-search{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:0 0 16px}
+.library-search>label{font-weight:700;flex:1 1 240px}
+.library-search input{display:block;width:100%;padding:9px 12px;margin-top:4px}
+.library-search button{padding:9px 13px}
+.library-search input,.library-search button{min-height:44px;border:1px solid var(--line);border-radius:7px;background:var(--library-surface);color:var(--ink);font:inherit}
+.library-search-status{min-height:1.8em;color:var(--muted);font-size:14px}
+[hidden]{display:none!important}
+@media(prefers-color-scheme:dark){:root{--library-surface:#18242f;--library-bg:#101820;--library-accent:#8bdfc3;--library-tint:#203c35}}
+@media(max-width:700px){.library-routes{margin-bottom:26px}.library-nav{gap:0 3px}.library-nav a{padding:0 7px}.library-course-group{margin-bottom:26px}}
+@media print{.library-nav,.library-search,.library-search-status{display:none!important}body{background:#fff}.library-route{break-inside:avoid}}
+</style>
+<!-- /library-style --></head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>
-<header class="site-header"><div class="wrap header-inner"><a class="brand" href="./">教材ライブラリ</a><span class="header-label">TECHNOLOGY / LEARNING GUIDES</span></div></header>
+<header class="site-header"><div class="wrap header-inner"><a class="brand" href="./">教材ライブラリ</a><span class="header-label">TECHNOLOGY / LEARNING GUIDES</span></div></header><!-- library-navigation --><nav class="library-nav wrap" aria-label="ライブラリ内の移動"><a href="./index.html" aria-current="page">トップ</a><a href="./android/index.html">Android</a><a href="./gof/index.html">GoF</a><a href="./embedded/index.html">組み込み</a><a href="./works/index.html">作品集</a></nav><!-- /library-navigation -->
 <main id="main" class="wrap">
-<section class="hero" aria-labelledby="hero-title"><div class="eyebrow">LEARN HOW THINGS WORK</div><h1 id="hero-title">技術を、<br>仕組みから学ぶ。</h1><p class="lead">全体像をつかみ、動きを追い、設計につなげる。<br>分野を選び、通常の教材や動く図で学べます。</p></section>
-<section aria-labelledby="guides-title"><div class="section-heading"><h2 id="guides-title">ジャンルを選ぶ</h2><span class="count">4 ジャンル</span></div><div class="grid"><article class="card" aria-labelledby="android-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">A</div><span class="category">TECHNOLOGY / ANDROID</span></div><h3 id="android-title">Android</h3><p class="description">Android 16の全体像からアプリ、ハードウェア、AOSP／AAOSへ。設計検証の通常教材・概要版スライド・実習を加えた項目別の深掘り動画を選べます。</p><div class="tags"><span class="tag">通常の教材</span><span class="tag">スライド</span></div><div class="facts"><span><strong>3</strong>教材</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./android/index.html" aria-label="Androidの教材一覧を開く">Androidの教材を選ぶ<span aria-hidden="true">→</span></a></article><article class="card" aria-labelledby="gof-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">G</div><span class="category">TECHNOLOGY / GOF</span></div><h3 id="gof-title">GoFデザインパターン</h3><p class="description">23パターンの通常教材、CSSだけの動く図解、79場面の音声付き動画風スライドから選べます。</p><div class="tags"><span class="tag">通常の教材</span><span class="tag">アニメーション</span><span class="tag">音声付き動画</span></div><div class="facts"><span><strong>3</strong>教材</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./gof/index.html" aria-label="GoFデザインパターンの教材一覧を開く">GoFデザインパターンの教材を選ぶ<span aria-hidden="true">→</span></a></article><article class="card" aria-labelledby="embedded-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">E</div><span class="category">TECHNOLOGY / EMBEDDED</span></div><h3 id="embedded-title">組み込み開発</h3><p class="description">回路・CPU・メモリから、C/C++、RTOS、Linux、デバッグまで。C11の検証例、失敗理由と代案の比較から基本設計へ進みます。</p><div class="tags"><span class="tag">通常の教材</span></div><div class="facts"><span><strong>1</strong>教材</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./embedded/index.html" aria-label="組み込み開発の教材一覧を開く">組み込み開発の教材を選ぶ<span aria-hidden="true">→</span></a></article><article class="card" aria-labelledby="works-card-title"><div class="card-top"><div class="subject-icon" aria-hidden="true">W</div><span class="category">CREATIVE / WORKS</span></div><h3 id="works-card-title">作品集</h3><p class="description">光の粒子や立体、色と動きで描くHTMLアニメーション作品を集めました。CSS Motion Gallery、光の粒子の立体変形、光の潮汐から選んで鑑賞できます。</p><div class="tags"><span class="tag">HTML + CSS</span><span class="tag">立体アニメーション</span><span class="tag">光の粒子</span></div><div class="facts"><span><strong>3</strong>作品・作品集</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./works/index.html" aria-label="作品一覧を開く">作品一覧を開く<span aria-hidden="true">→</span></a></article></div></section>
+<section class="hero" aria-labelledby="hero-title"><h1 id="hero-title">技術を、<br>仕組みから学ぶ。</h1><p class="lead">全体像をつかみ、動きを追い、設計につなげる。<br>分野を選び、通常の教材や動く図で学べます。</p></section>
+<!-- library-routes --><section class="library-routes" aria-labelledby="library-routes-title"><h2 id="library-routes-title">目的から探す</h2><div class="library-route-grid"><a class="library-route" href="android/slides/index.html"><strong>Androidの全体像をつかむ</strong><span>アプリからOS・機器までを音声付きの32枚で。</span></a><a class="library-route" href="gof/slides/index.html"><strong>設計パターンを動きで理解する</strong><span>GoF全23パターンを図・Java・音声で。</span></a><a class="library-route" href="embedded/guide/index.html#overview"><strong>組み込みの設計を検証する</strong><span>割込み、DMA、通信、電源断をC11の実習で。</span></a></div></section><!-- /library-routes --><section aria-labelledby="guides-title"><div class="section-heading"><h2 id="guides-title">ジャンルを選ぶ</h2><span class="count">4 ジャンル</span></div><div class="grid"><article class="card" aria-labelledby="android-title"><h3 id="android-title">Android</h3><p class="description">Android 16の全体像からアプリ、ハードウェア、AOSP／AAOSへ。設計検証の通常教材・概要版スライド・実習を加えた項目別の深掘り動画を選べます。</p><div class="tags"><span class="tag">通常の教材</span><span class="tag">スライド</span></div><div class="facts"><span><strong>3</strong>教材</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./android/index.html" aria-label="Androidの教材一覧を開く">Androidの教材を選ぶ<span aria-hidden="true">→</span></a></article><article class="card" aria-labelledby="gof-title"><h3 id="gof-title">GoFデザインパターン</h3><p class="description">23パターンの通常教材、CSSだけの動く図解、79場面の音声付き動画風スライドから選べます。</p><div class="tags"><span class="tag">通常の教材</span><span class="tag">アニメーション</span><span class="tag">音声付き動画</span></div><div class="facts"><span><strong>3</strong>教材</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./gof/index.html" aria-label="GoFデザインパターンの教材一覧を開く">GoFデザインパターンの教材を選ぶ<span aria-hidden="true">→</span></a></article><article class="card" aria-labelledby="embedded-title"><h3 id="embedded-title">組み込み開発</h3><p class="description">回路・CPU・メモリから、C/C++、RTOS、Linux、デバッグまで。C11の検証例、失敗理由と代案の比較から基本設計へ進みます。</p><div class="tags"><span class="tag">通常の教材</span></div><div class="facts"><span><strong>1</strong>教材</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./embedded/index.html" aria-label="組み込み開発の教材一覧を開く">組み込み開発の教材を選ぶ<span aria-hidden="true">→</span></a></article><article class="card" aria-labelledby="works-card-title"><h3 id="works-card-title">作品集</h3><p class="description">光の粒子や立体、色と動きで描くHTMLアニメーション作品を集めました。CSS Motion Gallery、光の粒子の立体変形、光の潮汐から選んで鑑賞できます。</p><div class="tags"><span class="tag">HTML + CSS</span><span class="tag">立体アニメーション</span><span class="tag">光の粒子</span></div><div class="facts"><span><strong>3</strong>作品・作品集</span><span>PC・スマートフォン対応</span></div><a class="open-guide" href="./works/index.html" aria-label="作品一覧を開く">作品一覧を開く<span aria-hidden="true">→</span></a></article></div></section>
 <aside class="reading-note" aria-label="教材の使い方"><p>各教材はスマートフォンでも閲覧できます。図表と確認問題を使い、章ごとに読み進めてください。今後の教材も、この一覧に追加していきます。</p></aside>
 </main>
 <footer class="site-footer"><div class="wrap"><span>教材ライブラリ · 基礎から設計へ</span><span>Learning guides for software &amp; automotive technology</span></div></footer>
