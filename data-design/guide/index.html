@@ -43,12 +43,12 @@ summary{font-weight:650;cursor:pointer;min-height:44px;padding:6px 0}
 details p{margin:3px 0 10px}
 figure{margin:16px 0}
 figcaption{font-weight:650}
-.progress{padding-top:10px;border-top:1px solid var(--line);font-size:.87rem}
+.chapter-video{font-size:.88rem;margin:0 0 1rem}.progress{padding-top:10px;border-top:1px solid var(--line);font-size:.87rem}
 [hidden]{display:none!important}
 @media(max-width:760px){.layout{grid-template-columns:minmax(0,1fr)}.toc{position:static;max-height:none}.toc ol{margin:3px 0;padding-inline-start:23px}}
 @media print{
   :root{color-scheme:light;--ink:#172d36;--muted:#344d57;--paper:#fff;--bg:#fff;--line:#9caeaa;--accent:#075e55;--tint:#eef3ef}
-  .wrap{width:100%}.layout{display:block}.toc,.progress,header,footer{display:none!important}
+  .wrap{width:100%}.layout{display:block}.toc,.progress,.chapter-video,header,footer{display:none!important}
   .chapter{border:none;padding:12px 0}.hero{padding:10px 0}.table-wrap,pre{overflow:visible}table{min-width:0}pre{white-space:pre-wrap;overflow-wrap:anywhere}h2,h3{break-after:avoid}
   details{break-inside:avoid}details::details-content{content-visibility:visible;height:auto}
 }
@@ -56,7 +56,7 @@ figcaption{font-weight:650}
 </head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>
-<header><nav class="wrap" aria-label="ライブラリ内の移動"><a href="../../index.html">教材ライブラリ</a><a href="../index.html">データ設計の入口</a></nav></header>
+<header><nav class="wrap" aria-label="ライブラリ内の移動"><a href="../../index.html">教材ライブラリ</a><a href="../index.html">データ設計の入口</a><a href="../slides/index.html">音声付き動画版</a></nav></header>
 <main id="main" class="wrap">
 <div class="hero">
 <h1>データ指向アプリケーション設計 入門</h1>
@@ -82,6 +82,7 @@ figcaption{font-weight:650}
 <div>
 <section id="requirements" class="chapter" aria-labelledby="requirements-title">
 <h2 id="requirements-title">1. 要件を定義する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-1">この章を動画で見る</a></p>
 <p>開店セールで通常の10倍の注文が来ます。販促ページは短時間古くても構いませんが、確定した注文と注文番号の対応を失うと、問い合わせも発送もできません。まずはどの操作の何を測るか決めます。</p>
 <p class="contract"><strong>守る条件</strong>　確定成功を返した注文は、想定する単一DBホストの喪失後も復元できること。負荷超過時は受付を制限し、保存できていない注文を成功扱いにしません。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="要求と検証例の表"><table>
@@ -101,6 +102,7 @@ figcaption{font-weight:650}
 
 <section id="storage" class="chapter" aria-labelledby="storage-title">
 <h2 id="storage-title">2. モデルとストレージを選ぶ</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-3">この章を動画で見る</a></p>
 <p>購入履歴では一注文の明細と配送先をまとめて表示し、倉庫ではSKUから未発送の注文を探します。画面の見た目だけでモデルを決めると、倉庫の検索が後から重くなります。</p>
 <p class="contract"><strong>守る条件</strong>　同じ注文番号に一つの注文を対応づけ、購入時の単価を保持します。商品マスターの価格改定で過去の注文金額が変化する状態を防ぎます。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="モデルと検索の比較表"><table>
@@ -122,6 +124,7 @@ WHERE customer_id = 42 ORDER BY created_at DESC;</code></pre></figure>
 
 <section id="schema" class="chapter" aria-labelledby="schema-title">
 <h2 id="schema-title">3. スキーマを変更する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-5">この章を動画で見る</a></p>
 <p>単一配送しか扱えなかった注文に、出荷元を示す <code>warehouse_code</code> を追加します。アプリを段階的にデプロイする間、旧版も同じDBへ注文を書き込みます。</p>
 <p class="contract"><strong>守る条件</strong>　旧版の注文も新規注文も参照でき、出荷元が未確認の注文を誤った倉庫へ送らないこと。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="移行段階と期待結果の表"><table>
@@ -139,6 +142,7 @@ WHERE customer_id = 42 ORDER BY created_at DESC;</code></pre></figure>
 
 <section id="distribution" class="chapter" aria-labelledby="distribution-title">
 <h2 id="distribution-title">4. 複製と分割を考える</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-7">この章を動画で見る</a></p>
 <p>メインDBに注文を保存した直後、履歴を読取り用レプリカへ送ると、反映が遅れて注文が見えません。同時に人気商品の注文だけが集中し、商品IDによる分割で特定の分割先が混みます。</p>
 <p class="contract"><strong>守る条件</strong>　本人が注文確定後に履歴を開いたとき、確定済みの注文が消えたように見えないこと。人気商品の在庫引当は、この章の読取り分散と独立して競合を守ります。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="複製と負荷偏りの検証表"><table>
@@ -156,6 +160,7 @@ WHERE customer_id = 42 ORDER BY created_at DESC;</code></pre></figure>
 
 <section id="transactions" class="chapter" aria-labelledby="transactions-title">
 <h2 id="transactions-title">5. 在庫の不変条件を守る</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-9">この章を動画で見る</a></p>
 <p>残り1個の茶葉を2人が同時に注文します。先に在庫を読んでからアプリ側で可否を決め、別の更新で減らすと、両者が同じ在庫を見て予約を受け付ける設計になり得ます。</p>
 <p class="contract"><strong>守る条件</strong>　在庫は常に0以上で、同じ1個を引き当てられる注文は一件だけです。実サービスでは予約行と在庫の更新を一つのトランザクションに置きます。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="在庫競合の比較表"><table>
@@ -180,6 +185,7 @@ WHERE sku = ? AND remaining &gt;= 1;</code></pre>
 
 <section id="uncertainty" class="chapter" aria-labelledby="uncertainty-title">
 <h2 id="uncertainty-title">6. 決済の結果不明を扱う</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-11">この章を動画で見る</a></p>
 <p>注文42の決済APIが時間内に応答しません。相手で確定してから応答だけが失われた可能性があるので、注文の状態を「決済確認中」として照会できます。</p>
 <p class="contract"><strong>守る条件</strong>　一つの決済試行から発生する請求は最大一件です。未確認の結果で発送を開始したり、別の試行として無条件に取り直したりしません。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="応答喪失と再送の時系列"><table>
@@ -207,6 +213,7 @@ changed amount: conflict</code></pre>
 
 <section id="analytics" class="chapter" aria-labelledby="analytics-title">
 <h2 id="analytics-title">7. バッチとストリームで集計する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-13">この章を動画で見る</a></p>
 <p>担当者には当日の速報を、経理には翌日の修正済み集計を出します。売上日は決済イベントの発生時刻で決め、取込み時刻は遅着の検出に使います。実サービスでは日付を決めるタイムゾーンを統一します。</p>
 <p class="contract"><strong>守る条件</strong>　同一イベントIDは一回だけ計上し、遅着で当日分が変わった場合は訂正を発行します。同じIDに異なる金額が来たら照合対象にします。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="イベントの発生と取込みの比較"><table>
@@ -233,6 +240,7 @@ changed event: conflict</code></pre>
 
 <section id="capstone" class="chapter" aria-labelledby="capstone-title">
 <h2 id="capstone-title">8. 総合演習　注文から日次売上まで設計する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-15">この章を動画で見る</a></p>
 <p>セール中の在庫超過と二重請求を防ぎ、購入者は注文状況をすぐに見られるようにします。担当者は売上の速報を確認し、経理は翌朝に訂正済みの金額を使います。</p>
 <p class="contract"><strong>守る条件</strong>　同じ注文IDに対する確定は一回だけ、同じ決済試行の請求は一件以下。在庫と決済は異なる境界にあるため、確定には両方の結果を照合します。購入者に状態確認中を表示できるようにします。</p>
 <div class="table-wrap" tabindex="0" role="region" aria-label="総合演習の受入試験"><table>
