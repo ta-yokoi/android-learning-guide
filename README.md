@@ -11,6 +11,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - Androidスライド: https://ta-yokoi.github.io/android-learning-guide/android/slides/
 - Android: https://ta-yokoi.github.io/android-learning-guide/android/guide/
 - 組み込み開発: https://ta-yokoi.github.io/android-learning-guide/embedded/guide/
+- データ指向アプリケーション設計 入門: https://ta-yokoi.github.io/android-learning-guide/data-design/guide/
 - GoFデザインパターン: https://ta-yokoi.github.io/android-learning-guide/gof/guide/
 - 動く図で学ぶGoF: https://ta-yokoi.github.io/android-learning-guide/gof/animations/
 - GoFの音声付き動画風スライド: https://ta-yokoi.github.io/android-learning-guide/gof/slides/
@@ -22,11 +23,15 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 - Androidの入口: https://ta-yokoi.github.io/android-learning-guide/android/
 - GoFの入口: https://ta-yokoi.github.io/android-learning-guide/gof/
 - 組み込み開発の入口: https://ta-yokoi.github.io/android-learning-guide/embedded/
+- データ設計の入口: https://ta-yokoi.github.io/android-learning-guide/data-design/
 
 ## 構成
 
 ```
-index.html           # Android／GoF／組み込み開発／作品集の入口
+index.html           # Android／GoF／組み込み開発／データ設計／作品集の入口
+data-design/index.html # データ設計の入口
+data-design/guide/index.html # 注文システムを題材にした8章・確認問題16問
+data-design/labs/ # Python・SQLiteの実行実習3本
 android/index.html   # Android教材アプリの共通入口
 android/manifest.webmanifest # 通常教材・簡易版・詳細版で共通の起動設定
 gof/index.html       # GoF：通常の教材・CSS図解・音声付き動画風スライドを選ぶ
@@ -461,3 +466,18 @@ Androidアプリのビルド、Android APIや実端末でのコマンド、実�
 Androidの深掘り講座は、OSと製品、アプリ、機器、通信と車載、障害調査の5分野から探せます。「Binder」「録音」「OTA」などを入力すると、見出しと説明に加えて関連語でも絞り込めます。複数の語は空白で区切ります。JavaScript無効時も、分野別の一覧と作品・教材へのリンクを利用できます。
 
 入口と本文の案内を再適用する場合は `python3 tools/polish_library.py` を実行します。深掘り講座の一覧は `python3 tools/generate_android_deep_dives.py` で生成します。
+
+
+## データ指向アプリケーション設計 入門
+
+トップの「データ設計」から開きます。リポジトリ内では `data-design/index.html` をブラウザで開けます。注文システムの要件から始め、モデル・索引、スキーマ移行、複製と分割、在庫競合、決済の結果不明、集計までを全8章で扱います。各章に設計案の比較、検証例、確認問題と解説を収録しています。
+
+実習はPython 3.9以降と標準ライブラリで実行できます。コマンドはリポジトリのルートから実行します。
+
+```sh
+python3 data-design/labs/inventory.py
+python3 data-design/labs/payment_retry.py
+python3 data-design/labs/sales_events.py
+```
+
+在庫実習は一時SQLiteデータベースへの別接続から競合を検証します。決済と売上集計はメモリ上のモデルを使います。期待する出力と各モデルの検証範囲は本文に掲載しています。読了記録はブラウザの専用キー `data-design-guide-completed-v1` に保存します。

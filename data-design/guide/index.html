@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="注文・在庫・決済・売上集計を題材に、データ設計と分散システムの判断を学ぶ全8章。">
+<title>データ指向アプリケーション設計 入門｜教材ライブラリ</title>
+<style>
+:root{color-scheme:light dark;--ink:#18313e;--muted:#516874;--paper:#fff;--bg:#f6f8f5;--line:#c8d9d3;--accent:#075e55;--tint:#e7f2ec}
+@media(prefers-color-scheme:dark){:root{--ink:#e5eef1;--muted:#b9cbd2;--paper:#18242f;--bg:#101820;--line:#476069;--accent:#9be5cd;--tint:#203c35}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.85 system-ui,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}
+a{color:var(--accent);text-underline-offset:.22em;overflow-wrap:anywhere}
+:focus-visible{outline:3px solid #b8812d;outline-offset:4px}
+.skip{position:absolute;top:0;left:.75rem;padding:.5rem;background:var(--paper);transform:translateY(-120%)}
+.skip:focus{transform:none}
+.wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+header,footer{padding:16px 0;background:var(--paper);border-block-end:1px solid var(--line)}
+header .wrap,footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px}
+header a,footer a{min-height:44px;display:inline-flex;align-items:center;font-size:.88rem}
+.hero{padding:clamp(32px,6vw,72px) 0 28px}
+h1,h2,h3{line-height:1.38;text-wrap:pretty}
+h1{font-size:clamp(29px,5vw,48px);letter-spacing:-.035em;margin:0 0 18px}
+h2{font-size:clamp(22px,3vw,30px);margin:0 0 15px}
+h3{font-size:1.05rem;margin:1.55em 0 .5em}
+.hero p{max-width:68ch;color:var(--muted);margin:0 0 12px}
+.layout{display:grid;grid-template-columns:215px minmax(0,1fr);gap:26px;align-items:start;padding-bottom:40px}
+.toc,.chapter{background:var(--paper);border:1px solid var(--line);border-radius:10px}
+.toc{padding:16px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.toc a{display:block;padding:7px 0;font-size:.88rem}
+.chapter{padding:clamp(15px,3vw,32px);margin-bottom:20px;scroll-margin-top:12px;min-width:0;overflow-wrap:anywhere}
+.contract{background:var(--tint);border-inline-start:4px solid var(--accent);padding:10px 14px}
+.table-wrap,pre{overflow:auto;max-width:100%;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;min-width:470px;width:100%;font-size:.9rem}
+th,td{text-align:start;vertical-align:top;padding:10px 12px;border-block-end:1px solid var(--line)}
+th{background:var(--tint)}
+caption{text-align:start;padding:10px 12px;font-weight:700}
+tbody tr:last-child td{border:0}
+pre{padding:13px;background:var(--bg);line-height:1.55;font-size:.85rem;overflow-wrap:normal}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+details{border-top:1px solid var(--line);padding:9px 0}
+summary{font-weight:650;cursor:pointer;min-height:44px;padding:6px 0}
+details p{margin:3px 0 10px}
+figure{margin:16px 0}
+figcaption{font-weight:650}
+.progress{padding-top:10px;border-top:1px solid var(--line);font-size:.87rem}
+[hidden]{display:none!important}
+@media(max-width:760px){.layout{grid-template-columns:minmax(0,1fr)}.toc{position:static;max-height:none}.toc ol{margin:3px 0;padding-inline-start:23px}}
+@media print{
+  :root{color-scheme:light;--ink:#172d36;--muted:#344d57;--paper:#fff;--bg:#fff;--line:#9caeaa;--accent:#075e55;--tint:#eef3ef}
+  .wrap{width:100%}.layout{display:block}.toc,.progress,header,footer{display:none!important}
+  .chapter{border:none;padding:12px 0}.hero{padding:10px 0}.table-wrap,pre{overflow:visible}table{min-width:0}pre{white-space:pre-wrap;overflow-wrap:anywhere}h2,h3{break-after:avoid}
+  details{break-inside:avoid}details::details-content{content-visibility:visible;height:auto}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header><nav class="wrap" aria-label="ライブラリ内の移動"><a href="../../index.html">教材ライブラリ</a><a href="../index.html">データ設計の入口</a></nav></header>
+<main id="main" class="wrap">
+<div class="hero">
+<h1>データ指向アプリケーション設計 入門</h1>
+<p>茶葉を販売するオンラインストアを、一店舗から複数の地域へ広げます。注文・在庫・決済・売上集計を例に、データの置き方を選び、障害時の振る舞いを説明できるようにします。</p>
+<p>対象はWebアプリとSQLの基礎を学んだ開発者です。実習に必要なのはPython 3.9以降と標準ライブラリだけです。</p>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="章の目次" id="toc">
+<strong>目次</strong>
+<ol>
+<li><a href="#requirements">要件を定義する</a></li>
+<li><a href="#storage">モデルとストレージを選ぶ</a></li>
+<li><a href="#schema">スキーマを変更する</a></li>
+<li><a href="#distribution">複製と分割を考える</a></li>
+<li><a href="#transactions">在庫の不変条件を守る</a></li>
+<li><a href="#uncertainty">決済の結果不明を扱う</a></li>
+<li><a href="#analytics">バッチとストリームで集計する</a></li>
+<li><a href="#capstone">総合演習</a></li>
+</ol>
+<a href="#references">参考資料</a>
+<div class="progress" id="reading-progress" hidden><output id="reading-count" aria-live="polite"></output><div id="reading-note"></div></div>
+</nav>
+<div>
+<section id="requirements" class="chapter" aria-labelledby="requirements-title">
+<h2 id="requirements-title">1. 要件を定義する</h2>
+<p>開店セールで通常の10倍の注文が来ます。販促ページは短時間古くても構いませんが、確定した注文と注文番号の対応を失うと、問い合わせも発送もできません。まずはどの操作の何を測るか決めます。</p>
+<p class="contract"><strong>守る条件</strong>　確定成功を返した注文は、想定する単一DBホストの喪失後も復元できること。負荷超過時は受付を制限し、保存できていない注文を成功扱いにしません。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="要求と検証例の表"><table>
+<caption>架空ストアの受入条件</caption>
+<thead><tr><th scope="col">条件</th><th scope="col">測定方法</th><th scope="col">期待結果</th></tr></thead>
+<tbody>
+<tr><td>通常負荷</td><td>注文APIを毎秒100件で10分間測定</td><td>成功応答のp95が300 ms以内。失敗率も別途0.1%以下。</td></tr>
+<tr><td>通常の10倍の負荷</td><td>受付上限を越えた要求を記録</td><td>拒否は明示され、既に確定した注文は保全される。</td></tr>
+<tr><td>単一ホストの喪失</td><td>成功応答済みのIDと復元後のIDを照合</td><td>その障害範囲でRPOは0、注文受付を15分以内に再開する。</td></tr>
+</tbody></table></div>
+<p>100件の応答を小さい順に並べ、95番目が280 msなら、nearest-rank法ではp95の目標内です。失敗率や最大値は別に確認します。RPOは復旧時に許容するデータの損失範囲、RTOは復旧に許容する時間です。保守性も「当番担当者が手順書だけで復旧試験を完了できるか」のように検証します。</p>
+<p><strong>案を選ぶ</strong>　単一DB＋定期バックアップは小さく運用できます。数分の消失を許容する機能には候補ですが、この注文のRPO 0には単独で足りません。別ホストへの永続化を成功応答の条件にする案は、単一ホスト喪失に備えやすい分、応答の待ち時間とフェイルオーバー時の運用が増えます。</p>
+<h3>確認問題</h3>
+<details><summary>p95が改善したら、注文受付全体が改善したと言えるか。</summary><p>成功応答の分布だけを測っているので、失敗率、負荷、最大遅延も見ます。遅い要求を早く拒否するだけでもp95は改善し得ます。</p></details>
+<details><summary>毎時バックアップを取れば、RPO 0を宣言できるか。</summary><p>直近のバックアップより後に成功応答を返した注文が失われ得ます。対象障害でどこまで永続化されるかを確認し、復元試験で突き合わせます。</p></details>
+</section>
+
+<section id="storage" class="chapter" aria-labelledby="storage-title">
+<h2 id="storage-title">2. モデルとストレージを選ぶ</h2>
+<p>購入履歴では一注文の明細と配送先をまとめて表示し、倉庫ではSKUから未発送の注文を探します。画面の見た目だけでモデルを決めると、倉庫の検索が後から重くなります。</p>
+<p class="contract"><strong>守る条件</strong>　同じ注文番号に一つの注文を対応づけ、購入時の単価を保持します。商品マスターの価格改定で過去の注文金額が変化する状態を防ぎます。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="モデルと検索の比較表"><table>
+<caption>アクセスの形から候補を比較する</caption>
+<thead><tr><th scope="col">候補</th><th scope="col">向く読み取り</th><th scope="col">費用・見送り条件</th></tr></thead>
+<tbody>
+<tr><td>注文と明細を別テーブルにする</td><td>SKU横断検索や外部キーでの参照制約</td><td>購入履歴では結合が必要。注文単位の取得だけが大半なら結合や転送量を計測する。</td></tr>
+<tr><td>注文ドキュメントに明細を埋め込む</td><td>一注文をまとめて取得</td><td>横断検索には製品の索引機能や別の検索用データが必要。明細が無制限に増えるなら文書サイズと更新競合を確認する。</td></tr>
+</tbody></table></div>
+<figure><figcaption>索引を検証するSQL</figcaption>
+<pre tabindex="0"><code>CREATE INDEX orders_by_customer ON orders(customer_id, created_at);
+EXPLAIN QUERY PLAN
+SELECT id, created_at FROM orders
+WHERE customer_id = 42 ORDER BY created_at DESC;</code></pre></figure>
+<p>検証入力は「顧客ごとに100件、全体で10万件の注文」です。SQLiteで索引前後の計画を比べ、顧客IDで検索して並べ替えを省けるか確認します。この入力で索引を追加する前は全表走査と一時B-treeでの整列が表示され、追加後は上の索引を使う検索が表示されました。実際の計画は統計とデータ分布に依存します。索引には領域が必要で、挿入やキー変更でも保守が発生するため、読み取りだけで採否を決めません。</p>
+<details><summary>購入履歴の金額は商品マスターの現在価格から計算してよいか。</summary><p>購入時単価を明細へ保存します。それを数量と組み合わせ、過去の取引を安定して再現します。</p></details>
+<details><summary>頻度の低い検索にも、すべて索引を付けるべきか。</summary><p>要求の遅延、検索頻度、書き込み増加と領域を測ります。運用時にほぼ実行されない検索が全注文の更新費用を押し上げるなら、別の集計や定期処理も候補です。</p></details>
+</section>
+
+<section id="schema" class="chapter" aria-labelledby="schema-title">
+<h2 id="schema-title">3. スキーマを変更する</h2>
+<p>単一配送しか扱えなかった注文に、出荷元を示す <code>warehouse_code</code> を追加します。アプリを段階的にデプロイする間、旧版も同じDBへ注文を書き込みます。</p>
+<p class="contract"><strong>守る条件</strong>　旧版の注文も新規注文も参照でき、出荷元が未確認の注文を誤った倉庫へ送らないこと。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="移行段階と期待結果の表"><table>
+<caption>追加・埋め戻し・制約の順に移行する</caption>
+<thead><tr><th scope="col">段階</th><th scope="col">検証入力</th><th scope="col">期待結果</th></tr></thead>
+<tbody>
+<tr><td>列を追加する</td><td>旧版が出荷元なしで注文42を追加</td><td>新しい読取り側がNULLを「要確認」と表示する。</td></tr>
+<tr><td>書込みを移行する</td><td>新版が注文43にW02を書込む。埋め戻しを再実行。</td><td>既にあるW02を上書きせず、根拠が確認できた旧データだけを更新する。</td></tr>
+<tr><td>制約を強める</td><td>旧書込みの停止を確認し、未確定データの件数を照合</td><td>解消できた場合に限り必須化する。検証失敗なら移行を止めて原因を調べる。</td></tr>
+</tbody></table></div>
+<p><strong>案を選ぶ</strong>　停止を許容できる小規模DBでは、計画停止中の一括移行は手順が短くなります。連続受付が必要なら、互換期間を設けた段階移行が候補です。二つの版のテストとデータ補正が増えます。DDLのロックや表再構築を実際のDB製品とデータ量で確認します。</p>
+<details><summary>列を追加した直後から必須制約を付けると、何が起こり得るか。</summary><p>旧版がその列を書かず、新規注文が拒否されます。読取りと書込みの互換性を確認し、旧書込みが停止した後に制約を強めます。</p></details>
+<details><summary>埋め戻しの最中に新版がW02を書いた場合、何を守るか。</summary><p>既に判明している値を上書きしないことです。例えば対象を <code>WHERE warehouse_code IS NULL</code> で限定し、根拠のある値だけを更新します。</p></details>
+</section>
+
+<section id="distribution" class="chapter" aria-labelledby="distribution-title">
+<h2 id="distribution-title">4. 複製と分割を考える</h2>
+<p>メインDBに注文を保存した直後、履歴を読取り用レプリカへ送ると、反映が遅れて注文が見えません。同時に人気商品の注文だけが集中し、商品IDによる分割で特定の分割先が混みます。</p>
+<p class="contract"><strong>守る条件</strong>　本人が注文確定後に履歴を開いたとき、確定済みの注文が消えたように見えないこと。人気商品の在庫引当は、この章の読取り分散と独立して競合を守ります。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="複製と負荷偏りの検証表"><table>
+<caption>反映位置とキー分布を観測する</caption>
+<thead><tr><th scope="col">時点・入力</th><th scope="col">格納先の状態</th><th scope="col">期待する振る舞い</th></tr></thead>
+<tbody>
+<tr><td>注文42を確定</td><td>メインの反映位置100、レプリカ99</td><td>確定直後の履歴はメインへ送るか、100まで追いつくのを待つ。</td></tr>
+<tr><td>レプリカが100まで反映</td><td>注文42を読み取れる</td><td>対象位置を満たすレプリカで履歴を返せる。</td></tr>
+<tr><td>1000注文のうち800件が同じSKU</td><td>SKU単位の分割先へ800件が集中</td><td>台数の平均に加えて、キー別・分割先別の負荷を測る。</td></tr>
+</tbody></table></div>
+<p><strong>案を選ぶ</strong>　確定直後だけメインへ送ると実装は小さくできますが、回遊の多いセール時はメインへの読取りが増えます。反映位置を渡して待機とフォールバックを設計すると読取りを分散できますが、期限と遅延監視が必要です。注文履歴の分割を顧客IDへ寄せる案は履歴取得に向きますが、SKU横断集計には別の集計経路が必要です。</p>
+<details><summary>同期で複製されたと知れば、あらゆるレプリカから直ちに読めるか。</summary><p>同期の対象が受信、永続化、適用のどこまでかと、実際に読むレプリカが対象に含まれるかを確認します。</p></details>
+<details><summary>SKUをハッシュ化して台数を増やせば、人気SKUの偏りはなくなるか。</summary><p>同じSKUは同じハッシュ値になります。読取りキャッシュ、集計キーの分散などを用途別に検討します。在庫を分ける場合は総数や再配分の制約が追加されます。</p></details>
+</section>
+
+<section id="transactions" class="chapter" aria-labelledby="transactions-title">
+<h2 id="transactions-title">5. 在庫の不変条件を守る</h2>
+<p>残り1個の茶葉を2人が同時に注文します。先に在庫を読んでからアプリ側で可否を決め、別の更新で減らすと、両者が同じ在庫を見て予約を受け付ける設計になり得ます。</p>
+<p class="contract"><strong>守る条件</strong>　在庫は常に0以上で、同じ1個を引き当てられる注文は一件だけです。実サービスでは予約行と在庫の更新を一つのトランザクションに置きます。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="在庫競合の比較表"><table>
+<caption>在庫1個への同時要求</caption>
+<thead><tr><th scope="col">方式</th><th scope="col">入力と操作</th><th scope="col">結果・費用</th></tr></thead>
+<tbody>
+<tr><td>別々に読んで無条件更新</td><td>AとBがともに残数1を読む</td><td>両者が成功扱いになり得る。残数を0へ代入する方式では負数チェックだけで検出できない。</td></tr>
+<tr><td>条件付き更新</td><td>AとBが残数1以上を条件として更新</td><td>一方は更新件数1、他方は0。単一行のガードに向く。</td></tr>
+<tr><td>明示的ロックや直列化可能な実行</td><td>複数の行にまたがる制約を検査</td><td>より広い不変条件を扱える。待機や競合による中断と再試行を設計する。</td></tr>
+</tbody></table></div>
+<h3>実習1　SQLiteの別接続で競合を起こす</h3>
+<p>実習ファイルを保存し、同じディレクトリで実行します。2スレッドを合流させ、同じ一時DBに対して別の接続から更新を試します。どちらの要求が先に成功するかは不定です。 <a href="../labs/inventory.py" download>inventory.py</a></p>
+<pre tabindex="0"><code>python3 inventory.py
+outcomes: reserved, sold_out
+remaining: 0</code></pre>
+<pre tabindex="0"><code>UPDATE stock SET remaining = remaining - 1
+WHERE sku = ? AND remaining &gt;= 1;</code></pre>
+<p>成功判定はコミット後に行い、更新件数0は同じ予約を進めない合図にします。SQLiteは書込みを直列化します。この実習では、そのSQLite上の単一SKUの引当を検証します。他のDBの分離レベルや複数SKUの一括予約では、それぞれ競合試験が必要です。</p>
+<details><summary>残数にCHECK制約を付ければ、二重予約も防げるか。</summary><p>両方が残数0を書いて予約を発行する設計では、残数は非負のままで二重予約できます。更新の成功と予約の一意性を結び付けて検証します。</p></details>
+<details><summary>直列化失敗の再試行は最後のSQLだけでよいか。</summary><p>最初の読取りと判断からトランザクション全体をやり直します。外部の決済等は再実行される範囲から切り離し、操作IDで管理します。</p></details>
+</section>
+
+<section id="uncertainty" class="chapter" aria-labelledby="uncertainty-title">
+<h2 id="uncertainty-title">6. 決済の結果不明を扱う</h2>
+<p>注文42の決済APIが時間内に応答しません。相手で確定してから応答だけが失われた可能性があるので、注文の状態を「決済確認中」として照会できます。</p>
+<p class="contract"><strong>守る条件</strong>　一つの決済試行から発生する請求は最大一件です。未確認の結果で発送を開始したり、別の試行として無条件に取り直したりしません。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="応答喪失と再送の時系列"><table>
+<caption>同じ決済操作が二度送られる時系列</caption>
+<thead><tr><th scope="col">時点</th><th scope="col">注文サービス</th><th scope="col">決済側</th></tr></thead>
+<tbody>
+<tr><td>送信前</td><td>操作IDと金額を記録</td><td>未受付</td></tr>
+<tr><td>一回目</td><td>応答を待つ</td><td>請求を確定し、応答を送るが途中で失われる</td></tr>
+<tr><td>期限超過</td><td>確認中へ移行。同じ操作IDで再送または照会</td><td>確定済みで、同じ操作IDには既存結果を返す</td></tr>
+<tr><td>照合完了</td><td>決済結果を記録し、発送の条件を評価</td><td>請求は一件のまま</td></tr>
+</tbody></table></div>
+<p><strong>案を選ぶ</strong>　同じ操作IDで再送する案は、相手がキーを保つ期間内に元の結果を返す契約が前提です。照会を優先する案では、問い合わせの制限や未登録と表示される途中状態を考慮します。自動復旧の根拠が足りなければ、確認中のまま照合キューに回します。全体の締切、試行間隔、試行上限、手動照合への移行条件を決めます。</p>
+<p><strong>二つの保証を区別する</strong>　レプリカ間の一貫性では、書いた値をどの読取りから観測できるかを扱います。分離性では、並行トランザクションの読み書きが互いにどう見えるかを扱います。発行元DBで強い分離を選んでも、非同期レプリカの適用遅延や外部決済の応答喪失は別に起こります。</p>
+<h3>実習2　同じ操作IDで決済を再送する</h3>
+<p>決済側の確定と応答を別々にシミュレートします。同じIDと金額の再送で元の結果が返り、同じIDで金額だけ変えると拒否されます。 <a href="../labs/payment_retry.py" download>payment_retry.py</a></p>
+<pre tabindex="0"><code>python3 payment_retry.py
+first reply: unknown
+retry receipt: payment-1
+payment count: 1
+changed amount: conflict</code></pre>
+<p>決済側をメモリ内の単一プロセスとしてモデル化しています。実装では操作の内容と結果の永続化、同時到着時の原子性、相手のキー保持期限を確認します。期限を過ぎた場合は同じキーの再送だけに頼らず照会します。</p>
+<details><summary>タイムアウト直後に新しいキーを発行して送信すると何が起きるか。</summary><p>元の請求が既に確定していれば、二件目の請求として扱われ得ます。元の操作IDで状態を照合し、別試行にするのは元の取引の扱いが確定してからです。</p></details>
+<details><summary>注文DBを直列化可能にしたら、決済先で二重実行されないか。</summary><p>その分離保証はDB内のトランザクションに対するものです。外部の決済先との境界には、操作ID、照会、結果の照合が別に必要です。</p></details>
+</section>
+
+<section id="analytics" class="chapter" aria-labelledby="analytics-title">
+<h2 id="analytics-title">7. バッチとストリームで集計する</h2>
+<p>担当者には当日の速報を、経理には翌日の修正済み集計を出します。売上日は決済イベントの発生時刻で決め、取込み時刻は遅着の検出に使います。実サービスでは日付を決めるタイムゾーンを統一します。</p>
+<p class="contract"><strong>守る条件</strong>　同一イベントIDは一回だけ計上し、遅着で当日分が変わった場合は訂正を発行します。同じIDに異なる金額が来たら照合対象にします。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="イベントの発生と取込みの比較"><table>
+<caption>1月10日分を締めた後の取込み</caption>
+<thead><tr><th scope="col">イベント・発生日</th><th scope="col">取込み日・金額</th><th scope="col">10日分の扱い</th></tr></thead>
+<tbody>
+<tr><td>paid-42・10日</td><td>10日・1200円</td><td>速報に計上</td></tr>
+<tr><td>paid-42の再配信・10日</td><td>11日・1200円</td><td>IDで重複を除外</td></tr>
+<tr><td>paid-43・10日</td><td>11日・800円</td><td>締め後の訂正に反映</td></tr>
+<tr><td>paid-44・11日</td><td>11日・500円</td><td>11日分へ計上</td></tr>
+</tbody></table></div>
+<p><strong>案を選ぶ</strong>　日次バッチだけなら手順と復旧が小さくなります。即時性が要求される場合は速報をストリームで更新し、元イベントからバッチで再集計する案があります。その場合、結果の版管理、イベント保持期間、重複判定の状態量が増えます。ウォーターマークはイベント時刻の進行を見積もる仕組みで、将来の遅着を不可能にする境界ではありません。この実習では説明を簡潔にするため日付による固定の締めを使います。</p>
+<h3>実習3　重複と遅着を区別する</h3>
+<p>10日分の速報は1200円です。保持したイベントを重複排除して再集計すると、遅着した800円が加わります。 <a href="../labs/sales_events.py" download>sales_events.py</a></p>
+<pre tabindex="0"><code>python3 sales_events.py
+online total: 1200
+corrected total: 2000
+duplicates: 1, late: 1
+changed event: conflict</code></pre>
+<p>実習は入力順と固定の締め日を与えたメモリ上の例です。配信基盤のチェックポイント、障害復旧、任意の複数窓、永続化を検証するには、実際のストリーム処理と出力先を接続した試験が必要です。</p>
+<details><summary>取込み日で集計すると、800円は何日分になるか。</summary><p>11日分になります。売上日を決済の発生日と定義したなら、それは10日分です。二つの時刻の用途と日付を切るタイムゾーンを仕様に書きます。</p></details>
+<details><summary>重複排除用のIDを保持期限の翌日に捨てたら、再配信を防げるか。</summary><p>古いIDを再び新規扱いする可能性があります。再配信の最大期間、取消・訂正の方法、全再集計で使う元データの保持期間を一緒に設計します。</p></details>
+</section>
+
+<section id="capstone" class="chapter" aria-labelledby="capstone-title">
+<h2 id="capstone-title">8. 総合演習　注文から日次売上まで設計する</h2>
+<p>セール中の在庫超過と二重請求を防ぎ、購入者は注文状況をすぐに見られるようにします。担当者は売上の速報を確認し、経理は翌朝に訂正済みの金額を使います。</p>
+<p class="contract"><strong>守る条件</strong>　同じ注文IDに対する確定は一回だけ、同じ決済試行の請求は一件以下。在庫と決済は異なる境界にあるため、確定には両方の結果を照合します。購入者に状態確認中を表示できるようにします。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="総合演習の受入試験"><table>
+<caption>設計案に対して実行する受入試験</caption>
+<thead><tr><th scope="col">入力・障害注入</th><th scope="col">観測する証拠</th><th scope="col">合格条件</th></tr></thead>
+<tbody>
+<tr><td>残り1個へ同時注文</td><td>在庫数、予約行、注文ID</td><td>予約は一件、残数は0</td></tr>
+<tr><td>請求確定後に応答を喪失し、注文サービスを再起動</td><td>操作ID、注文状態、決済側の請求</td><td>照会や再送後も請求は一件、確認後のみ発送へ進む</td></tr>
+<tr><td>レプリカが古い、同じ売上イベントが再到着</td><td>履歴に表示した注文ID、集計の版と入力イベントID</td><td>購入者に確定済み注文を表示し、売上は重複計上しない</td></tr>
+</tbody></table></div>
+<h3>二つの解答例</h3>
+<p><strong>構成A　単一の注文DBと定期集計</strong>　DB内のトランザクションで在庫予約と注文状態を記録します。決済はDBの外で実施し、永続化した試行IDで照会します。購入者の履歴も注文DBから読みます。速報は注文DBの負荷を計測しながら短い周期で集計し、翌朝に再計算します。低負荷で数分の速報遅延を許容できる場合に候補となり、注文DBの読取り余力が小さい場合は見直します。</p>
+<p><strong>構成B　注文の正本と集計経路を分ける</strong>　注文状態と配信用レコードを同じDBトランザクションで保存します。別プロセスで配信し、重複配信に備えて受信側をイベントIDで処理します。注文直後の履歴は正本か反映位置を満たすレプリカから読みます。迅速な速報や重い集計を分離できますが、転送滞留、再集計、訂正、照合を運用します。厳しい速報要件や十分な処理量があるときに候補です。</p>
+<details><summary>予約が期限切れになった後に決済成功が判明したらどうするか。</summary><p>在庫を解放した後で発送を確定すると超過販売につながります。残った在庫で再予約できるかを検査し、できない場合の取消・返金・手動照会を仕様化します。この競合を受入試験に追加します。</p></details>
+<details><summary>配信レコードを注文と同時に保存すれば、受信側の重複判定は不要か。</summary><p>配信後に送信済みの記録を保存する前にプロセスが停止すれば、再送され得ます。DB内で配信予定を一緒に残すことと、受信側で副作用を一度だけ反映することは別の条件です。</p></details>
+</section>
+
+<section id="references" class="chapter" aria-labelledby="references-title">
+<h2 id="references-title">参考資料</h2>
+<ul>
+<li>Martin Kleppmann、Chris Riccomini 著、斉藤太郎 訳『データ指向アプリケーションデザイン 第2版』オライリー・ジャパン、2026年11月5日、ISBN 978-4-8144-0180-2。 <a href="https://www.oreilly.co.jp/books/9784814401802/">出版社の書誌情報</a></li>
+<li>SQLiteの書込みの直列化と読取りの違い。 <a href="https://www.sqlite.org/isolation.html">Isolation In SQLite</a></li>
+<li>SQLiteで索引選択と並べ替えを調べる方法。 <a href="https://www.sqlite.org/eqp.html">EXPLAIN QUERY PLAN</a></li>
+<li>イベント時刻、無制限データ、遅着の処理。 <a href="https://beam.apache.org/documentation/programming-guide/#watermarks-and-late-data">Apache Beam Programming Guide</a></li>
+</ul>
+</section>
+</div>
+</div>
+</main>
+<footer><nav class="wrap" aria-label="戻る"><a href="#main">ページの先頭へ</a><a href="../index.html">データ設計の入口へ</a><a href="../../index.html">教材ライブラリへ</a></nav></footer>
+<script>
+(() => {
+    const key = 'data-design-guide-completed-v1';
+    const chapters = [...document.querySelectorAll('.chapter:not(#references)')];
+    const valid = new Set(chapters.map(chapter => chapter.id));
+    const count = document.getElementById('reading-count');
+    const note = document.getElementById('reading-note');
+    let completed = new Set();
+    try {
+        const saved = JSON.parse(localStorage.getItem(key) || '[]');
+        if (Array.isArray(saved)) completed = new Set(saved.filter(id => valid.has(id)));
+    } catch {
+        note.textContent = '進捗はこのページを開いている間だけ記録されます。';
+    }
+    function update() {
+        count.textContent = '読了 ' + completed.size + ' / ' + chapters.length + '章';
+    }
+    for (const chapter of chapters) {
+        const label = document.createElement('label');
+        label.className = 'progress';
+        label.style.display = 'block';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = completed.has(chapter.id);
+        label.append(input, ' この章を読了（' + chapter.querySelector('h2').textContent + '）');
+        chapter.append(label);
+        input.addEventListener('change', () => {
+            if (input.checked) completed.add(chapter.id);
+            else completed.delete(chapter.id);
+            try {
+                localStorage.setItem(key, JSON.stringify([...completed]));
+            } catch {
+                note.textContent = '進捗はこのページを開いている間だけ記録されます。';
+            }
+            update();
+        });
+    }
+    update();
+    document.getElementById('reading-progress').hidden = false;
+    let printState;
+    window.addEventListener('beforeprint', () => {
+        if (printState) return;
+        printState = [...document.querySelectorAll('.chapter details')].map(detail => [detail, detail.open]);
+        for (const [detail] of printState) detail.open = true;
+    });
+    window.addEventListener('afterprint', () => {
+        for (const [detail, open] of printState || []) detail.open = open;
+        printState = undefined;
+    });
+})();
+</script>
+</body>
+</html>

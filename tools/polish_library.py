@@ -80,7 +80,7 @@ ROUTES = {
 
 NAV = [("home", "トップ", "index.html"), ("android", "Android", "android/index.html"),
        ("gof", "GoF", "gof/index.html"), ("embedded", "組み込み", "embedded/index.html"),
-       ("works", "作品集", "works/index.html")]
+       ("data-design", "データ設計", "data-design/index.html"), ("works", "作品集", "works/index.html")]
 
 
 def route_section(title, links):
