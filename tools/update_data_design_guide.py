@@ -8,6 +8,8 @@ import re
 from data_design_advanced import EXTRA_LABS, LAB_OUTPUT, UNITS, WORKED
 from data_design_experiments import ENGINE_RESULTS, VIDEOS
 from data_design_focus import FOCUS, FOCUS_BY_SECTION, LAB_OUTPUT as FOCUS_LAB_OUTPUT
+from data_design_topic_map import NOTES, TOPICS
+from data_design_workshops import FORMAT_DEPENDENCIES, WORKSHOPS, lab_file
 from data_design_section_audit import AUDIT, SUPPLEMENTS, UNIX_EXAMPLE
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_LAB_OUTPUT
@@ -15,6 +17,7 @@ from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_LAB_OUTPUT
 ROOT = Path(__file__).resolve().parent.parent / "data-design"
 FIRST_ADVANCED_SLIDE = 1 + sum(len(scenes) for _, _, scenes in INTRO_CHAPTERS)
 FIRST_FOCUS_SLIDE = FIRST_ADVANCED_SLIDE + 2 * len(UNITS) + len(VIDEOS)
+FIRST_WORKSHOP_SLIDE = FIRST_FOCUS_SLIDE + len(FOCUS)
 READING_MAP = [
     ("システム全体の選択", "workloads", "業務と分析、クラウドと自社運用。法規や利用目的は発展編のデータ利用で扱います。"),
     ("期待する品質と負荷", "load-and-recovery", "応答時間、耐障害性、過負荷からの復帰、実行基盤の構成。"),
@@ -167,6 +170,55 @@ def focus_lesson(lesson, slide):
     )
 
 
+def workshop_html(workshop, slide):
+    steps = "".join(f"<li>{escape(body)}</li>" for body in workshop.walkthrough)
+    reviews = "\n".join(f"<details><summary>{escape(q)}</summary><p>{escape(a)}</p></details>"
+                         for q, a in workshop.exercises)
+    lab = ""
+    if workshop.lab:
+        script = lab_file(workshop)
+        assert (ROOT / "labs" / script).is_file()
+        command = f"python3 {script} {workshop.lab}"
+        instructions = "取得先で次のコマンドを実行します。"
+        if dependency := FORMAT_DEPENDENCIES.get(workshop.lab):
+            instructions += "仮想環境を作る例はLinux・macOS向けです。"
+            command = ("python3 -m venv .venv\n"
+                       f".venv/bin/python -m pip install {dependency}\n"
+                       f".venv/bin/python {script} {workshop.lab}")
+        lab = (
+            f'<p><a href="../labs/{script}" download>{script}を取得</a>してください。'
+            f'{instructions}</p>'
+            f'<pre tabindex="0"><code>{escape(command)}</code></pre>'
+            f'<p>出力例</p><pre tabindex="0"><code>{escape(workshop.output)}</code></pre>'
+        )
+    source, url = workshop.source
+    return (
+        f'<h3 id="{workshop.anchor}">{escape(workshop.title)}</h3>\n'
+        f'<p class="chapter-video"><a href="../slides/index.html#slide-{slide}">図と読み上げで手順を追う</a></p>'
+        f'<ol>{steps}</ol><p><strong>検証・提出すること</strong>　{escape(workshop.criterion)}</p>\n'
+        f'{lab}{reviews}<p><a href="{escape(url, quote=True)}">{escape(source)}</a></p>\n'
+    )
+
+
+def workshop_map():
+    entries = "".join(f"<li>{link(item.anchor, item.title)}</li>" for item in WORKSHOPS)
+    rows = []
+    topic_count = 0
+    for section, first, last, target, subject, scope in TOPICS:
+        numbers = f"{section}.{first}" if first == last else f"{section}.{first}〜{section}.{last}"
+        topic_count += last - first + 1
+        rows.append(f'<tr><th scope="row">{numbers}</th><td>{link(target, subject)}</td>'
+                    f'<td>{escape(scope)}</td></tr>')
+    return (
+        f'<h3 id="design-workshops">設計・検証ワークショップ</h3><p>実行結果を予想してから試し、'
+        '結果を使って設計案を比較します。最後の注文基盤では複数章の知識を組み合わせます。</p>'
+        f'<ol>{entries}</ol><h3 id="topic-map">節内の論点と参照先</h3>'
+        f'<p>公開目次の3段階目に番号がある{topic_count}項目を、連続する番号ごとにまとめています。'
+        '題材に対応する説明、実習、設計レビューへの入口と、それぞれの検証範囲を示します。</p>'
+        + table("節内の論点", ["番号", "論点と参照先", "扱う範囲"], "".join(rows))
+    )
+
+
 def section(item, index):
     number = index + FIRST_ADVANCED_SLIDE
     key = item["key"]
@@ -194,13 +246,17 @@ def section(item, index):
     additional = supplement(key) if key in SUPPLEMENTS else ""
     focused = "".join(focus_lesson(lesson, FIRST_FOCUS_SLIDE + offset)
                       for offset, lesson in enumerate(FOCUS) if lesson.chapter == key)
+    workshops = "".join(workshop_html(item, FIRST_WORKSHOP_SLIDE + offset)
+                        for offset, item in enumerate(WORKSHOPS) if item.chapter == key)
+    notes = "".join(f'<h3 id="{anchor}">{escape(title)}</h3><p>{escape(body)}</p>\n'
+                    for anchor, title, body in NOTES.get(key, ()))
     title, example = WORKED[key]
     worked = f"<h3>{escape(title)}</h3><p>{escape(example)}</p>"
     return (
         f'<section class="chapter" id="{key}" aria-labelledby="{key}-title">\n'
         f'<h2 id="{key}-title">発展{index + 1}. {escape(item["title"])}</h2>\n'
         f'<p class="chapter-video"><a href="../slides/index.html#slide-{number}">この章を動画で見る</a> · <a href="#reading-map">第2版 {escape(item["sources"])}との対応</a></p>\n'
-        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}{focused}\n'
+        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}{focused}\n{notes}{workshops}\n'
         f'<h3>設計レビュー</h3><details><summary>{escape(item["question"])}</summary>'
         f'<p>{escape(item["answer"])}</p></details>\n</section>'
     )
@@ -218,7 +274,7 @@ def map_section():
         'ここで扱う技術の範囲は表に示しています。製品別の実装、アルゴリズムの完全な証明、個別の論文や事例は原典を参照してください。</p>'
         + table("書籍の章番号と発展編", ["書籍", "教材の入口", "この教材で扱う内容"], rows)
         + '<p><a href="https://www.oreilly.co.jp/books/9784814401802/">オライリー・ジャパンの公式目次と書誌情報</a></p>'
-        + coverage_table()
+        + coverage_table() + workshop_map()
         + '<h3>方式を確かめる一次資料</h3><ul>'
         '<li>索引内部とコンパクション。<a href="https://github.com/facebook/rocksdb/wiki/Leveled-Compaction">RocksDBの設計資料</a></li>'
         '<li>書き手と読み手のスキーマ解決。<a href="https://avro.apache.org/docs/1.12.0/specification/">Apache Avro仕様</a></li>'
@@ -241,7 +297,7 @@ def main():
     html = p.read_text()
     toc = "<strong>発展編</strong><ol>" + "".join(
         f'<li>{link(item["key"], item["title"])}</li>' for item in UNITS
-    ) + '</ol><a href="#reading-map">書籍との対応表</a> · <a href="#section-audit">49節の対応</a>'
+    ) + '</ol><a href="#reading-map">書籍との対応表</a> · <a href="#section-audit">49節の対応</a> · <a href="#design-workshops">設計・検証ワークショップ</a>'
     html = replace_block(html, "advanced-toc", toc, '<a href="#references">参考資料</a>')
     part = ('<div class="hero" id="advanced"><h2>発展編</h2>'
             '<p>ストアの規模と運用条件を変えながら、方式の内部、障害時の制約、データの責任を検討します。</p></div>\n')

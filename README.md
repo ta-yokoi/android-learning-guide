@@ -31,9 +31,9 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 ```
 index.html           # Android／GoF／組み込み開発／データ設計／作品集の入口
 data-design/index.html # データ設計の入口
-data-design/guide/index.html # 注文システムを題材にした22章・確認問題63問
-data-design/slides/index.html # データ設計の動画版（22章62場面）
-data-design/labs/ # 実行実習16本と実ストレージの比較
+data-design/guide/index.html # 注文システムを題材にした22章・確認問題83問
+data-design/slides/index.html # データ設計の動画版（22章72場面）
+data-design/labs/ # 実行実習18本と実ストレージの比較
 android/index.html   # Android教材アプリの共通入口
 android/manifest.webmanifest # 通常教材・簡易版・詳細版で共通の起動設定
 gof/index.html       # GoF：通常の教材・CSS図解・音声付き動画風スライドを選ぶ
@@ -485,12 +485,12 @@ python3 data-design/labs/sales_events.py
 在庫実習は一時SQLiteデータベースへの別接続から競合を検証します。決済と売上集計はメモリ上のモデルを使います。期待する出力と各モデルの検証範囲は本文に掲載しています。読了記録はブラウザの専用キー `data-design-guide-completed-v1` に保存します。
 
 
-動画版は22章62場面で、字幕のみの連続再生は33分04秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
+動画版は22章72場面で、字幕のみの連続再生は38分24秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
 
 動画HTMLの再生成は `python3 tools/generate_data_design_slides.py` で行います。場面と解説は `tools/data_design_lessons.py` で管理します。
 
 
-通常教材の「書籍第2版との対応表」には、公式目次の14章それぞれに対応する発展編の入口と、教材で扱う内容を掲載しています。発展編には章ごとの比較・数値例・確認問題と、実習7本を追加しました。引数なしで動く従来の15本を確認するには `for lab in data-design/labs/*.py; do case "$lab" in */engine_benchmark.py|*/section_examples.py) continue;; esac; python3 "$lab" || break; done` を実行します。実習は教育用の小さなモデルとSQLiteを使用します。
+通常教材の「書籍第2版との対応表」には、公式目次の14章それぞれに対応する発展編の入口と、教材で扱う内容を掲載しています。発展編には章ごとの比較・数値例・確認問題と、実習7本を追加しました。引数なしで動く従来の15本を確認するには `for lab in data-design/labs/*.py; do case "$lab" in */engine_benchmark.py|*/section_examples.py|*/design_workbench.py|*/formats_workbench.py) continue;; esac; python3 "$lab" || break; done` を実行します。実習は教育用の小さなモデルとSQLiteを使用します。
 
 発展編の本文と対応表は `python3 tools/update_data_design_guide.py` で更新します。その後 `python3 tools/generate_data_design_slides.py` を実行します。既存の入門章の順序と保存キーを保持し、動画は発展編を17場面目以降に追加しています。
 
@@ -516,3 +516,26 @@ done
 ```
 
 実習の出力例は各節に掲載しています。通信の実習は `127.0.0.1` の一時ポートを使います。
+
+[設計・検証ワークショップ](data-design/guide/index.html#design-workshops)では、実行手順と設計レビュー2問を各課題に掲載しています。SQLiteの複合索引と再帰SQL、バイナリ互換性、列指向の行グループ、レプリカの収束、再配置、時刻窓、削除と復元の判断を扱い、最後は[注文基盤の総合課題](data-design/guide/index.html#order-system-capstone)で確定・再配送・再構築をつなげます。動画版の63〜72場面からも各課題を開けます。
+
+[節内の論点と参照先](data-design/guide/index.html#topic-map)に、出版社の公開目次で3段階目に番号が付いた153項目の参照先と、実習で検証する範囲を掲載しています。
+
+ワークショップの実習9件のうち、次の7件はPython標準ライブラリで実行できます。
+
+```sh
+for case in queue graph-sql indexes observed-remove shard-move windows capstone; do
+    python3 data-design/labs/design_workbench.py "$case" || break
+done
+```
+
+残り2件では、仮想環境にDuckDBとProtocol Buffersを入れます。Linux・macOSでは次のコマンドを実行します。
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install duckdb==1.4.4 protobuf==6.33.5
+.venv/bin/python data-design/labs/formats_workbench.py parquet
+.venv/bin/python data-design/labs/formats_workbench.py protobuf
+```
+
+本文と動画の素材は `tools/data_design_workshops.py`、節内の参照先は `tools/data_design_topic_map.py` で管理します。

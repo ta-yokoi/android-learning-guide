@@ -15,6 +15,7 @@ from data_design_advanced import UNITS, VIDEO
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_VIDEO
 from data_design_experiments import VIDEOS
 from data_design_focus import FOCUS
+from data_design_workshops import WORKSHOPS, lab_file
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 import generate_android_slides as player
 
@@ -39,6 +40,12 @@ CHAPTERS += [
         (lesson.title, lesson.kind, lesson.labels, lesson.captions, lesson.question, lesson.answer),
     ])
     for lesson in FOCUS
+]
+CHAPTERS += [
+    (item.anchor, "実践 " + str(index + 1), [
+        (item.title, item.kind, item.labels, item.captions, *item.exercises[0]),
+    ])
+    for index, item in enumerate(WORKSHOPS)
 ]
 SCENE_COUNT = sum(len(scenes) for _, _, scenes in CHAPTERS)
 TOTAL_SECONDS = SCENE_COUNT * 4 * STEP
@@ -67,6 +74,8 @@ CHAPTER_NOTES.update({entry[0]: entry[-1] for entry in VIDEOS})
 ADVANCED_LABS.update({"engine-benchmark": "engine_benchmark.py", "raft-failure-lab": "raft_recovery.py"})
 CHAPTER_NOTES.update({lesson.anchor: lesson.tradeoff for lesson in FOCUS})
 ADVANCED_LABS.update({lesson.anchor: "section_examples.py" for lesson in FOCUS if lesson.lab})
+CHAPTER_NOTES.update({item.anchor: item.criterion for item in WORKSHOPS})
+ADVANCED_LABS.update({item.anchor: lab_file(item) for item in WORKSHOPS if item.lab})
 DIAGRAM_NAMES = {
     "flow": "手順と判断",
     "timeline": "時系列",
@@ -80,6 +89,7 @@ READINGS = [
     ["API", "エーピーアイ"], ["ID", "アイディー"], ["DB", "データベース"],
     ["CHECK", "チェック"], ["Raft", "ラフト"], ["LSM", "エルエスエム"], ["CDC", "シーディーシー"], ["W02", "ダブリューゼロツー"],
     ["RPC", "アールピーシー"], ["ACID", "アシッド"], ["UUID", "ユーユーアイディー"],
+    ["Parquet", "パーケー"], ["DuckDB", "ダックディービー"], ["Protobuf", "プロトバフ"],
 ]
 CSS = """
 .data-reader>summary{margin:1.5rem 0;font-weight:650;color:var(--ink)}
