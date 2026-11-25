@@ -31,9 +31,9 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 ```
 index.html           # Android／GoF／組み込み開発／データ設計／作品集の入口
 data-design/index.html # データ設計の入口
-data-design/guide/index.html # 注文システムを題材にした22章・確認問題44問
-data-design/slides/index.html # データ設計の動画版（22章46場面）
-data-design/labs/ # 実行実習15本と実ストレージの比較
+data-design/guide/index.html # 注文システムを題材にした22章・確認問題63問
+data-design/slides/index.html # データ設計の動画版（22章62場面）
+data-design/labs/ # 実行実習16本と実ストレージの比較
 android/index.html   # Android教材アプリの共通入口
 android/manifest.webmanifest # 通常教材・簡易版・詳細版で共通の起動設定
 gof/index.html       # GoF：通常の教材・CSS図解・音声付き動画風スライドを選ぶ
@@ -485,12 +485,12 @@ python3 data-design/labs/sales_events.py
 在庫実習は一時SQLiteデータベースへの別接続から競合を検証します。決済と売上集計はメモリ上のモデルを使います。期待する出力と各モデルの検証範囲は本文に掲載しています。読了記録はブラウザの専用キー `data-design-guide-completed-v1` に保存します。
 
 
-動画版は22章46場面で、字幕のみの連続再生は24分32秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
+動画版は22章62場面で、字幕のみの連続再生は33分04秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
 
 動画HTMLの再生成は `python3 tools/generate_data_design_slides.py` で行います。場面と解説は `tools/data_design_lessons.py` で管理します。
 
 
-通常教材の「書籍第2版との対応表」には、公式目次の14章それぞれに対応する発展編の入口と、教材で扱う内容を掲載しています。発展編には章ごとの比較・数値例・確認問題と、実習7本を追加しました。全実習を確認するには `for lab in data-design/labs/*.py; do [ "$lab" = data-design/labs/engine_benchmark.py ] && continue; python3 "$lab" || break; done` を実行します。実習は教育用の小さなモデルとSQLiteを使用します。
+通常教材の「書籍第2版との対応表」には、公式目次の14章それぞれに対応する発展編の入口と、教材で扱う内容を掲載しています。発展編には章ごとの比較・数値例・確認問題と、実習7本を追加しました。引数なしで動く従来の15本を確認するには `for lab in data-design/labs/*.py; do case "$lab" in */engine_benchmark.py|*/section_examples.py) continue;; esac; python3 "$lab" || break; done` を実行します。実習は教育用の小さなモデルとSQLiteを使用します。
 
 発展編の本文と対応表は `python3 tools/update_data_design_guide.py` で更新します。その後 `python3 tools/generate_data_design_slides.py` を実行します。既存の入門章の順序と保存キーを保持し、動画は発展編を17場面目以降に追加しています。
 
@@ -499,8 +499,20 @@ python3 data-design/labs/sales_events.py
 
 詳説の本文とナレーションの素材は `tools/data_design_deep_dive.py` にあります。動画の詳説は31場面目以降です。既存30場面のURLと保存位置は引き続き利用できます。
 
-[節別照合](data-design/guide/index.html#section-audit)では、出版社の公開目次から章末のまとめを除いた49節を、具体例・実習あり、概説、個別解説なしに分類しています。各節の範囲と補足候補を掲載しています。照合時に見つかったタイムラインの配信方式、データフレームと配列、Unixのパイプ集計には独自の具体例を追加しました。
+[節別照合](data-design/guide/index.html#section-audit)では、出版社の公開目次から章末のまとめを除いた49節について、教材の範囲と対応する具体例・実習へのリンクを掲載しています。照合時に見つかったタイムラインの配信方式、データフレームと配列、Unixのパイプ集計には独自の具体例を追加しました。
 
 [実ストレージの比較](data-design/guide/index.html#engine-benchmark)では、SQLiteとRocksDBに同じ操作列を流して、キャッシュ設定と負荷を変えたときの遅延とI/Oを観測します。RocksDBを測る場合は仮想環境に `rocksdict==0.3.29` をインストールします。本文に24回分の測定から集計した数値、再現コマンドと測定範囲を掲載しています。
 
 [Raftの分断・復帰実習](data-design/guide/index.html#raft-failure-lab)は `python3 data-design/labs/raft_recovery.py --partitions` で実行します。過半数の喪失、分断の反復、古い任期の拒否、スナップショット受領後の再適用をモデル上で確かめます。動画の45・46場面から、対応する本文と実習に進めます。
+
+以前は概説だった16節に、手順を追える事例、採用判断、検証条件、確認問題と解答を追加しました。本文の節番号は書籍の目次に対応し、動画は47〜62場面から参照できます。既存46場面のURLと、動画・本文の保存キーを保持しています。本文と動画の素材は `tools/data_design_focus.py` にあります。
+
+グラフの幅優先探索、全文・地理検索の候補絞り込み、SQLiteでのACID確認、ループバック通信での応答喪失・期限超過を、Python標準ライブラリだけで試せます。
+
+```sh
+for example in graph search acid network; do
+    python3 data-design/labs/section_examples.py "$example" || break
+done
+```
+
+実習の出力例は各節に掲載しています。通信の実習は `127.0.0.1` の一時ポートを使います。

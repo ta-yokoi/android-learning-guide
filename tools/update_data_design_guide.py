@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """Insert advanced chapters and the reading map into the data design guide."""
 
-from collections import Counter
 from html import escape
 from pathlib import Path
 import re
 
 from data_design_advanced import EXTRA_LABS, LAB_OUTPUT, UNITS, WORKED
-from data_design_experiments import ENGINE_RESULTS
+from data_design_experiments import ENGINE_RESULTS, VIDEOS
+from data_design_focus import FOCUS, FOCUS_BY_SECTION, LAB_OUTPUT as FOCUS_LAB_OUTPUT
 from data_design_section_audit import AUDIT, SUPPLEMENTS, UNIX_EXAMPLE
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_LAB_OUTPUT
 
 ROOT = Path(__file__).resolve().parent.parent / "data-design"
 FIRST_ADVANCED_SLIDE = 1 + sum(len(scenes) for _, _, scenes in INTRO_CHAPTERS)
+FIRST_FOCUS_SLIDE = FIRST_ADVANCED_SLIDE + 2 * len(UNITS) + len(VIDEOS)
 READING_MAP = [
     ("システム全体の選択", "workloads", "業務と分析、クラウドと自社運用。法規や利用目的は発展編のデータ利用で扱います。"),
     ("期待する品質と負荷", "load-and-recovery", "応答時間、耐障害性、過負荷からの復帰、実行基盤の構成。"),
@@ -108,21 +109,27 @@ def raft_experiment(slide):
 
 
 def coverage_table():
-    labels = ("個別解説なし", "概説", "具体例・実習あり")
-    counts = Counter()
     rows = []
+    focused = set()
     for chapter, (anchor, sections) in enumerate(AUDIT, 1):
-        for section, (status, name, note, *target) in enumerate(sections, 1):
-            counts[status] += 1
-            topic = link(target[0] if target else anchor, name) if status else escape(name)
-            rows.append(f'<tr><th scope="row">{chapter}.{section}</th><td>{topic}</td>'
-                        f'<td>{labels[status]}</td><td>{escape(note)}</td></tr>')
-    summary = "、".join(f"{labels[i]}{counts[i]}節" for i in (2, 1, 0))
+        for section, (name, *coverage) in enumerate(sections, 1):
+            number = f"{chapter}.{section}"
+            if coverage:
+                note, *target = coverage
+                destination = target[0] if target else anchor
+            else:
+                lesson = FOCUS_BY_SECTION[number]
+                assert lesson.chapter + "-details" == anchor
+                focused.add(number)
+                note, destination = lesson.audit, lesson.anchor
+            rows.append(f'<tr><th scope="row">{number}</th><td>{link(destination, name)}</td>'
+                        f'<td>{escape(note)}</td></tr>')
+    assert focused == FOCUS_BY_SECTION.keys()
     return (
         '<h3 id="section-audit">公開目次の節別照合</h3>'
-        f'<p>第2版の節番号と、教材の到達範囲を照合しました。対象{sum(counts.values())}節の内訳は{summary}です。'
-        '各章のまとめと節内の小項目は集計から除いています。「具体例・実習あり」は教材で独自の題材を追える範囲を示します。</p>'
-        + table("節ごとの教材範囲と補足候補", ["節", "主題", "深さ", "教材の範囲と補足候補"], "".join(rows))
+        f'<p>第2版の章末まとめを除いた{len(rows)}節すべてに、独自の具体例または実習があります。'
+        '節の名前から対応する本文に移動できます。集計は節単位です。節内の小項目、原典の事例や論証は原典を参照してください。</p>'
+        + table("節ごとの教材範囲", ["節", "主題", "教材の範囲"], "".join(rows))
     )
 
 
@@ -133,6 +140,30 @@ def supplement(key):
     return (
         f'<h3 id="{anchor}">{escape(title)}</h3><dl class="mechanism">{description}</dl>{demo}'
         f'<details><summary>{escape(question)}</summary><p>{escape(answer)}</p></details>'
+    )
+
+
+def focus_lesson(lesson, slide):
+    phases = "".join(f"<dt>{escape(label)}</dt><dd>{escape(body)}</dd>"
+                     for label, body in zip(lesson.labels, lesson.explanation))
+    demo = ""
+    if lesson.lab:
+        assert (ROOT / "labs/section_examples.py").is_file()
+        demo = (
+            '<p><a href="../labs/section_examples.py" download>実習ファイルを取得</a>し、'
+            'Python 3.9以降で実行してください。</p>'
+            f'<pre tabindex="0"><code>python3 section_examples.py {lesson.lab}\n'
+            f'{escape(FOCUS_LAB_OUTPUT[lesson.lab])}</code></pre>'
+        )
+    label, url = lesson.source
+    return (
+        f'<h3 id="{lesson.anchor}">{lesson.section} {escape(lesson.title)}</h3>'
+        f'<p class="chapter-video"><a href="../slides/index.html#slide-{slide}">この節の詳説を動画で見る</a></p>'
+        f'<dl class="mechanism">{phases}</dl>'
+        f'<p><strong>設計判断</strong>　{escape(lesson.tradeoff)}</p>'
+        f'<p><strong>検証すること</strong>　{escape(lesson.check)}</p>{demo}'
+        f'<details><summary>{escape(lesson.question)}</summary><p>{escape(lesson.answer)}</p></details>'
+        f'<p><a href="{escape(url, quote=True)}">{escape(label)}</a></p>'
     )
 
 
@@ -161,13 +192,15 @@ def section(item, index):
     experiments = {"engines": engine_experiment, "order-and-agreement": raft_experiment}
     extra = experiments[key](first_experiment_slide + (key == "order-and-agreement")) if key in experiments else ""
     additional = supplement(key) if key in SUPPLEMENTS else ""
+    focused = "".join(focus_lesson(lesson, FIRST_FOCUS_SLIDE + offset)
+                      for offset, lesson in enumerate(FOCUS) if lesson.chapter == key)
     title, example = WORKED[key]
     worked = f"<h3>{escape(title)}</h3><p>{escape(example)}</p>"
     return (
         f'<section class="chapter" id="{key}" aria-labelledby="{key}-title">\n'
         f'<h2 id="{key}-title">発展{index + 1}. {escape(item["title"])}</h2>\n'
         f'<p class="chapter-video"><a href="../slides/index.html#slide-{number}">この章を動画で見る</a> · <a href="#reading-map">第2版 {escape(item["sources"])}との対応</a></p>\n'
-        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}\n'
+        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}{focused}\n'
         f'<h3>設計レビュー</h3><details><summary>{escape(item["question"])}</summary>'
         f'<p>{escape(item["answer"])}</p></details>\n</section>'
     )
@@ -208,7 +241,7 @@ def main():
     html = p.read_text()
     toc = "<strong>発展編</strong><ol>" + "".join(
         f'<li>{link(item["key"], item["title"])}</li>' for item in UNITS
-    ) + '</ol><a href="#reading-map">書籍との対応表</a>'
+    ) + '</ol><a href="#reading-map">書籍との対応表</a> · <a href="#section-audit">49節の対応</a>'
     html = replace_block(html, "advanced-toc", toc, '<a href="#references">参考資料</a>')
     part = ('<div class="hero" id="advanced"><h2>発展編</h2>'
             '<p>ストアの規模と運用条件を変えながら、方式の内部、障害時の制約、データの責任を検討します。</p></div>\n')

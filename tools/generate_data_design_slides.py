@@ -14,6 +14,7 @@ from android_slide_presentation import CASE_HTML, JS as DIRECTION_JS, OPENING, R
 from data_design_advanced import UNITS, VIDEO
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_VIDEO
 from data_design_experiments import VIDEOS
+from data_design_focus import FOCUS
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 import generate_android_slides as player
 
@@ -33,6 +34,12 @@ CHAPTERS += [
     for index, item in enumerate(UNITS)
 ]
 CHAPTERS += [(chapter, name, [tuple(scene[:-1])]) for chapter, name, *scene in VIDEOS]
+CHAPTERS += [
+    (lesson.anchor, "節 " + lesson.section, [
+        (lesson.title, lesson.kind, lesson.labels, lesson.captions, lesson.question, lesson.answer),
+    ])
+    for lesson in FOCUS
+]
 SCENE_COUNT = sum(len(scenes) for _, _, scenes in CHAPTERS)
 TOTAL_SECONDS = SCENE_COUNT * 4 * STEP
 DURATION = f"{TOTAL_SECONDS // 60}分{TOTAL_SECONDS % 60:02d}秒"
@@ -58,6 +65,8 @@ CHAPTER_NOTES.update({key + "-details": value[2] for key, value in DEEP.items()}
 ADVANCED_LABS.update({key + "-details": lab for key, lab in DEEP_LABS.items()})
 CHAPTER_NOTES.update({entry[0]: entry[-1] for entry in VIDEOS})
 ADVANCED_LABS.update({"engine-benchmark": "engine_benchmark.py", "raft-failure-lab": "raft_recovery.py"})
+CHAPTER_NOTES.update({lesson.anchor: lesson.tradeoff for lesson in FOCUS})
+ADVANCED_LABS.update({lesson.anchor: "section_examples.py" for lesson in FOCUS if lesson.lab})
 DIAGRAM_NAMES = {
     "flow": "手順と判断",
     "timeline": "時系列",
@@ -70,6 +79,7 @@ READINGS = [
     ["SKU", "エスケーユー"], ["NULL", "ヌル"], ["UPDATE", "アップデート"],
     ["API", "エーピーアイ"], ["ID", "アイディー"], ["DB", "データベース"],
     ["CHECK", "チェック"], ["Raft", "ラフト"], ["LSM", "エルエスエム"], ["CDC", "シーディーシー"], ["W02", "ダブリューゼロツー"],
+    ["RPC", "アールピーシー"], ["ACID", "アシッド"], ["UUID", "ユーユーアイディー"],
 ]
 CSS = """
 .data-reader>summary{margin:1.5rem 0;font-weight:650;color:var(--ink)}
