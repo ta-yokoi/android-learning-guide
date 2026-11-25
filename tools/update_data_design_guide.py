@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Insert advanced chapters and the reading map into the data design guide."""
 
+from collections import Counter
 from html import escape
 from pathlib import Path
 import re
 
 from data_design_advanced import EXTRA_LABS, LAB_OUTPUT, UNITS, WORKED
+from data_design_experiments import ENGINE_RESULTS
+from data_design_section_audit import AUDIT, SUPPLEMENTS, UNIX_EXAMPLE
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_LAB_OUTPUT
 
@@ -52,6 +55,87 @@ def lab_html(lab):
     )
 
 
+def engine_experiment(slide):
+    rows = "".join("<tr>" + "".join(f"<td>{escape(cell)}</td>" for cell in row) + "</tr>"
+                   for row in ENGINE_RESULTS)
+    assert (ROOT / "labs/engine_benchmark.py").is_file()
+    return (
+        '<h3 id="engine-benchmark">SQLiteとRocksDBの実測</h3>'
+        f'<p class="chapter-video"><a href="../slides/index.html#slide-{slide}">比較を動画で見る</a></p>'
+        '<p>8,192キーと512バイトの値を使い、一点読取りまたは16件をまとめて同期書込みする操作を'
+        '同じ順序で1,600回実行します。SQLiteはWALとFULL同期、RocksDBはWALと同期書込みを有効にして圧縮を無効にします。'
+        '操作のうち書込みバッチを選ぶ確率を10％と60％、ページキャッシュまたはブロックキャッシュの設定値を256と4,096 KiBに変えます。'
+        'この設定値は、エンジン全体のメモリ使用量をそろえるものではありません。</p>'
+        '<p><a href="../labs/engine_benchmark.py" download>engine_benchmark.pyをダウンロード</a>し、Python 3.9以降で実行します。'
+        'SQLiteだけなら追加パッケージは不要です。比較には仮想環境でRocksDBのPythonバインディングを入れます。'
+        '次のコマンドはLinux・macOS向けです。</p>'
+        '<pre tabindex="0"><code>python3 -m venv .venv\n.venv/bin/python -m pip install rocksdict==0.3.29\n'
+        'for cache in 256 4096; do\n  for writes in 10 60; do\n    for seed in 42 43 44; do\n'
+        '      for engine in sqlite rocksdb; do\n'
+        '        .venv/bin/python engine_benchmark.py "$engine" --cache-kib "$cache" --write-percent "$writes" --seed "$seed"\n'
+        '      done\n    done\n  done\ndone</code></pre>'
+        '<p>各条件で3回測り、各回のp95とI/Oの中央値を掲載しています。SQLite 3.53.1、rocksdict 0.3.29を使用。'
+        'LinuxのOSキャッシュを保持したまま測定し、12組すべてで両方式の全キーを照合しました。</p>'
+        + table("同じ操作列を流した際の実測例",
+                ["キャッシュ KiB", "書込み率", "エンジン", "一点読取り p95 µs", "書込みバッチ p95 µs", "書込み I/O MiB"], rows)
+        + '<p>この環境ではSQLiteの一点読取りが短く、RocksDBの書込みI/Oが少なくなりました。'
+        'キャッシュ拡大で改善幅が異なり、RocksDBの書込み60％条件では読取りのp95は短縮しませんでした。'
+        '書込み量は最後のフラッシュを含むLinuxのプロセスI/Oです。読取りI/Oは全条件で0 MiBでした。'
+        'OSのキャッシュを経た実測であり、物理ドライブの読取り量・寿命やコンパクション完了後の書込み量を表すものではありません。'
+        '実習はp50・p99、ファイルサイズと最終状態のSHA-256も出力します。'
+        '採用時は実データの偏り、並行アクセス、十分な実行時間、再起動後の冷えたキャッシュを含めて測り直します。</p>'
+    )
+
+
+def raft_experiment(slide):
+    return (
+        '<h3 id="raft-failure-lab">分断の反復とスナップショットによる復帰</h3>'
+        f'<p class="chapter-video"><a href="../slides/index.html#slide-{slide}">復帰の手順を動画で見る</a></p>'
+        '<p>同じ<a href="../labs/raft_recovery.py" download>raft_recovery.py</a>をシナリオ指定付きで実行します。</p>'
+        '<pre tabindex="0"><code>python3 raft_recovery.py --partitions\n'
+        'quorum lost: no election or commit\n'
+        "second partition: stale log resisted; term 5 committed ['order-42', 'order-43']\n"
+        "snapshot installed at: 2\nstate after replay: ['order-42', 'order-43', 'order-44']</code></pre>"
+        '<ol><li>A、B、Cの通信が途切れ、Aの単独書込みは確定せず、C単独の投票でも新リーダーを選べません。</li>'
+        '<li>BとCがつながり注文42を確定します。次の分断では古いログのAが選挙に敗れ、任期5のCがAと注文43を確定します。'
+        '遅れて届く任期3の書込みは拒否されます。</li>'
+        '<li>Cは確定位置2までを圧縮し、位置とその任期を状態と一緒に保持します。'
+        '位置1までしか持たないBは再起動後、位置2のスナップショットを受け取ります。</li>'
+        '<li>Bは位置3の注文44をログから適用します。位置2までを再適用せず、注文3件と順番が一致します。</li></ol>'
+        '<p>確定前の操作はスナップショットに含めません。このモデルではディスク状態の置換を一操作とし、'
+        '選挙タイマー、転送の中断、実ストレージの電源断は扱いません。</p>'
+    )
+
+
+def coverage_table():
+    labels = ("個別解説なし", "概説", "具体例・実習あり")
+    counts = Counter()
+    rows = []
+    for chapter, (anchor, sections) in enumerate(AUDIT, 1):
+        for section, (status, name, note, *target) in enumerate(sections, 1):
+            counts[status] += 1
+            topic = link(target[0] if target else anchor, name) if status else escape(name)
+            rows.append(f'<tr><th scope="row">{chapter}.{section}</th><td>{topic}</td>'
+                        f'<td>{labels[status]}</td><td>{escape(note)}</td></tr>')
+    summary = "、".join(f"{labels[i]}{counts[i]}節" for i in (2, 1, 0))
+    return (
+        '<h3 id="section-audit">公開目次の節別照合</h3>'
+        f'<p>第2版の節番号と、教材の到達範囲を照合しました。対象{sum(counts.values())}節の内訳は{summary}です。'
+        '各章のまとめと節内の小項目は集計から除いています。「具体例・実習あり」は教材で独自の題材を追える範囲を示します。</p>'
+        + table("節ごとの教材範囲と補足候補", ["節", "主題", "深さ", "教材の範囲と補足候補"], "".join(rows))
+    )
+
+
+def supplement(key):
+    anchor, title, steps, question, answer = SUPPLEMENTS[key]
+    description = "".join(f"<dt>{escape(name)}</dt><dd>{escape(body)}</dd>" for name, body in steps)
+    demo = f'<pre tabindex="0"><code>{escape(UNIX_EXAMPLE)}</code></pre>' if key == "batch-pipelines" else ""
+    return (
+        f'<h3 id="{anchor}">{escape(title)}</h3><dl class="mechanism">{description}</dl>{demo}'
+        f'<details><summary>{escape(question)}</summary><p>{escape(answer)}</p></details>'
+    )
+
+
 def section(item, index):
     number = index + FIRST_ADVANCED_SLIDE
     key = item["key"]
@@ -73,13 +157,17 @@ def section(item, index):
         f'<dl class="mechanism">{walk}</dl><p><strong>採用条件と代償</strong>　{escape(tradeoff)}</p>'
         f'{example_lab}<details><summary>{escape(exercise)}</summary><p>{escape(solution)}</p></details>'
     )
+    first_experiment_slide = FIRST_ADVANCED_SLIDE + 2 * len(UNITS)
+    experiments = {"engines": engine_experiment, "order-and-agreement": raft_experiment}
+    extra = experiments[key](first_experiment_slide + (key == "order-and-agreement")) if key in experiments else ""
+    additional = supplement(key) if key in SUPPLEMENTS else ""
     title, example = WORKED[key]
     worked = f"<h3>{escape(title)}</h3><p>{escape(example)}</p>"
     return (
         f'<section class="chapter" id="{key}" aria-labelledby="{key}-title">\n'
         f'<h2 id="{key}-title">発展{index + 1}. {escape(item["title"])}</h2>\n'
         f'<p class="chapter-video"><a href="../slides/index.html#slide-{number}">この章を動画で見る</a> · <a href="#reading-map">第2版 {escape(item["sources"])}との対応</a></p>\n'
-        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n'
+        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}\n'
         f'<h3>設計レビュー</h3><details><summary>{escape(item["question"])}</summary>'
         f'<p>{escape(item["answer"])}</p></details>\n</section>'
     )
@@ -97,7 +185,8 @@ def map_section():
         'ここで扱う技術の範囲は表に示しています。製品別の実装、アルゴリズムの完全な証明、個別の論文や事例は原典を参照してください。</p>'
         + table("書籍の章番号と発展編", ["書籍", "教材の入口", "この教材で扱う内容"], rows)
         + '<p><a href="https://www.oreilly.co.jp/books/9784814401802/">オライリー・ジャパンの公式目次と書誌情報</a></p>'
-        '<h3>方式を確かめる一次資料</h3><ul>'
+        + coverage_table()
+        + '<h3>方式を確かめる一次資料</h3><ul>'
         '<li>索引内部とコンパクション。<a href="https://github.com/facebook/rocksdb/wiki/Leveled-Compaction">RocksDBの設計資料</a></li>'
         '<li>書き手と読み手のスキーマ解決。<a href="https://avro.apache.org/docs/1.12.0/specification/">Apache Avro仕様</a></li>'
         '<li>製品の分離レベルと再試行条件。<a href="https://www.postgresql.org/docs/current/transaction-iso.html">PostgreSQL公式文書</a></li>'

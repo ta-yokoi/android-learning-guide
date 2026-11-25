@@ -13,6 +13,7 @@ from android_slide_narration import CONTROLS, SETTINGS
 from android_slide_presentation import CASE_HTML, JS as DIRECTION_JS, OPENING, RECAP
 from data_design_advanced import UNITS, VIDEO
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_VIDEO
+from data_design_experiments import VIDEOS
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 import generate_android_slides as player
 
@@ -31,6 +32,7 @@ CHAPTERS += [
     ])
     for index, item in enumerate(UNITS)
 ]
+CHAPTERS += [(chapter, name, [tuple(scene[:-1])]) for chapter, name, *scene in VIDEOS]
 SCENE_COUNT = sum(len(scenes) for _, _, scenes in CHAPTERS)
 TOTAL_SECONDS = SCENE_COUNT * 4 * STEP
 DURATION = f"{TOTAL_SECONDS // 60}分{TOTAL_SECONDS % 60:02d}秒"
@@ -54,6 +56,8 @@ ADVANCED_LABS = {item["key"]: item["lab"] for item in UNITS if item["lab"]}
 CHAPTER_NOTES.update({item["key"]: item["goal"] for item in UNITS})
 CHAPTER_NOTES.update({key + "-details": value[2] for key, value in DEEP.items()})
 ADVANCED_LABS.update({key + "-details": lab for key, lab in DEEP_LABS.items()})
+CHAPTER_NOTES.update({entry[0]: entry[-1] for entry in VIDEOS})
+ADVANCED_LABS.update({"engine-benchmark": "engine_benchmark.py", "raft-failure-lab": "raft_recovery.py"})
 DIAGRAM_NAMES = {
     "flow": "手順と判断",
     "timeline": "時系列",
@@ -124,7 +128,7 @@ def lessons():
             ref = f"../guide/index.html#{chapter}"
             detail = (
                 f'<p class="data-download"><a href="../labs/{lab}" download>{lab}を取得</a>。'
-                '実行方法と期待する出力は本文で確認できます。</p>' if lab else ""
+                '実行方法と結果の読み方は本文で確認できます。</p>' if lab else ""
             )
             frames = [
                 {"status": f"段階{i + 1}", "value": label, "detail": step}
