@@ -32,7 +32,7 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 index.html           # Android／GoF／組み込み開発／データ設計／作品集の入口
 data-design/index.html # データ設計の入口
 data-design/guide/index.html # 注文システムを題材にした22章・確認問題83問
-data-design/slides/index.html # データ設計の動画版（22章72場面）
+data-design/slides/index.html # データ設計の動画版（22章74場面）
 data-design/labs/ # 実行実習18本と実ストレージの比較
 android/index.html   # Android教材アプリの共通入口
 android/manifest.webmanifest # 通常教材・簡易版・詳細版で共通の起動設定
@@ -485,7 +485,7 @@ python3 data-design/labs/sales_events.py
 在庫実習は一時SQLiteデータベースへの別接続から競合を検証します。決済と売上集計はメモリ上のモデルを使います。期待する出力と各モデルの検証範囲は本文に掲載しています。読了記録はブラウザの専用キー `data-design-guide-completed-v1` に保存します。
 
 
-動画版は22章72場面で、字幕のみの連続再生は38分24秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
+動画版は22章74場面で、字幕のみの連続再生は39分28秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
 
 動画HTMLの再生成は `python3 tools/generate_data_design_slides.py` で行います。場面と解説は `tools/data_design_lessons.py` で管理します。
 
@@ -539,3 +539,11 @@ python3 -m venv .venv
 ```
 
 本文と動画の素材は `tools/data_design_workshops.py`、節内の参照先は `tools/data_design_topic_map.py` で管理します。
+
+### データ設計の学習コース
+
+トップの「データ設計」から「学習を始める」を選択します。[6段階の学習順](data-design/guide/index.html#learning-path)には、読む章と次へ進む目安があります。ブラウザで注文の再送を比較し、要件・モデル・取引・複製・集計を順に学びます。初回実習は追加パッケージなしでブラウザから試せます。操作例と期待結果は静止した文章でも読めます。
+
+[到達度チェック](data-design/guide/index.html#design-assessment)では6問を自分の言葉で答え、会場予約の要件から正本、空席一覧、再送、障害時の検証を設計します。解答に、学び直す章や実習へのリンクがあります。動画版の73・74場面で初回実習と到達度チェックの例を確認できます。既存72場面のURLと学習記録キーを継続して使えます。
+
+本文と動画の素材は `tools/data_design_learning_path.py` にあります。本文、動画の順に再生成します。

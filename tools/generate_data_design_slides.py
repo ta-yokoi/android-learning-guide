@@ -15,6 +15,7 @@ from data_design_advanced import UNITS, VIDEO
 from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_VIDEO
 from data_design_experiments import VIDEOS
 from data_design_focus import FOCUS
+from data_design_learning_path import LEARNING_VIDEOS
 from data_design_workshops import WORKSHOPS, lab_file
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 import generate_android_slides as player
@@ -47,6 +48,7 @@ CHAPTERS += [
     ])
     for index, item in enumerate(WORKSHOPS)
 ]
+CHAPTERS += [(chapter, name, [tuple(scene[:-1])]) for chapter, name, *scene in LEARNING_VIDEOS]
 SCENE_COUNT = sum(len(scenes) for _, _, scenes in CHAPTERS)
 TOTAL_SECONDS = SCENE_COUNT * 4 * STEP
 DURATION = f"{TOTAL_SECONDS // 60}分{TOTAL_SECONDS % 60:02d}秒"
@@ -76,6 +78,7 @@ CHAPTER_NOTES.update({lesson.anchor: lesson.tradeoff for lesson in FOCUS})
 ADVANCED_LABS.update({lesson.anchor: "section_examples.py" for lesson in FOCUS if lesson.lab})
 CHAPTER_NOTES.update({item.anchor: item.criterion for item in WORKSHOPS})
 ADVANCED_LABS.update({item.anchor: lab_file(item) for item in WORKSHOPS if item.lab})
+CHAPTER_NOTES.update({entry[0]: entry[-1] for entry in LEARNING_VIDEOS})
 DIAGRAM_NAMES = {
     "flow": "手順と判断",
     "timeline": "時系列",

@@ -8,6 +8,7 @@ import re
 from data_design_advanced import EXTRA_LABS, LAB_OUTPUT, UNITS, WORKED
 from data_design_experiments import ENGINE_RESULTS, VIDEOS
 from data_design_focus import FOCUS, FOCUS_BY_SECTION, LAB_OUTPUT as FOCUS_LAB_OUTPUT
+from data_design_learning_path import CSS as LEARNING_CSS, assessment, learning_start
 from data_design_topic_map import NOTES, TOPICS
 from data_design_workshops import FORMAT_DEPENDENCIES, WORKSHOPS, lab_file
 from data_design_section_audit import AUDIT, SUPPLEMENTS, UNIX_EXAMPLE
@@ -18,6 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent / "data-design"
 FIRST_ADVANCED_SLIDE = 1 + sum(len(scenes) for _, _, scenes in INTRO_CHAPTERS)
 FIRST_FOCUS_SLIDE = FIRST_ADVANCED_SLIDE + 2 * len(UNITS) + len(VIDEOS)
 FIRST_WORKSHOP_SLIDE = FIRST_FOCUS_SLIDE + len(FOCUS)
+FIRST_LEARNING_SLIDE = FIRST_WORKSHOP_SLIDE + len(WORKSHOPS)
 READING_MAP = [
     ("システム全体の選択", "workloads", "業務と分析、クラウドと自社運用。法規や利用目的は発展編のデータ利用で扱います。"),
     ("期待する品質と負荷", "load-and-recovery", "応答時間、耐障害性、過負荷からの復帰、実行基盤の構成。"),
@@ -298,10 +300,17 @@ def main():
     toc = "<strong>発展編</strong><ol>" + "".join(
         f'<li>{link(item["key"], item["title"])}</li>' for item in UNITS
     ) + '</ol><a href="#reading-map">書籍との対応表</a> · <a href="#section-audit">49節の対応</a> · <a href="#design-workshops">設計・検証ワークショップ</a>'
+    html = replace_block(html, "learning-css", f"<style>\n{LEARNING_CSS}</style>\n", "</head>")
+    html = replace_block(html, "learning-toc",
+                         '<strong>学習コース</strong><a href="#learning-path">学習順と初回実習</a>'
+                         '<a href="#design-assessment">到達度チェック</a>\n', '<strong>入門編</strong>')
+    html = replace_block(html, "learning-start", learning_start(FIRST_LEARNING_SLIDE),
+                         '<section id="requirements"')
     html = replace_block(html, "advanced-toc", toc, '<a href="#references">参考資料</a>')
     part = ('<div class="hero" id="advanced"><h2>発展編</h2>'
             '<p>ストアの規模と運用条件を変えながら、方式の内部、障害時の制約、データの責任を検討します。</p></div>\n')
-    content = part + "\n".join(section(item, index) for index, item in enumerate(UNITS)) + map_section()
+    content = (part + "\n".join(section(item, index) for index, item in enumerate(UNITS))
+               + assessment(FIRST_LEARNING_SLIDE + 1) + map_section())
     html = replace_block(html, "advanced-chapters", content, '<section id="references"')
     html = re.sub(r"\.chapter:not\(#references\)(?::not\(#reading-map\))*",
                   ".chapter:not(#references):not(#reading-map)", html)
