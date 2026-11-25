@@ -12,6 +12,7 @@ from android_slide_fullscreen import JS as FULLSCREEN_JS
 from android_slide_narration import CONTROLS, SETTINGS
 from android_slide_presentation import CASE_HTML, JS as DIRECTION_JS, OPENING, RECAP
 from data_design_advanced import UNITS, VIDEO
+from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_VIDEO
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 import generate_android_slides as player
 
@@ -21,6 +22,12 @@ CHAPTERS = INTRO_CHAPTERS + [
     (item["key"], "発展 " + str(index + 1) + " " + item["title"], [
         (VIDEO[item["key"]][0], "parallel" if item["key"] == "isolation" else "timeline",
          *VIDEO[item["key"]][1:], item["question"], item["answer"]),
+    ])
+    for index, item in enumerate(UNITS)
+]
+CHAPTERS += [
+    (item["key"] + "-details", "詳説 " + str(index + 1), [
+        (DEEP[item["key"]][0], "timeline", *DEEP_VIDEO[item["key"]], *DEEP[item["key"]][-2:]),
     ])
     for index, item in enumerate(UNITS)
 ]
@@ -45,6 +52,8 @@ CHAPTER_NOTES = {
 }
 ADVANCED_LABS = {item["key"]: item["lab"] for item in UNITS if item["lab"]}
 CHAPTER_NOTES.update({item["key"]: item["goal"] for item in UNITS})
+CHAPTER_NOTES.update({key + "-details": value[2] for key, value in DEEP.items()})
+ADVANCED_LABS.update({key + "-details": lab for key, lab in DEEP_LABS.items()})
 DIAGRAM_NAMES = {
     "flow": "手順と判断",
     "timeline": "時系列",
@@ -56,7 +65,7 @@ READINGS = [
     ["p95", "ピー九十五"], ["SQL", "エスキューエル"], ["SQLite", "エスキューライト"],
     ["SKU", "エスケーユー"], ["NULL", "ヌル"], ["UPDATE", "アップデート"],
     ["API", "エーピーアイ"], ["ID", "アイディー"], ["DB", "データベース"],
-    ["CHECK", "チェック"], ["W02", "ダブリューゼロツー"],
+    ["CHECK", "チェック"], ["Raft", "ラフト"], ["LSM", "エルエスエム"], ["CDC", "シーディーシー"], ["W02", "ダブリューゼロツー"],
 ]
 CSS = """
 .data-reader>summary{margin:1.5rem 0;font-weight:650;color:var(--ink)}
@@ -188,7 +197,7 @@ def main():
         "元のAndroid教材を読む": "通常教材を読む",
         "ANDROID 16 / MOTION LESSONS": "データ設計の動画版",
         "Androidを、<br>動く図で学ぶ。": "注文システムで学ぶ<br>データ設計",
-        "身近な疑問から、図と実例で仕組みを追う32レッスン。": f"入門と発展の{len(CHAPTERS)}章・{SCENE_COUNT}場面で、設計と検証を追います。",
+        "身近な疑問から、図と実例で仕組みを追う32レッスン。": f"入門・発展・詳説の{SCENE_COUNT}場面で、設計と検証を追います。",
         "字幕のみは約13分": f"字幕のみは{DURATION}",
         "Androidスライドプレーヤー": "データ設計スライドプレーヤー",
         "Androidの教材一覧へ戻る": "データ設計の教材一覧へ戻る",
@@ -204,7 +213,7 @@ def main():
     opening = (OPENING.replace("ANDROID 16 / VISUAL LESSONS", "データ設計")
                .replace("Androidを、<br><em>仕組み</em>で理解する。", "注文の流れから<br><em>データ設計</em>を学ぶ")
                .replace("要求を追う。状態を分ける。証拠で説明する。", "注文処理から、合意・集計・データ利用まで学びます。")
-               .replace("32 LESSONS", f"{len(CHAPTERS)}章・{SCENE_COUNT}場面"))
+               .replace("32 LESSONS", f"22章・{SCENE_COUNT}場面"))
     slots = {
         "CSS": player.CSS + player.PLAYER_PALETTE + CSS, "FALLBACK": "\n".join(static),
         "STEP_BUTTONS": "".join(f'<button type="button" data-step="{i}" aria-label="段階{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4)),

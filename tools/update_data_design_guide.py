@@ -7,6 +7,7 @@ import re
 
 from data_design_advanced import EXTRA_LABS, LAB_OUTPUT, UNITS, WORKED
 from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
+from data_design_deep_dive import DEEP, DEEP_LABS, DEEP_LAB_OUTPUT
 
 ROOT = Path(__file__).resolve().parent.parent / "data-design"
 FIRST_ADVANCED_SLIDE = 1 + sum(len(scenes) for _, _, scenes in INTRO_CHAPTERS)
@@ -42,7 +43,7 @@ def table(caption, headings, rows):
 
 
 def lab_html(lab):
-    output, note = LAB_OUTPUT[lab]
+    output, note = LAB_OUTPUT[lab] if lab in LAB_OUTPUT else DEEP_LAB_OUTPUT[lab]
     assert (ROOT / "labs" / lab).is_file()
     return (
         f'<h3>実行実習</h3><p><a href="../labs/{lab}" download>{lab}をダウンロード</a>し、'
@@ -62,13 +63,23 @@ def section(item, index):
     checks = table("設計を試す入力と合格条件", ["ケース", "試すこと", "観測する結果"], cases)
     lab_names = ([item["lab"]] if item["lab"] else []) + EXTRA_LABS.get(key, [])
     lab = "".join(lab_html(name) for name in lab_names)
+    detailed_slide = FIRST_ADVANCED_SLIDE + len(UNITS) + index
+    deep_title, steps, tradeoff, exercise, solution = DEEP[key]
+    walk = "".join(f"<dt>{escape(name)}</dt><dd>{escape(body)}</dd>" for name, body in steps)
+    example_lab = lab_html(DEEP_LABS[key]) if key in DEEP_LABS else ""
+    detailed = (
+        f'<h3 id="{key}-details">{escape(deep_title)}</h3>'
+        f'<p class="chapter-video"><a href="../slides/index.html#slide-{detailed_slide}">仕組みを図で追う動画</a></p>'
+        f'<dl class="mechanism">{walk}</dl><p><strong>採用条件と代償</strong>　{escape(tradeoff)}</p>'
+        f'{example_lab}<details><summary>{escape(exercise)}</summary><p>{escape(solution)}</p></details>'
+    )
     title, example = WORKED[key]
     worked = f"<h3>{escape(title)}</h3><p>{escape(example)}</p>"
     return (
         f'<section class="chapter" id="{key}" aria-labelledby="{key}-title">\n'
         f'<h2 id="{key}-title">発展{index + 1}. {escape(item["title"])}</h2>\n'
         f'<p class="chapter-video"><a href="../slides/index.html#slide-{number}">この章を動画で見る</a> · <a href="#reading-map">第2版 {escape(item["sources"])}との対応</a></p>\n'
-        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n'
+        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n'
         f'<h3>設計レビュー</h3><details><summary>{escape(item["question"])}</summary>'
         f'<p>{escape(item["answer"])}</p></details>\n</section>'
     )
