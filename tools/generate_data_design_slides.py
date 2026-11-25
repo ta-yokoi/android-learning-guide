@@ -11,12 +11,21 @@ from android_slide_diagrams import SVG
 from android_slide_fullscreen import JS as FULLSCREEN_JS
 from android_slide_narration import CONTROLS, SETTINGS
 from android_slide_presentation import CASE_HTML, JS as DIRECTION_JS, OPENING, RECAP
-from data_design_lessons import CHAPTERS
+from data_design_advanced import UNITS, VIDEO
+from data_design_lessons import CHAPTERS as INTRO_CHAPTERS
 import generate_android_slides as player
 
 ROOT = Path(__file__).resolve().parent.parent / "data-design"
 STEP = 8
-TOTAL_SECONDS = sum(len(scenes) for _, _, scenes in CHAPTERS) * 4 * STEP
+CHAPTERS = INTRO_CHAPTERS + [
+    (item["key"], "発展 " + str(index + 1) + " " + item["title"], [
+        (VIDEO[item["key"]][0], "parallel" if item["key"] == "isolation" else "timeline",
+         *VIDEO[item["key"]][1:], item["question"], item["answer"]),
+    ])
+    for index, item in enumerate(UNITS)
+]
+SCENE_COUNT = sum(len(scenes) for _, _, scenes in CHAPTERS)
+TOTAL_SECONDS = SCENE_COUNT * 4 * STEP
 DURATION = f"{TOTAL_SECONDS // 60}分{TOTAL_SECONDS % 60:02d}秒"
 ACCENTS = ["#c4ef9b", "#b5d7ff", "#f4d39d", "#9fe1d7"]
 EXPERIMENTS = {
@@ -34,6 +43,8 @@ CHAPTER_NOTES = {
     "analytics": "集計実習では固定の締め日を使います。本番ではタイムゾーン、訂正版の公開方法、元イベントの保持期間を決めます。",
     "capstone": "障害を注入した後は、表示だけで合否を決めず、予約行、請求記録、集計に使ったイベントIDを照合します。",
 }
+ADVANCED_LABS = {item["key"]: item["lab"] for item in UNITS if item["lab"]}
+CHAPTER_NOTES.update({item["key"]: item["goal"] for item in UNITS})
 DIAGRAM_NAMES = {
     "flow": "手順と判断",
     "timeline": "時系列",
@@ -53,8 +64,8 @@ CSS = """
 .data-reader .static-diagram{overflow:auto}
 .data-reader .static-diagram>svg{min-width:520px}
 .data-download{margin:1rem 0}
-.data-course .chapters-strip{flex-wrap:wrap}
-.data-course .chapter-link{min-width:min(44%,135px)}
+.data-course .chapters-strip{flex-wrap:nowrap}
+.data-course .chapter-link{flex:0 0 148px}
 .data-course .cue-box{min-height:0}
 .data-course .diagram[data-kind="parallel"] .edge-path{stroke-dasharray:7 4}
 @media print{
@@ -98,7 +109,7 @@ def lessons():
             index = len(data) + 1
             assert len(labels) == len(steps) == 4
             diagram_label = DIAGRAM_NAMES[kind]
-            lab = EXPERIMENTS.get(chapter) if offset == 1 else None
+            lab = ADVANCED_LABS.get(chapter) or (EXPERIMENTS.get(chapter) if offset == 1 else None)
             if lab:
                 assert (ROOT / "labs" / lab).is_file()
             ref = f"../guide/index.html#{chapter}"
@@ -171,20 +182,20 @@ def main():
     template = player.TEMPLATE
     labels = {
         "Android 16の30章を動く図と字幕で振り返る、16:9のスライド教材。全32枚、自動再生とスマートフォン全画面に対応。":
-            "注文・在庫・決済・売上集計の設計を動く図と音声で学ぶ16場面の教材。",
+            f"注文システムの入門と発展テーマを動く図と音声で学ぶ{SCENE_COUNT}場面の教材。",
         "Androidを動く図で学ぶ｜スライド教材": "データ指向アプリケーション設計｜音声付き動画版",
         "← Androidの教材一覧": "← データ設計の教材一覧",
         "元のAndroid教材を読む": "通常教材を読む",
         "ANDROID 16 / MOTION LESSONS": "データ設計の動画版",
         "Androidを、<br>動く図で学ぶ。": "注文システムで学ぶ<br>データ設計",
-        "身近な疑問から、図と実例で仕組みを追う32レッスン。": "8章・16場面で、保存と分散処理の判断を追います。",
+        "身近な疑問から、図と実例で仕組みを追う32レッスン。": f"入門と発展の{len(CHAPTERS)}章・{SCENE_COUNT}場面で、設計と検証を追います。",
         "字幕のみは約13分": f"字幕のみは{DURATION}",
         "Androidスライドプレーヤー": "データ設計スライドプレーヤー",
         "Androidの教材一覧へ戻る": "データ設計の教材一覧へ戻る",
         "Android 16 / 図は説明用に簡略化しています": "注文・在庫・決済・売上集計",
         '<body>': '<body class="data-course">',
         '<div class="text-links"><a id="reference"': '<div id="lab-link"></div><div class="text-links"><a id="reference"',
-        '<section class="fallback" id="all-slides"': '<details class="data-reader" id="data-reader" open><summary>全16場面を静止版で読む</summary><section class="fallback" id="all-slides"',
+        '<section class="fallback" id="all-slides"': f'<details class="data-reader" id="data-reader" open><summary>全{SCENE_COUNT}場面を静止版で読む</summary><section class="fallback" id="all-slides"',
         '__FALLBACK__</section>': '__FALLBACK__</section></details>',
     }
     for old, new in labels.items():
@@ -192,8 +203,8 @@ def main():
         template = template.replace(old, new)
     opening = (OPENING.replace("ANDROID 16 / VISUAL LESSONS", "データ設計")
                .replace("Androidを、<br><em>仕組み</em>で理解する。", "注文の流れから<br><em>データ設計</em>を学ぶ")
-               .replace("要求を追う。状態を分ける。証拠で説明する。", "在庫・決済・集計を16場面で追います。")
-               .replace("32 LESSONS", "8章・16場面"))
+               .replace("要求を追う。状態を分ける。証拠で説明する。", "注文処理から、合意・集計・データ利用まで学びます。")
+               .replace("32 LESSONS", f"{len(CHAPTERS)}章・{SCENE_COUNT}場面"))
     slots = {
         "CSS": player.CSS + player.PLAYER_PALETTE + CSS, "FALLBACK": "\n".join(static),
         "STEP_BUTTONS": "".join(f'<button type="button" data-step="{i}" aria-label="段階{i+1}へ移動" aria-pressed="false">{i+1}</button>' for i in range(4)),

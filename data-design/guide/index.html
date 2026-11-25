@@ -60,12 +60,13 @@ figcaption{font-weight:650}
 <main id="main" class="wrap">
 <div class="hero">
 <h1>データ指向アプリケーション設計 入門</h1>
-<p>茶葉を販売するオンラインストアを、一店舗から複数の地域へ広げます。注文・在庫・決済・売上集計を例に、データの置き方を選び、障害時の振る舞いを説明できるようにします。</p>
+<p>茶葉を販売するオンラインストアを、一店舗から複数の地域へ広げます。注文・在庫・決済・売上集計を例に、データの置き方を選び、障害時の振る舞いを説明できるようにします。入門8章の後に発展14章と実行実習を用意しました。</p>
+<p><a href="#advanced">発展編へ進む</a> · <a href="#reading-map">書籍第2版との対応表</a></p>
 <p>対象はWebアプリとSQLの基礎を学んだ開発者です。実習に必要なのはPython 3.9以降と標準ライブラリだけです。</p>
 </div>
 <div class="layout">
 <nav class="toc" aria-label="章の目次" id="toc">
-<strong>目次</strong>
+<strong>入門編</strong>
 <ol>
 <li><a href="#requirements">要件を定義する</a></li>
 <li><a href="#storage">モデルとストレージを選ぶ</a></li>
@@ -76,7 +77,8 @@ figcaption{font-weight:650}
 <li><a href="#analytics">バッチとストリームで集計する</a></li>
 <li><a href="#capstone">総合演習</a></li>
 </ol>
-<a href="#references">参考資料</a>
+<!-- advanced-toc -->
+<strong>発展編</strong><ol><li><a href="#workloads">業務の正本と分析のコピーを設計する</a></li><li><a href="#load-and-recovery">処理能力を越えたときの回復を設計する</a></li><li><a href="#models">同じ注文を三つの形で表す</a></li><li><a href="#engines">書込みと検索の増幅を測る</a></li><li><a href="#contracts">異なる版が同じメッセージをやり取りする</a></li><li><a href="#replica-choices">複製を地理と競合から選ぶ</a></li><li><a href="#routing">分割キーと再配置の両方を設計する</a></li><li><a href="#isolation">二人が別の行を書いても制約は破れる</a></li><li><a href="#clocks">長い停止から戻った古い所有者を止める</a></li><li><a href="#order-and-agreement">何を同じ順序で見る必要があるか</a></li><li><a href="#batch-pipelines">一日分を同じ入力から作り直す</a></li><li><a href="#stream-recovery">再生位置と出力のずれを制御する</a></li><li><a href="#integration">導出データを取り替えられる構成にする</a></li><li><a href="#data-responsibility">保持・削除・推薦の責任を仕様にする</a></li></ol><a href="#reading-map">書籍との対応表</a><!-- /advanced-toc --><a href="#references">参考資料</a>
 <div class="progress" id="reading-progress" hidden><output id="reading-count" aria-live="polite"></output><div id="reading-note"></div></div>
 </nav>
 <div>
@@ -258,7 +260,166 @@ changed event: conflict</code></pre>
 <details><summary>配信レコードを注文と同時に保存すれば、受信側の重複判定は不要か。</summary><p>配信後に送信済みの記録を保存する前にプロセスが停止すれば、再送され得ます。DB内で配信予定を一緒に残すことと、受信側で副作用を一度だけ反映することは別の条件です。</p></details>
 </section>
 
-<section id="references" class="chapter" aria-labelledby="references-title">
+<!-- advanced-chapters -->
+<div class="hero" id="advanced"><h2>発展編</h2><p>ストアの規模と運用条件を変えながら、方式の内部、障害時の制約、データの責任を検討します。</p></div>
+<section class="chapter" id="workloads" aria-labelledby="workloads-title">
+<h2 id="workloads-title">発展1. 業務の正本と分析のコピーを設計する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-17">この章を動画で見る</a> · <a href="#reading-map">第2版 1・2・4・13章との対応</a></p>
+<p class="contract">注文サービスに毎秒500件の更新が入り、販促担当が半年分の集計を始めました。確定注文の遅延を守りながら分析を続けます。</p>
+<h3>目的で切る</h3><p>受注は短い更新と制約検査が中心です。分析は多数の行の少数列を走査します。業務DBに長い集計を載せるとI/O、CPU、キャッシュを競い、ロックがなくても影響が出ます。小さな負荷なら同居が簡潔で、独立した負荷制御が必要になれば分析用のコピーを設けます。</p><h3>正本と再構成</h3><p>注文DBを正本とし、分析テーブルには元イベントの位置と取込時刻を残します。導出データを修正する際は正本・イベントに戻って同じ期間を再計算します。スナップショットから差分へ切り替える境界では、取りこぼしと重複の両方を検査します。</p><h3>運用条件を量る</h3><p>マネージドサービスではバックアップやパッチを委ねられる範囲を確認し、転送費・障害時の制御・出口を見積もります。自社運用では自由度と引き換えに当番、容量計画、復旧手順を持ちます。単一ノードで要件を満たせる間は、ネットワーク越しの調整を増やす費用も比較します。</p>
+<h3>書込みと分析の容量を分ける</h3><p>履歴データが2 TBあり、週次分析が毎回半分を読むとします。共有ディスクの実効転送が250 MB/秒なら、1 TBの連続読取りだけで約4000秒です。その間の注文のp99上昇を測ります。分析コピーは追加の保存費と同期費を払い、ピーク時の負荷を分離します。週次処理を停止時間帯に移せるなら、まず運用で競合を減らす案もあります。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>集計と注文を同居</td><td>負荷試験で注文のp99と失敗率を監視</td><td>低負荷なら構成を小さくできる</td></tr><tr><td>分析を分離</td><td>分析の鮮度と再計算時間も測定</td><td>業務負荷から隔離する代わりに差分同期が必要</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>分析コピーが最新でなければ障害と断定できますか。</summary><p>鮮度の目標と観測した遅延を比較します。取込時刻に加え、正本のどの位置まで処理したかが必要です。</p></details>
+</section>
+<section class="chapter" id="load-and-recovery" aria-labelledby="load-and-recovery-title">
+<h2 id="load-and-recovery-title">発展2. 処理能力を越えたときの回復を設計する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-18">この章を動画で見る</a> · <a href="#reading-map">第2版 2章との対応</a></p>
+<p class="contract">セール直後、処理能力が毎秒100件なのに毎秒140件が到着します。短い突発と継続する過負荷を区別します。</p>
+<h3>待ち行列を見積もる</h3><p>単純化したモデルでは毎秒40件ずつ待ちが増え、一分で2400件になります。到着が毎秒80件へ減っても毎秒20件ずつしか減らず、解消に約二分かかります。キューに入った期限切れの要求も処理し続ける実装では、応答を返せない仕事が回復を遅らせます。</p><h3>処理の種類を分ける</h3><p>キュー上限、期限、優先度を決めます。注文と分析のCPU、接続枠、I/O予算を分け、容量の小さい共有リソースを先に特定します。再試行の増加を避けるため、間隔を広げて揺らし、全体の再試行予算を設けます。</p><h3>台数の足し方を選ぶ</h3><p>共有メモリはノード内の並列化、共有ディスクはストレージの共有、シェアードナッシングは担当データを分ける設計です。調整や共有資源が律速なら、台数を足しても比例して速くなりません。高負荷の後に正常へ戻るまでの時間を測ります。</p>
+<h3>期限からキュー容量の上限を引く</h3><p>サービス時間を除いた待ちの予算が200ミリ秒、処理能力が毎秒100件なら、単純なFIFOモデルで前に20件ある要求は予算を使い切ります。実サービスでは処理能力の変動と優先度があるため、上限を単なる平均から決めません。受付拒否、準備済みワーカーの増減、下流データベースの接続枠を一緒に負荷試験します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>140件/秒が60秒続く</td><td>100件/秒処理、開始時の待ち0</td><td>単純計算で2400件待つ</td></tr><tr><td>その後80件/秒</td><td>待ちを古い順に解消</td><td>毎秒20件減り約120秒で空になる</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>CPU使用率が下がった時点で過負荷試験を終えてよいですか。</summary><p>期限超過率とキュー滞留が戻り、注文受付とバックグラウンド処理が回復したことまで確認します。</p></details>
+</section>
+<section class="chapter" id="models" aria-labelledby="models-title">
+<h2 id="models-title">発展3. 同じ注文を三つの形で表す</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-19">この章を動画で見る</a> · <a href="#reading-map">第2版 3章との対応</a></p>
+<p class="contract">倉庫の横断検索、紹介経路の追跡、売上の多軸分析が増え、注文画面に合わせた一つの表現では扱いにくくなります。</p>
+<h3>制約と読取り</h3><p>注文と明細の一対多を外部キーで表現し、クーポンの適用は中間表で多対多として管理します。注文ドキュメントでは取得がまとまりますが、共有する商品情報を埋め込むと一括変更が必要です。購入時単価のように意図的に固定する情報は明細に保持します。</p><h3>経路と集計</h3><p>顧客から紹介先を何段もたどるなら、ノードと辺で経路を表し、循環や深さ上限を指定します。固定の経路ならSQLの結合や再帰CTEも候補です。分析では売上明細をファクト、商品・顧客・日付をディメンションにし、ファクトの粒度を一行一明細と決めて二重計上を防ぎます。</p><h3>履歴と投影</h3><p>イベントソーシングでは注文イベントが正本になり、再生して状態を作ります。CQRSでは書込みの制約と読取り用モデルを分けます。両者は独立した選択です。データフレームは列単位の集計に向き、取引の参照制約を守る正本として使う場合とは責任が違います。</p>
+<h3>紹介経路を検索する条件を先に書く</h3><p>AからB、BからC、CからAという紹介の環を入力し、Aから二段以内で到達する人を一人ずつ列挙します。SQLなら再帰CTEで深さと訪問済み集合を扱えます。Cypherは辺のパターンを直接記述できます。SPARQLは主語・述語・目的語の組で関係を問合せ、Datalogは関係から導ける規則を記述します。GraphQLはAPIが返す形を指定する技術であり、保存をグラフDBへ変更する要件にはなりません。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>購入履歴</td><td>注文IDで明細をまとめて返す</td><td>結合・埋込みともに可能。明細数と更新頻度を比較</td></tr><tr><td>紹介を三段たどる</td><td>循環を含む辺を入力</td><td>深さ制限と既訪問の扱いを決める</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>CQRSに移行すると必ずすべての変更をイベントで保存しますか。</summary><p>必要ありません。DBで状態を更新し、別の読取りモデルへ投影する構成でも書込みと読取りを分離できます。</p></details>
+</section>
+<section class="chapter" id="engines" aria-labelledby="engines-title">
+<h2 id="engines-title">発展4. 書込みと検索の増幅を測る</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-20">この章を動画で見る</a> · <a href="#reading-map">第2版 4章との対応</a></p>
+<p class="contract">商品と価格の更新が増え、注文時の検索と商品説明の検索も伸びています。索引を追加する前に、各方式の費用を説明します。</p>
+<h3>ページとラン</h3><p>Bツリーは順序付きページをたどって検索し、更新は対象ページに集まります。WALは障害復旧のためページ書込みより先に記録を永続化する仕組みです。LSM系はメモリ上の更新を順序付きのランへまとめて書き、検索時に複数のランを確認します。</p><h3>増幅と削除</h3><p>LSM系ではランを併合するコンパクションが読み取りの手数を減らす一方、同じデータの再書込みが起きます。削除印は古い値を隠すので、下位ランを確認せずに捨てると値が復活し得ます。Bloomフィルターは候補を減らしますが、探索や管理の費用は残ります。</p><h3>用途で索引を選ぶ</h3><p>数列だけの集計では列指向の読取りと圧縮を比較します。商品名の語を探すなら転置索引、意味の近さを探すならベクトル近傍を候補にします。近似検索には再現率の測定が必要です。注文IDの厳密一致には単純な索引から始めます。</p>
+<h3>デバイスへ書いた量を比べる</h3><p>更新データ10 GBに対し、ランの書出しと併合が合計35 GBなら、観測範囲での書込み増幅は3.5倍です。読み取りの候補ラン数、キャッシュ命中率、コンパクション中のp99も記録します。Bツリー側はWALやページ書出しを含めて同じ範囲で測ります。分析用の保存は、必要列の圧縮率、ベクター処理の効き方、事前集計の再計算時間で判断します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>二つのランに同じ商品</td><td>新しいランから読む</td><td>新しい価格が優先される</td></tr><tr><td>削除印の後に古い値を含む</td><td>両方のランを照合してから併合</td><td>削除した商品が復活しない</td></tr></tbody></table></div>
+<h3>実行実習</h3><p><a href="../labs/storage_runs.py" download>storage_runs.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 storage_runs.py
+latest tea: 1200
+cup after full compaction: absent
+cup after dropping only the marker: 300</code></pre><p>全ての該当ランを併合すると削除は維持されます。新しいランだけから削除印を取ると、古い値が再び見えます。辞書による順序付きランの抽象化で、実ディスクの性能やスナップショットは検証範囲外です。</p>
+<h3>設計レビュー</h3><details><summary>コンパクションでランが減ったら常に改善ですか。</summary><p>読取りは軽くなり得ますが、再書込みと瞬間的なI/O負荷が増えます。p99、書込み量、一時領域も測ります。</p></details>
+</section>
+<section class="chapter" id="contracts" aria-labelledby="contracts-title">
+<h2 id="contracts-title">発展5. 異なる版が同じメッセージをやり取りする</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-21">この章を動画で見る</a> · <a href="#reading-map">第2版 5章との対応</a></p>
+<p class="contract">注文イベントに配送先倉庫を追加します。過去データの再生や段階デプロイでは、書き手と読み手の版が揃いません。</p>
+<h3>互換性の方向</h3><p>新しい読み手が古いデータを読める性質と、古い読み手が新しいデータを読める性質を、組み合わせ表で別々に検査します。追加フィールドを無視できるか、既定値が意味を変えないか、欠損とNULLを同じにしてよいかを決めます。</p><h3>形式を選ぶ</h3><p>JSONは調査しやすく、型・数値範囲・存在条件には共有スキーマが必要です。Protobufではフィールド番号を識別に使い、削除番号の再利用を避けます。Avroでは書き手と読み手のスキーマを解決するため、過去の書き手のスキーマを取得できる運用が必要です。</p><h3>境界で再試行する</h3><p>RESTでもRPCでもネットワーク呼出しには期限と結果不明があります。長時間の注文処理を再開できるワークフローへ分ける場合は、進捗と副作用の識別子を永続化します。イベントの遅着・再送・版違いを含めた検証を行います。</p>
+<h3>フィールドを削除して追加する場合</h3><p>旧版の倉庫コードが数値、新版が複数倉庫の配列を必要とするとき、同じフィールドをそのまま配列へ変えると旧版の解釈が壊れます。別フィールドを追加し、混在中に両方をどう解釈するか、どちらが正本かを決めます。履歴の一括変換をする場合は、変換に使った版と根拠を残し、再生で副作用を起こさないことも確認します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>古いイベントを新版が読む</td><td>倉庫情報が欠損</td><td>未確認へ写像し、自動出荷しない</td></tr><tr><td>新イベントを旧版が読む</td><td>未認識の追加フィールド</td><td>旧版の仕様で無視できるか試験する</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>古いイベントの倉庫を既定値W01へ変えると移行完了ですか。</summary><p>根拠のない倉庫を確定させます。存在しない値を表現し、出荷には確認済みという別の条件を置きます。</p></details>
+</section>
+<section class="chapter" id="replica-choices" aria-labelledby="replica-choices-title">
+<h2 id="replica-choices-title">発展6. 複製を地理と競合から選ぶ</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-22">この章を動画で見る</a> · <a href="#reading-map">第2版 6章との対応</a></p>
+<p class="contract">海外の倉庫にも書込み受付を設けます。片方の回線が切れても受付を続けたい一方、同じ在庫の二重販売は禁止します。</p>
+<h3>単一リーダー</h3><p>書込みの順番を一カ所で付け、フォロワーがログを適用します。共通の位置のスナップショットと後続ログから新しいフォロワーを作ります。昇格は持っているログを確認し、旧リーダーの書込み権限を失効させます。受信・永続化・適用の待ち方も確認します。</p><h3>複数リーダー</h3><p>地域ごとに受付を継続できる反面、競合する変更を後から解決します。最終時刻の単純採用では入力の意図を失い得ます。統合可能な編集には明示的なマージを検討し、残数のような制約には地域別割当てや調整を検討します。</p><h3>リーダーレス</h3><p>N個のレプリカのうち書込みW、読取りRを得る設計で、同じ集合ならR+W&gt;Nが共通要素を作ります。新旧の識別、同時書込み、別集合への退避、修復の遅れは別の問題です。集合の重なりだけから線形化可能性を結論づけません。</p>
+<h3>応答集合が重なっても比較できない例</h3><p>二つのクライアントが同時に別値を書き、両方が同じ壁時計値を割り当てたとします。RとWの集合が一台で重なっても、どちらの値が後かは時刻だけでは決まりません。値に付ける版と競合解消、修復、再試行の契約を個別に定義します。読取り修復やバックグラウンド修復の負荷も通常の遅延に含めます。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>N=3、W=2、R=2</td><td>同じ三台から毎回選ぶ</td><td>読書きの集合は少なくとも一台で重なる</td></tr><tr><td>回線を切断し地域で受付</td><td>同じ商品が両側で更新</td><td>在庫制約とマージ規則を別々に検証</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>リーダー昇格時に旧リーダーを遮断するのはなぜですか。</summary><p>通信の一時停止から戻った旧リーダーが書き続けると、順序と権限が分裂します。世代やフェンシングで古い書込みを拒否します。</p></details>
+</section>
+<section class="chapter" id="routing" aria-labelledby="routing-title">
+<h2 id="routing-title">発展7. 分割キーと再配置の両方を設計する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-23">この章を動画で見る</a> · <a href="#reading-map">第2版 7章との対応</a></p>
+<p class="contract">地域によって注文量が偏り、商品名から全注文を検索する機能も増えます。分割先を変えている最中の受付を設計します。</p>
+<h3>範囲とハッシュ</h3><p>範囲分割は連続したキーの検索をまとめられますが、単調な注文時刻を直接使うと最新の範囲へ集中し得ます。ハッシュは多数の異なるキーを散らせますが、一つのホットキーは残り、範囲検索が複数先へ広がります。</p><h3>ルーティングの世代</h3><p>割当てを管理する表とデータのコピーを分け、コピー中の追加更新を追いつかせます。切替時は所有世代を更新し、古いルーティングで来た更新を拒否して再解決させます。両側に無制限に書かせる移行は照合が難しくなります。</p><h3>二次索引の位置</h3><p>各分割に索引を持つと書込みが局所的になり、全体検索は複数先を読む必要があります。全体索引は特定条件の検索を短くできますが、正本とは異なる分割への更新と鮮度の契約を扱います。テナント単位の隔離も要求として確認します。</p>
+<h3>移動中の番号をログに残す</h3><p>分割先BはAの位置100のスナップショットを読み、ログ101から140を順に適用します。切替前に書込みを短時間止めるか、切替点の後続を新担当へ確実に送る設計を選びます。ルーターが旧割当てを使ってもAで確定しないこと、Bの位置が切替点と一致することを障害試験で検査します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>時刻の範囲で分割</td><td>最新時間帯を負荷試験</td><td>一つの分割先のp99が上がり得る</td></tr><tr><td>所有世代を切替</td><td>古い世代の更新を遅らせて到着</td><td>旧所有者で確定しない</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>分割数を増やせば、一つの顧客の負荷も必ず改善しますか。</summary><p>同じ顧客キーは同じ分割に届きます。負荷の単位を分ける場合は一覧の再合成と一貫性も設計します。</p></details>
+</section>
+<section class="chapter" id="isolation" aria-labelledby="isolation-title">
+<h2 id="isolation-title">発展8. 二人が別の行を書いても制約は破れる</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-24">この章を動画で見る</a> · <a href="#reading-map">第2版 8章との対応</a></p>
+<p class="contract">倉庫の当番は最低一名必要です。二人が同じスナップショットで相手の勤務を読み、それぞれ自分だけを休みにすると、両方が通る場合があります。</p>
+<h3>異常を分ける</h3><p>ロストアップデートは同じ値への更新が上書きされる問題です。ライトスキューでは別々の行を書いても、読んだ全体条件が両方のコミットで崩れます。ファントムは範囲条件を満たす行の増減に関係します。</p><h3>分離レベルの選び方</h3><p>Read Committedは一般に未確定の値を読ませませんが、同じ取引の別の文で観測値が変わる場合があります。スナップショット分離は読取りを揃えますが、上の制約を両方が通過し得ます。直列化可能性は結果をある直列順で説明できることを求め、衝突時は中断と再試行が起きます。</p><h3>ロックと分散確定</h3><p>二相ロックはロックを取得する段階と解放する段階を分ける制御です。二相コミットは参加者の準備を集めて確定・中断を決める調整です。準備済みの参加者は決定が分からない期間に資源を保持し得ます。確定時の障害注入で復旧を試します。</p>
+<h3>確定の途中で調整役が停止する</h3><p>在庫DBと予約DBがともに準備済みになり、調整役が確定を永続化して在庫DBへだけ通知した直後に停止したとします。予約DBがタイムアウトだけで中断すると結果が分裂します。決定ログの回復と通知の再送が必要で、準備済み参加者は待つことがあります。補償を使う設計では待ちを減らせる一方、補償可能な副作用と観測できる途中状態を定義します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>当番AとBが別々の行を更新</td><td>同じ版を読んで双方が休む</td><td>書込み先だけの衝突検査では勤務数が0</td></tr><tr><td>直列順を採用</td><td>二人目は一人目の結果を評価</td><td>残り一名なら二人目を拒む</td></tr></tbody></table></div>
+<h3>実行実習</h3><p><a href="../labs/write_skew.py" download>write_skew.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 write_skew.py
+same snapshot: on duty = 0
+serial evaluation: on duty = 1</code></pre><p>同じスナップショットからの独立した判断は双方が通ります。直列に判定すると二人目の条件が成立しません。DB製品の挙動ではなく、二つの実行順序を明示したモデルです。</p>
+<h3>設計レビュー</h3><details><summary>在庫の条件付き更新と同じ方法で、別々の行にまたがる制約を守れますか。</summary><p>単一行の条件だけでは足りません。共有行へ制約を寄せる、ロック範囲を広げる、直列化可能にするなどを比較します。</p></details>
+</section>
+<section class="chapter" id="clocks" aria-labelledby="clocks-title">
+<h2 id="clocks-title">発展9. 長い停止から戻った古い所有者を止める</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-25">この章を動画で見る</a> · <a href="#reading-map">第2版 9章との対応</a></p>
+<p class="contract">配送処理の担当が長く停止し、その間に新担当へ切り替わりました。古い担当が復帰して遅れた更新を送ります。</p>
+<h3>時間と知識</h3><p>タイムアウトで分かるのは待ち時間が尽きたことです。遅い応答と障害を完全には区別できません。経過時間には単調時計を使います。監査の日時には壁時計が必要ですが、時計合わせや誤差により、別ノードの壁時計だけで因果を決めません。</p><h3>リースとフェンシング</h3><p>担当に期限を与えても、停止したプロセスが期限切れを認識する前に古い要求を送る場合があります。世代番号を渡し、ストレージ側が新世代を受けた後に古い番号を拒否する方法があります。すべての副作用の入口で検査できるかが採用条件です。</p><h3>障害モデル</h3><p>停止や再開、遅延、重複、順序逆転を別々に試します。メッセージを誤って作る参加者まで含むビザンチン障害は、停止だけを想定したモデルと別です。状態機械の不変条件を文章とテストで明示し、タイミングを振った試験も用意します。</p>
+<h3>経過時間とイベント順序を分けて再現する</h3><p>十秒待った処理の途中で壁時計が三十秒戻ると、壁時計を引いた待ち時間は負になります。単調時計で期限を測り、記録の時刻と識別子は別に残します。分散試験では、任意の時点の停止、古い応答、再接続を組み合わせ、同じ注文の確定が二件にならないかを確認します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>世代7が長時間停止</td><td>世代8が先に保存</td><td>以後の世代7の更新を拒否</td></tr><tr><td>時刻の差が負</td><td>異なるホストの壁時計を比較</td><td>経過時間や順序の証拠として採用しない</td></tr></tbody></table></div>
+<h3>実行実習</h3><p><a href="../labs/fencing.py" download>fencing.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 fencing.py
+generation: 8
+stale write accepted: False
+shipment state: handed-off</code></pre><p>世代8を反映した後、世代7の要求が拒否されます。このモデルでは検査と更新を一つの操作と仮定しています。世代の割り当て、永続化、外部副作用は別途設計します。</p>
+<h3>設計レビュー</h3><details><summary>クライアントが期限を確認してから送れば、古い更新を完全に防げますか。</summary><p>確認の直後に停止することがあります。最終的に副作用を反映する側でも資格を検査します。</p></details>
+</section>
+<section class="chapter" id="order-and-agreement" aria-labelledby="order-and-agreement-title">
+<h2 id="order-and-agreement-title">発展10. 何を同じ順序で見る必要があるか</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-26">この章を動画で見る</a> · <a href="#reading-map">第2版 10章との対応</a></p>
+<p class="contract">価格改定が完了した直後に旧価格が返る問題と、二台が同時に担当を名乗る問題を切り分けます。</p>
+<h3>線形化可能性と直列化可能性</h3><p>線形化可能性では各操作が呼出しから応答までの間に一瞬で起きたように見え、完了後に始まる読取りはそれ以前の書込みを追い越せません。直列化可能性は複数操作を含む取引の結果を直列順で説明します。現実時間の順序も求める場合はその条件を別に指定します。</p><h3>論理時計の範囲</h3><p>Lamport時計では送信側の値を受信側が取り込み、因果的に先の出来事より後の値が大きくなります。値の大小だけから因果を逆に推論することはできません。ノードIDを使って並びを決めても、全ノードが同じ操作を採用したという合意にはなりません。</p><h3>合意と多数派</h3><p>合意は複数参加者が同じ決定を採用するために使います。例えばRaftは任期と投票、ログの複製規則を組み合わせます。三台のうち一台を失っても多数派は残りますが、孤立した一台では新しい決定を確定できません。多数派の交差に加え、同じ任期の投票規則とログの継続性が必要です。</p>
+<h3>多数派が残る側と孤立側</h3><p>三台A・B・CでAが旧リーダーのまま孤立し、BとCが新任期を開始します。Aの単独応答は多数派の確定になりません。Bが過去に確定したログを失わないために、票を集めるだけでなく候補のログの新しさに制約が要ります。過半数が失われれば新しい確定を待たせます。ネットワーク分断時にどちらの側でも要求を成功させる条件とは、同じ直近値を常に返す条件が衝突します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>値の更新応答の後で読取り開始</td><td>以前の値を返した履歴を検査</td><td>線形化可能ではない</td></tr><tr><td>選挙の通信が1対2に分断</td><td>新しい確定の票を検査</td><td>単独側は多数派を形成できない</td></tr></tbody></table></div>
+<h3>実行実習</h3><p><a href="../labs/history_check.py" download>history_check.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 history_check.py
+overlapping old read: True
+later old read: False</code></pre><p>重なった読取りは書込みより先に置けます。書込みの応答後に開始した読取りはその前へ置けません。完了した操作だけを含む、一つのレジスターの短い履歴を総当たりで確認します。</p><h3>実行実習</h3><p><a href="../labs/majority_terms.py" download>majority_terms.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 majority_terms.py
+minimum majority overlap: 1
+votes for first candidate: 2
+votes for competing candidate: 1
+votes for stale log: 0</code></pre><p>三台の多数派は最低一台で交差します。交差するBが同じ任期で二度投票すると両陣営が過半数を得てしまいます。この実習は任期とログの新しさによる投票条件を再現します。ログ複製、永続化、障害回復を含むRaft実装は原論文を参照してください。</p>
+<h3>設計レビュー</h3><details><summary>書込みを複製したというだけで、孤立したノードも最新と主張できますか。</summary><p>そのノードは最新の任期や確定位置を知らない場合があります。読取り時に必要な確認を設計します。</p></details>
+</section>
+<section class="chapter" id="batch-pipelines" aria-labelledby="batch-pipelines-title">
+<h2 id="batch-pipelines-title">発展11. 一日分を同じ入力から作り直す</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-27">この章を動画で見る</a> · <a href="#reading-map">第2版 11章との対応</a></p>
+<p class="contract">売上明細が一台に収まらなくなりました。商品ごとの集計を分割実行し、途中失敗後も同じ結果を得る必要があります。</p>
+<h3>入力と出力の版</h3><p>日付だけでなく入力ファイルの一覧・版・集計規則を記録します。結果は一時領域へ全分割を書き、検証済みの版を公開します。途中結果を同じ公開パスへ直接書くと、再実行で前回分と混ざります。</p><h3>分配と局所集約</h3><p>Map段階で商品IDと金額を出し、同じIDが同じ担当へ届くようシャッフルします。Reduceがキーごとに和をとります。合計は分割内でも先に加算できますが、平均の平均は一般に誤ります。平均なら合計と件数を渡します。</p><h3>実行コスト</h3><p>小さな入力は単一プロセスとSQLで十分です。分散データフローを採用すると機械を増やせますが、ネットワーク転送、偏ったキー、失敗時の再実行費が増えます。オブジェクトストレージにはファイル一覧と公開の仕組みを別途用意します。</p>
+<h3>人気商品だけ担当処理が終わらない</h3><p>売上100万行の80万行が同じ商品で、商品IDだけで振り分けると、担当が一つに集中します。合計・件数のように局所集約できる値は分割内で減らしてから転送できます。結合のように全一致が必要な処理は小さい表の複製やキーの分割を検討し、出力件数を重複や欠落の有無と照合します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>二つの分割が商品Aを持つ</td><td>分割内集約の後に商品キーで合流</td><td>Aの全額を一度だけ集約</td></tr><tr><td>公開前に途中失敗</td><td>同じ入力一覧から別の一時領域に再実行</td><td>前回の公開版を読める</td></tr></tbody></table></div>
+<h3>実行実習</h3><p><a href="../labs/batch_shuffle.py" download>batch_shuffle.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 batch_shuffle.py
+average of partition averages: 800
+average from total and count: 700</code></pre><p>件数の異なる分割では平均同士を均等に足せません。各分割の合計と件数を合わせ、最後に割ります。シャッフルの通信や故障はモデルに含めません。</p>
+<h3>設計レビュー</h3><details><summary>各分割が返す平均を平均すれば、全売上の平均になりますか。</summary><p>分割の件数が異なれば一般に一致しません。金額合計と件数を集約して最後に割ります。</p></details>
+</section>
+<section class="chapter" id="stream-recovery" aria-labelledby="stream-recovery-title">
+<h2 id="stream-recovery-title">発展12. 再生位置と出力のずれを制御する</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-28">この章を動画で見る</a> · <a href="#reading-map">第2版 12章との対応</a></p>
+<p class="contract">速報を更新した直後に集計処理が停止し、同じイベントが再配信されます。注文情報との結合には遅延もあります。</p>
+<h3>ログと変更データ</h3><p>ログ型の配信では分割ごとの順序と位置を扱い、消費側が位置から再読できます。永続ログを取り込むCDCでは初期スナップショットとログの境界を照合します。DBの確定済みの行変更と、業務の支払確定イベントは必要な意味が一致しない場合があります。</p><h3>窓と結合</h3><p>イベント時刻の窓で注文と決済を結ぶ場合、双方がどのくらい遅れるか、片側だけ到着した結果をいつ確定するかを決めます。状態の保持期限を短くすると資源は減りますが、遅れて届く対応イベントを失い得ます。</p><h3>復旧と副作用</h3><p>出力を先に確定し位置を後で保存すると、停止後の再読で重複する可能性があります。位置が先なら欠落し得ます。位置と状態を協調して保存し、外部出力についても同じ取引にできるか、IDで再適用を防げるかを検証します。</p>
+<h3>遅着した相手を結ぶか、訂正するか</h3><p>注文が12:00、対応する決済が12:04に発生し、決済イベントは12:12に届きます。イベント時刻の差が5分以内という条件を満たす一方、状態を処理時刻で先に捨てると結べません。イベント時刻の進行を見積もるウォーターマーク、許容する遅着、訂正の通知、状態量を一緒に決めます。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>出力成功後に停止</td><td>同じ位置を再生</td><td>出力側が同じイベントIDを重ねない</td></tr><tr><td>片側が保持期限後に遅着</td><td>注文と決済の照合を確認</td><td>訂正処理に回す条件を仕様化</td></tr></tbody></table></div>
+<h3>実行実習</h3><p><a href="../labs/stream_replay.py" download>stream_replay.pyをダウンロード</a>し、保存したディレクトリで実行してください。</p><pre tabindex="0"><code>python3 stream_replay.py
+first event applied again: False
+total after replay: 2000</code></pre><p>最初のイベントの再読はIDで検知され、合計に加算されません。SQLiteの一つの取引でIDと合計を更新します。メモリ上で出力先が存続する場合のモデルです。</p>
+<h3>設計レビュー</h3><details><summary>配信基盤のexactly-once設定だけで外部メールも一度になりますか。</summary><p>基盤の保証が外部メールまで含まれるか確認します。外部副作用は識別子や照合が別途必要なことがあります。</p></details>
+</section>
+<section class="chapter" id="integration" aria-labelledby="integration-title">
+<h2 id="integration-title">発展13. 導出データを取り替えられる構成にする</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-29">この章を動画で見る</a> · <a href="#reading-map">第2版 13章との対応</a></p>
+<p class="contract">売上検索の新旧バージョンを比較し、ずれがあれば前の版へ戻したいとします。検索用索引を注文取引から分離します。</p>
+<h3>読み手ごとに再構成</h3><p>注文の制約を正本側に置き、検索・通知・日次集計を用途ごとの導出状態として管理します。書込み時に直接複数先へ送ると片方だけ成功することがあります。正本の更新と送信予定を同じ取引に置き、受信側は重複を処理します。</p><h3>比較と切替</h3><p>新しい投影を同じ入力位置まで追いつかせ、件数だけでなく金額、サンプルキー、除外理由を比較します。検索の重み付けなど意図的な差と、欠落のような意図しない差を分けます。旧版を保持して入口を切り替えれば、検証後も元に戻せます。</p><h3>端から端までの正しさ</h3><p>注文受付の成功から問い合わせ画面で確認できるまでを試します。各中間サービスの正常だけでは全体の保証になりません。鮮度と完全性を別の指標にし、遅い入力を切り捨てて鮮度だけが見かけ上よくなる状態を避けます。</p>
+<h3>復旧を金額照合まで通して試す</h3><p>配信側の履歴で位置250まで処理済みでも、出力で入金2000円のうち800円を落としていれば完了の指標にはなりません。正本の支払確定イベントID集合と集計の入力記録を照合します。承認済みイベントの件数、合計、最新位置をそれぞれ記録し、欠落した範囲を再生します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>新旧の索引がずれる</td><td>同じ入力位置で比較</td><td>仕様差と欠落を区別</td></tr><tr><td>通知を再配信</td><td>同じ配信予定を二度取り込む</td><td>送信結果を照合し副作用の重複を防ぐ</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>新旧の件数が一致すれば切替できますか。</summary><p>別のレコードを落として余分を加えても同数になります。キー集合と金額を照合し、鮮度・再構成時間も確認します。</p></details>
+</section>
+<section class="chapter" id="data-responsibility" aria-labelledby="data-responsibility-title">
+<h2 id="data-responsibility-title">発展14. 保持・削除・推薦の責任を仕様にする</h2>
+<p class="chapter-video"><a href="../slides/index.html#slide-30">この章を動画で見る</a> · <a href="#reading-map">第2版 1・14章との対応</a></p>
+<p class="contract">購買履歴を販促に利用し、利用者が利用停止を選べるようにします。分析と推薦の品質だけでなく、利用範囲と訂正方法も設計します。</p>
+<h3>目的と保持範囲</h3><p>注文履行に必要なデータ、会計で保持が必要な記録、任意の販促データを目的で区別します。参照権限、保持期限、利用停止の反映先、削除要求の伝達先を記録します。法的な要件は地域と用途によって変わるため、担当者と確認します。</p><h3>コピーと削除</h3><p>正本の削除は分析コピーや検索索引へも伝えます。バックアップは保持と復元の方針を持ち、復元時に削除済みデータを再公開しない手順を用意します。匿名化と仮名化を混同せず、他のデータとの照合で個人を再識別できる可能性も評価します。</p><h3>推薦の影響</h3><p>過去の購入だけで推薦を学習すると、露出の少ない商品は評価データも少なくなり、さらに露出が下がる場合があります。利用者層や商品の露出を別々に測り、停止手段、問い合わせ、変更履歴を整えます。最適化指標の改善と利用者への影響を一緒に評価します。</p>
+<h3>推薦の改善を露出別に検証する</h3><p>推薦経由の購入率が上がっても、露出の少ない商品の表示回数が大幅に減ることがあります。全体の購入率に加え、商品群別の露出と問い合わせを測り、属性の利用目的と計測の範囲を公開します。利用停止の要求を入れた際は、オンライン推薦だけでなく過去ログから再学習する経路も点検します。</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="設計を試す入力と合格条件"><table><caption>設計を試す入力と合格条件</caption><thead><tr><th scope="col">ケース</th><th scope="col">試すこと</th><th scope="col">観測する結果</th></tr></thead><tbody><tr><td>販促利用を停止</td><td>新規取込みと既存投影を確認</td><td>販促向けデータの更新・利用が止まる</td></tr><tr><td>バックアップから復元</td><td>削除済みIDを照合</td><td>復元直後も削除済み情報を公開しない</td></tr></tbody></table></div>
+
+<h3>設計レビュー</h3><details><summary>顧客IDを乱数へ置換すれば、結合しても誰か分からないと言えますか。</summary><p>購入時刻や希少な商品の組合せから推測され得ます。利用目的、結合可能なデータ、公開粒度を評価します。</p></details>
+</section><section id="reading-map" class="chapter" aria-labelledby="reading-map-title"><h2 id="reading-map-title">第2版と合わせて読むための対応表</h2><p>公開目次の14章それぞれに、注文システムを使った学習入口を設けています。ここで扱う技術の範囲は表に示しています。製品別の実装、アルゴリズムの完全な証明、個別の論文や事例は原典を参照してください。</p><div class="table-wrap" tabindex="0" role="region" aria-label="書籍の章番号と発展編"><table><caption>書籍の章番号と発展編</caption><thead><tr><th scope="col">書籍</th><th scope="col">教材の入口</th><th scope="col">この教材で扱う内容</th></tr></thead><tbody><tr><th scope="row">1章</th><td><a href="#workloads">システム全体の選択</a></td><td>業務と分析、クラウドと自社運用。法規や利用目的は発展編のデータ利用で扱います。</td></tr><tr><th scope="row">2章</th><td><a href="#load-and-recovery">期待する品質と負荷</a></td><td>応答時間、耐障害性、過負荷からの復帰、実行基盤の構成。</td></tr><tr><th scope="row">3章</th><td><a href="#models">データの構造と問合せ</a></td><td>関係、文書、グラフ、分析スキーマ、イベントと読取りモデル。</td></tr><tr><th scope="row">4章</th><td><a href="#engines">保存と探索の内部</a></td><td>Bツリー、LSM、列指向、全文とベクトル検索。</td></tr><tr><th scope="row">5章</th><td><a href="#contracts">データ形式の互換性</a></td><td>JSON、Protobuf、Avro、呼出しとワークフロー。</td></tr><tr><th scope="row">6章</th><td><a href="#replica-choices">複製方式の選択</a></td><td>単一・複数リーダーとリーダーレス、遅延と競合。</td></tr><tr><th scope="row">7章</th><td><a href="#routing">データの担当割り</a></td><td>範囲とハッシュ、再配置、ルーティングと二次索引。</td></tr><tr><th scope="row">8章</th><td><a href="#isolation">取引と並行性</a></td><td>分離レベル、更新異常、二相ロックと二相コミット。</td></tr><tr><th scope="row">9章</th><td><a href="#clocks">時間と部分障害</a></td><td>時計の用途、停止と遅延、リースとフェンシング。</td></tr><tr><th scope="row">10章</th><td><a href="#order-and-agreement">外から見た順序と合意</a></td><td>線形化可能性、論理時計、任期と多数派。</td></tr><tr><th scope="row">11章</th><td><a href="#batch-pipelines">固定した入力の集計</a></td><td>入力の版、局所集約とシャッフル、再実行。</td></tr><tr><th scope="row">12章</th><td><a href="#stream-recovery">連続入力の処理と復旧</a></td><td>ログ、CDC、結合、位置と副作用の復元。</td></tr><tr><th scope="row">13章</th><td><a href="#integration">導出データをつなぐ設計</a></td><td>正本と投影の切替、鮮度と完全性、端から端までの検証。</td></tr><tr><th scope="row">14章</th><td><a href="#data-responsibility">データ利用への責任</a></td><td>目的と保持、削除伝播、推薦の偏りと説明責任。</td></tr></tbody></table></div><p><a href="https://www.oreilly.co.jp/books/9784814401802/">オライリー・ジャパンの公式目次と書誌情報</a></p><h3>方式を確かめる一次資料</h3><ul><li>索引内部とコンパクション。<a href="https://github.com/facebook/rocksdb/wiki/Leveled-Compaction">RocksDBの設計資料</a></li><li>書き手と読み手のスキーマ解決。<a href="https://avro.apache.org/docs/1.12.0/specification/">Apache Avro仕様</a></li><li>製品の分離レベルと再試行条件。<a href="https://www.postgresql.org/docs/current/transaction-iso.html">PostgreSQL公式文書</a></li><li>任期、投票、ログの確定。<a href="https://raft.github.io/raft.pdf">Raftの原論文</a></li><li>キー間で処理を分ける分散バッチ。<a href="https://research.google/pubs/mapreduce-simplified-data-processing-on-large-clusters/">MapReduceの原論文</a></li></ul></section><!-- /advanced-chapters --><section id="references" class="chapter" aria-labelledby="references-title">
 <h2 id="references-title">参考資料</h2>
 <ul>
 <li>Martin Kleppmann、Chris Riccomini 著、斉藤太郎 訳『データ指向アプリケーションデザイン 第2版』オライリー・ジャパン、2026年11月5日、ISBN 978-4-8144-0180-2。 <a href="https://www.oreilly.co.jp/books/9784814401802/">出版社の書誌情報</a></li>
@@ -274,7 +435,7 @@ changed event: conflict</code></pre>
 <script>
 (() => {
     const key = 'data-design-guide-completed-v1';
-    const chapters = [...document.querySelectorAll('.chapter:not(#references)')];
+    const chapters = [...document.querySelectorAll('.chapter:not(#references):not(#reading-map)')];
     const valid = new Set(chapters.map(chapter => chapter.id));
     const count = document.getElementById('reading-count');
     const note = document.getElementById('reading-note');
