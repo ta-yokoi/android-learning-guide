@@ -8,7 +8,8 @@ import re
 from data_design_advanced import EXTRA_LABS, LAB_OUTPUT, UNITS, WORKED
 from data_design_experiments import ENGINE_RESULTS, VIDEOS
 from data_design_focus import FOCUS, FOCUS_BY_SECTION, LAB_OUTPUT as FOCUS_LAB_OUTPUT
-from data_design_learning_path import CSS as LEARNING_CSS, assessment, learning_start
+from data_design_learning_path import CSS as LEARNING_CSS, LEARNING_VIDEOS, assessment, learning_start
+from data_design_reference import STUDIES, desk_reference, study_html
 from data_design_topic_map import NOTES, TOPICS
 from data_design_workshops import FORMAT_DEPENDENCIES, WORKSHOPS, lab_file
 from data_design_section_audit import AUDIT, SUPPLEMENTS, UNIX_EXAMPLE
@@ -20,6 +21,7 @@ FIRST_ADVANCED_SLIDE = 1 + sum(len(scenes) for _, _, scenes in INTRO_CHAPTERS)
 FIRST_FOCUS_SLIDE = FIRST_ADVANCED_SLIDE + 2 * len(UNITS) + len(VIDEOS)
 FIRST_WORKSHOP_SLIDE = FIRST_FOCUS_SLIDE + len(FOCUS)
 FIRST_LEARNING_SLIDE = FIRST_WORKSHOP_SLIDE + len(WORKSHOPS)
+FIRST_REFERENCE_SLIDE = FIRST_LEARNING_SLIDE + len(LEARNING_VIDEOS)
 READING_MAP = [
     ("システム全体の選択", "workloads", "業務と分析、クラウドと自社運用。法規や利用目的は発展編のデータ利用で扱います。"),
     ("期待する品質と負荷", "load-and-recovery", "応答時間、耐障害性、過負荷からの復帰、実行基盤の構成。"),
@@ -252,13 +254,15 @@ def section(item, index):
                         for offset, item in enumerate(WORKSHOPS) if item.chapter == key)
     notes = "".join(f'<h3 id="{anchor}">{escape(title)}</h3><p>{escape(body)}</p>\n'
                     for anchor, title, body in NOTES.get(key, ()))
+    studies = "".join(study_html(item, FIRST_REFERENCE_SLIDE + offset)
+                      for offset, item in enumerate(STUDIES) if item.chapter == key)
     title, example = WORKED[key]
     worked = f"<h3>{escape(title)}</h3><p>{escape(example)}</p>"
     return (
         f'<section class="chapter" id="{key}" aria-labelledby="{key}-title">\n'
         f'<h2 id="{key}-title">発展{index + 1}. {escape(item["title"])}</h2>\n'
         f'<p class="chapter-video"><a href="../slides/index.html#slide-{number}">この章を動画で見る</a> · <a href="#reading-map">第2版 {escape(item["sources"])}との対応</a></p>\n'
-        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}{focused}\n{notes}{workshops}\n'
+        f'<p class="contract">{escape(item["goal"])}</p>\n{concepts}\n{worked}\n{checks}\n{lab}\n{detailed}\n{extra}{additional}{focused}\n{notes}{workshops}{studies}\n'
         f'<h3>設計レビュー</h3><details><summary>{escape(item["question"])}</summary>'
         f'<p>{escape(item["answer"])}</p></details>\n</section>'
     )
@@ -303,14 +307,14 @@ def main():
     html = replace_block(html, "learning-css", f"<style>\n{LEARNING_CSS}</style>\n", "</head>")
     html = replace_block(html, "learning-toc",
                          '<strong>学習コース</strong><a href="#learning-path">学習順と初回実習</a>'
-                         '<a href="#design-assessment">到達度チェック</a>\n', '<strong>入門編</strong>')
+                         '<a href="#design-reference">設計の手引き・用語集</a><a href="#design-assessment">到達度チェック</a>\n', '<strong>入門編</strong>')
     html = replace_block(html, "learning-start", learning_start(FIRST_LEARNING_SLIDE),
                          '<section id="requirements"')
     html = replace_block(html, "advanced-toc", toc, '<a href="#references">参考資料</a>')
     part = ('<div class="hero" id="advanced"><h2>発展編</h2>'
             '<p>ストアの規模と運用条件を変えながら、方式の内部、障害時の制約、データの責任を検討します。</p></div>\n')
     content = (part + "\n".join(section(item, index) for index, item in enumerate(UNITS))
-               + assessment(FIRST_LEARNING_SLIDE + 1) + map_section())
+               + desk_reference() + assessment(FIRST_LEARNING_SLIDE + 1) + map_section())
     html = replace_block(html, "advanced-chapters", content, '<section id="references"')
     html = re.sub(r"\.chapter:not\(#references\)(?::not\(#reading-map\))*",
                   ".chapter:not(#references):not(#reading-map)", html)

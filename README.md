@@ -31,9 +31,9 @@ GitHub Pagesでの教材URLです。反映にはmainブランチへのpushとPag
 ```
 index.html           # Android／GoF／組み込み開発／データ設計／作品集の入口
 data-design/index.html # データ設計の入口
-data-design/guide/index.html # 注文システムを題材にした22章・確認問題83問
-data-design/slides/index.html # データ設計の動画版（22章74場面）
-data-design/labs/ # 実行実習18本と実ストレージの比較
+data-design/guide/index.html # 注文システムを題材にした22章・本編の確認問題95問
+data-design/slides/index.html # データ設計の動画版（22章80場面）
+data-design/labs/ # 実行実習20本と実ストレージの比較
 android/index.html   # Android教材アプリの共通入口
 android/manifest.webmanifest # 通常教材・簡易版・詳細版で共通の起動設定
 gof/index.html       # GoF：通常の教材・CSS図解・音声付き動画風スライドを選ぶ
@@ -485,12 +485,12 @@ python3 data-design/labs/sales_events.py
 在庫実習は一時SQLiteデータベースへの別接続から競合を検証します。決済と売上集計はメモリ上のモデルを使います。期待する出力と各モデルの検証範囲は本文に掲載しています。読了記録はブラウザの専用キー `data-design-guide-completed-v1` に保存します。
 
 
-動画版は22章74場面で、字幕のみの連続再生は39分28秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
+動画版は22章80場面で、字幕のみの連続再生は42分40秒です。日本語読み上げはWeb Speech APIと端末の音声を使います。読み終えると自動で進み、音声が利用できない環境では字幕で再生します。速度変更、全画面、再生位置の保存、静止版・印刷に対応しています。動画と本文は章ごとに移動でき、在庫・決済・集計の場面から実習ファイルを取得できます。
 
 動画HTMLの再生成は `python3 tools/generate_data_design_slides.py` で行います。場面と解説は `tools/data_design_lessons.py` で管理します。
 
 
-通常教材の「書籍第2版との対応表」には、公式目次の14章それぞれに対応する発展編の入口と、教材で扱う内容を掲載しています。発展編には章ごとの比較・数値例・確認問題と、実習7本を追加しました。引数なしで動く従来の15本を確認するには `for lab in data-design/labs/*.py; do case "$lab" in */engine_benchmark.py|*/section_examples.py|*/design_workbench.py|*/formats_workbench.py) continue;; esac; python3 "$lab" || break; done` を実行します。実習は教育用の小さなモデルとSQLiteを使用します。
+通常教材の「書籍第2版との対応表」には、公式目次の14章それぞれに対応する発展編の入口と、教材で扱う内容を掲載しています。発展編には章ごとの比較・数値例・確認問題と、実習7本を追加しました。引数なしで動く従来の15本を確認するには `for lab in data-design/labs/*.py; do case "$lab" in */engine_benchmark.py|*/section_examples.py|*/design_workbench.py|*/formats_workbench.py|*/learning_models.py|*/postgres_isolation.py) continue;; esac; python3 "$lab" || break; done` を実行します。実習は教育用の小さなモデルとSQLiteを使用します。
 
 発展編の本文と対応表は `python3 tools/update_data_design_guide.py` で更新します。その後 `python3 tools/generate_data_design_slides.py` を実行します。既存の入門章の順序と保存キーを保持し、動画は発展編を17場面目以降に追加しています。
 
@@ -547,3 +547,18 @@ python3 -m venv .venv
 [到達度チェック](data-design/guide/index.html#design-assessment)では6問を自分の言葉で答え、会場予約の要件から正本、空席一覧、再送、障害時の検証を設計します。解答に、学び直す章や実習へのリンクがあります。動画版の73・74場面で初回実習と到達度チェックの例を確認できます。既存72場面のURLと学習記録キーを継続して使えます。
 
 本文と動画の素材は `tools/data_design_learning_path.py` にあります。本文、動画の順に再生成します。
+
+### 教材内で引ける設計の手引き
+
+[設計の手引き](data-design/guide/index.html#design-reference)では、短いSQL例から始め、要件に応じた方式の選び方と、24組の用語から具体例を探せます。復旧時間、ベクトル検索、取引の分離、古い書込みの拒否、速報と確報、個人データの扱いを6事例に分け、確認問題と解答を収録しています。動画の75〜80場面からも各事例を開けます。既存の学習順と74場面の動画URLは継続して利用できます。
+
+以下は標準ライブラリで実行できます。
+
+```sh
+python3 data-design/labs/learning_models.py vector-search
+python3 data-design/labs/learning_models.py lease-model
+```
+
+[PostgreSQL実習](data-design/guide/index.html#postgres-visible-state)は、同じPostgreSQL 16.2に二接続し、分離レベルによる読取りと確定の違いを試します。Linux・macOS向けの仮想環境の作り方と依存パッケージ、照合する出力は本文に記載しています。その場で作る一時DBをローカルで使います。
+
+手引きと6事例の素材は `tools/data_design_reference.py` にあります。本文、動画の順に再生成します。

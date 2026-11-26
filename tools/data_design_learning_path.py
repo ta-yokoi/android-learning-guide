@@ -161,8 +161,8 @@ def learning_start(slide):
 <h2 id="path-title">データ指向アプリケーション設計の学び方</h2>
 <p>データ指向アプリケーション設計では、アプリが扱うデータをどこに保存し、どう読み書きし、負荷や障害があっても何を守るかを決めます。身近な例は「注文を確定し、在庫を減らし、あとから集計する」処理です。</p>
 <p class="contract"><strong>到達目標</strong>　要件から保存・取引・複製・集計の方法を選び、設計の理由を説明し、失敗時にも守る条件をテストできる。</p>
-<p>まずブラウザ実習で結果を予想します。続く例で使う「正本」は最終的な判断の根拠にする記録、「導出データ」は正本から作る検索や集計、「取引」は更新をまとめて確定する単位です。</p>
-<p class="learning-actions"><a href="#first-data-experiment">最初の実習へ</a><a href="#path-steps">6段階の順番を見る</a><a href="#design-assessment">到達度を確かめる</a></p>
+<p>まずブラウザ実習で結果を予想します。続く例で使う「正本」は最終的な判断の根拠にする記録、「導出データ」は正本から作る検索や集計、「取引」は更新をまとめて確定する単位です。SQLに慣れていない場合は<a href="#sql-reading-start">3行の予約から座席数を数える例</a>を先に読めます。</p>
+<p class="learning-actions"><a href="#first-data-experiment">最初の実習へ</a><a href="#path-steps">6段階の順番を見る</a><a href="#design-reference">設計の手引き・用語集</a><a href="#design-assessment">到達度を確かめる</a></p>
 <h3 id="first-data-experiment">最初の実習　同じ注文を二度送ると何が起きるか</h3>
 {run_video(slide)}
 <p>在庫は2個です。注文Aが確定した直後に返事だけが消え、買い手は同じ注文を再送します。次に別の買い手が注文Bを送ります。在庫と確定件数が各段階でどう変わるか予想し、二つの方式を試してください。</p>
